@@ -6,6 +6,7 @@ import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from
 const chapters = await getAllChapters();
 const groupedParts = await getChaptersGroupedByPart();
 const startChapter = chapters[0];
+const baseUrl = import.meta.env.BASE_URL || '/';
 
 function formatPartHeader(partNumber: number | null, partTitle: string): string {
   if (partNumber === null) return partTitle.toUpperCase();
@@ -48,8 +49,13 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
           <p class="hero-subtitle">Twenty Years of Reverse Engineering an ADHD Brain</p>
           <p class="hero-author">By <strong>Mark J. Hubrich</strong></p>
 
-          <!-- Continue Reading Card (Progressive Enhancement, hidden if no progress exists) -->
-          <div id="continue-reading-area" class="continue-card" style="display: none;">
+          <!-- Continue Reading Card -->
+          <div
+            id="continue-reading-area"
+            class="continue-card"
+            style="display: none;"
+            data-base-url={baseUrl}
+          >
             <div class="continue-label">Resume Reading</div>
             <a id="continue-reading-link" href="#" class="continue-link">
               <div class="continue-meta">
@@ -162,8 +168,8 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
         const numEl = document.getElementById('continue-chapter-num');
 
         if (area && link && titleEl) {
-          const base = (window as any).Astro?.url?.pathname || '/broadband/';
-          const cleanBase = base.endsWith('/') ? base : base + '/';
+          const baseUrl = area.getAttribute('data-base-url') || '/broadband/';
+          const cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
           link.href = `${cleanBase}chapter/${savedSlug}/`;
           titleEl.textContent = savedTitle;
           if (numEl) {
