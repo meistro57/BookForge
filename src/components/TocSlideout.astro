@@ -105,13 +105,19 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
       }
     }
 
-    toggleBtn?.addEventListener('click', () => {
+    toggleBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
       if (isExpanded) closeToc();
       else openToc();
     });
 
-    closeBtn?.addEventListener('click', closeToc);
+    closeBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeToc();
+    });
+
     backdrop?.addEventListener('click', closeToc);
 
     document.addEventListener('keydown', (e) => {
@@ -170,6 +176,11 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
     outline-offset: 2px;
   }
 
+  .toc-backdrop[hidden],
+  .toc-panel[hidden] {
+    display: none !important;
+  }
+
   .toc-backdrop {
     position: fixed;
     top: 0;
@@ -215,12 +226,14 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
     font-size: 1.25rem;
     cursor: pointer;
     color: var(--text-secondary);
-    padding: 0.25rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 4px;
+    line-height: 1;
   }
 
   .toc-close-btn:hover {
     color: var(--text-primary);
+    background-color: rgba(0, 0, 0, 0.05);
   }
 
   .toc-close-btn:focus-visible {
