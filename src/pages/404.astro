@@ -1,0 +1,77 @@
+---
+import BookLayout from '../layouts/BookLayout.astro';
+---
+
+<BookLayout title="Page Not Found (404)">
+  <div class="error-container">
+    <div class="blueprint-badge">404 • ELEMENT NOT FOUND</div>
+    <h1 class="error-title">Dimension Error</h1>
+    <p class="error-message">
+      The page or chapter drawing you requested could not be located in this manuscript structure.
+    </p>
+    <div class="error-actions">
+      <a href="/" class="btn btn-primary">Return to Table of Contents →</a>
+    </div>
+  </div>
+</BookLayout>
+
+<style>
+  .error-container {
+    max-width: 600px;
+    margin: 6rem auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+
+  .blueprint-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+    border: 1px dashed var(--accent-color);
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+  }
+
+  .error-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .error-message {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.85rem 1.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-color);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .btn-primary:focus-visible {
+    outline: 3px solid var(--accent-color);
+  }
+</style>

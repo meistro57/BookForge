@@ -1,0 +1,234 @@
+---
+import { getUrl } from '../lib/chapters';
+---
+
+<section class="soundtrack-section">
+  <div class="soundtrack-container">
+    <div class="section-label">ORIGINAL SOUNDTRACK</div>
+    <h2 class="soundtrack-main-title">The Companion Track</h2>
+
+    <div class="soundtrack-card">
+      <div class="soundtrack-cover-col">
+        <img
+          src={getUrl('images/the_wrong_drawing_cover.jpg')}
+          alt="Album artwork for The Wrong Drawing by Mark J. Hubrich"
+          class="soundtrack-cover"
+          width="300"
+          height="300"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="soundtrack-info-col">
+        <div class="blueprint-badge">AUDIO RECORDING • DWG-001</div>
+        <h3 class="song-title">The Wrong Drawing</h3>
+        <p class="song-artist">Written & Performed by Mark J. Hubrich</p>
+        <p class="song-description">
+          A reflective musical companion to the manuscript, written from thirty years of reading steel shop drawings,
+          finding the mismatches, and working out how the structural pieces actually fit together.
+        </p>
+
+        <!-- HTML Audio Player (No Autoplay) -->
+        <div class="audio-player-wrapper">
+          <audio controls preload="metadata" class="custom-audio-player">
+            <source src={getUrl('audio/the_wrong_drawing.mp3')} type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+
+        <!-- Expandable Lyrics Panel -->
+        <details class="lyrics-details">
+          <summary class="lyrics-summary">
+            <span>View Song Lyrics</span>
+            <span class="summary-arrow">↓</span>
+          </summary>
+          <div class="lyrics-content">
+            <pre class="lyrics-text">
+[Verse 1]
+Lines drawn in white on a field of deep blue,
+Every dimension is telling you true.
+You cut to the mark and you weld to the line,
+Hoping the structure holds up over time.
+
+[Chorus]
+They handed me the wrong drawing in school,
+Described me as broken and broke every rule.
+First build with your hands till you feel the steel hold,
+Then write out the blueprint in steel, clear and bold.
+
+[Verse 2]
+The hallway desk kept the classroom in peace,
+While my mind ran a race that would never quite cease.
+Not broken, just broadband—a high-density beam,
+Connecting the angles of a different dream.
+
+[Outro]
+Every bolt, every plate, every column in line,
+Reverse engineering this mind of mine.
+            </pre>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .soundtrack-section {
+    padding-bottom: 4rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .soundtrack-container {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .soundtrack-main-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .soundtrack-card {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .soundtrack-cover-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  .soundtrack-cover {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .blueprint-badge {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+    border: 1px dashed var(--accent-color);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+
+  .song-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+  }
+
+  .song-artist {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .song-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .audio-player-wrapper {
+    margin-bottom: 1.5rem;
+  }
+
+  .custom-audio-player {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 6px;
+  }
+
+  /* Expandable Lyrics Panel */
+  .lyrics-details {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    overflow: hidden;
+  }
+
+  .lyrics-summary {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  .lyrics-summary:hover {
+    color: var(--accent-color);
+  }
+
+  .lyrics-summary:focus-visible {
+    outline: 2px solid var(--accent-color);
+  }
+
+  .lyrics-content {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
+  }
+
+  .lyrics-text {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+  }
+
+  @media (max-width: 768px) {
+    .soundtrack-card {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding: 1.5rem;
+    }
+
+    .soundtrack-cover-col {
+      max-width: 220px;
+      margin: 0 auto;
+    }
+
+    .soundtrack-main-title {
+      font-size: 1.85rem;
+    }
+  }
+</style>

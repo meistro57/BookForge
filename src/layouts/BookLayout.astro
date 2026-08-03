@@ -1,0 +1,234 @@
+---
+import '../styles/global.css';
+import ReaderControls from '../components/ReaderControls.astro';
+import TocSlideout from '../components/TocSlideout.astro';
+import { getUrl } from '../lib/chapters';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentSlug?: string;
+  currentChapterTitle?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'You’re Not Broken, You’re Broadband: Twenty Years of Reverse Engineering an ADHD Brain by Mark J. Hubrich.',
+  currentSlug = '',
+  currentChapterTitle = '',
+  ogImage = 'images/book_cover.jpg',
+} = Astro.props;
+
+const siteUrl = 'https://quantummindsunited.com';
+const currentPath = Astro.url.pathname;
+const canonicalUrl = new URL(currentPath, siteUrl).href;
+const fullOgImageUrl = new URL(getUrl(ogImage), siteUrl).href;
+const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+
+    <!-- Meta Description & Author -->
+    <meta name="description" content={description} />
+    <meta name="author" content="Mark J. Hubrich" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href={getUrl('favicon.svg')} />
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:site_name" content="BookForge" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="book" />
+    <meta property="og:image" content={fullOgImageUrl} />
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImageUrl} />
+
+    <!-- Immediate preference application to eliminate layout & theme flashing -->
+    <script is:inline>
+      (function () {
+        try {
+          var item = localStorage.getItem('bookforge_reader_prefs');
+          var prefs = item ? JSON.parse(item) : {};
+          var doc = document.documentElement;
+          doc.setAttribute('data-theme', prefs.theme || 'light');
+          doc.setAttribute('data-font-size', prefs.fontSize || 'default');
+          doc.setAttribute('data-line-spacing', prefs.lineSpacing || 'comfortable');
+          doc.setAttribute('data-reading-width', prefs.readingWidth || 'standard');
+          doc.setAttribute('data-font-family', prefs.fontFamily || 'serif');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Skip to Content Link for Keyboard & Screen Reader Users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Sticky Reading Header -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-left">
+          <TocSlideout currentSlug={currentSlug} />
+          <a href={getUrl('/')} class="brand-link" aria-label="BookForge Homepage">
+            <span class="brand-name">BookForge</span>
+          </a>
+        </div>
+
+        {currentChapterTitle && (
+          <div class="header-center">
+            <span class="current-chapter-label">{currentChapterTitle}</span>
+            <span id="header-read-pct" class="header-read-pct" aria-label="Reading percentage">0%</span>
+          </div>
+        )}
+
+        <div class="header-right">
+          <ReaderControls />
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="site-main" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>BookForge &copy; {new Date().getFullYear()} Mark J. Hubrich. Static Reader.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* Skip Link for Accessibility */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    background: var(--accent-color);
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 700;
+    z-index: 10000;
+    text-decoration: none;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  .site-header {
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
+    padding: 0.75rem 1.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-center {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 450px;
+    overflow: hidden;
+  }
+
+  .current-chapter-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-read-pct {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .brand-link {
+    text-decoration: none;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+  }
+
+  .brand-link:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .brand-name {
+    font-weight: 800;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    color: var(--accent-color);
+  }
+
+  .site-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 1.5rem;
+    margin-top: 4rem;
+    background-color: var(--panel-bg);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 680px) {
+    .header-center {
+      display: none;
+    }
+  }
+</style>

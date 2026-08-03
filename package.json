@@ -1,0 +1,20 @@
+{
+  "name": "bookforge",
+  "version": "1.0.0",
+  "description": "<img width=\"809\" height=\"562\" alt=\"image\" src=\"https://github.com/user-attachments/assets/3ca02474-6ca5-483a-ac6c-690405bacfc9\" />",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "bugs": {
+    "url": "https://github.com/meistro57/BookForge/issues"
+  },
+  "homepage": "https://github.com/meistro57/BookForge#readme",
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.6"
+  }
+}

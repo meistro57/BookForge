@@ -1,0 +1,51 @@
+# Apache .htaccess for BookForge static subdirectory deployment
+# Base URL: /broadband/
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTPS Redirection
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Subdirectory Base
+  RewriteBase /broadband/
+
+  # Trailing slash redirection for directory routes
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_URI} !/$
+  RewriteRule ^(.*)$ /broadband/$1/ [L,R=301]
+
+  # Serving index.html inside subdirectories
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*)$ /broadband/$1/index.html [L]
+
+  # Custom 404 Fallback
+  ErrorDocument 404 /broadband/404.html
+</IfModule>
+
+# Compression (mod_deflate)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache Control Headers
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType audio/mpeg "access plus 1 month"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>

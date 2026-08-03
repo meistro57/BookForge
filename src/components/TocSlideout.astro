@@ -1,0 +1,319 @@
+---
+import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from '../lib/chapters';
+
+interface Props {
+  currentSlug?: string;
+}
+
+const { currentSlug = '' } = Astro.props;
+const groupedParts = await getChaptersGroupedByPart();
+
+function formatPartHeader(partNumber: number | null, partTitle: string): string {
+  if (partNumber === null) return partTitle.toUpperCase();
+  const names = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'];
+  const nameStr = names[partNumber - 1] || partNumber.toString();
+  return `PART ${nameStr} — ${partTitle.toUpperCase()}`;
+}
+---
+
+<div class="toc-slideout-wrapper">
+  <button
+    id="toc-toggle-btn"
+    class="toc-toggle-btn"
+    aria-expanded="false"
+    aria-controls="toc-slideout-panel"
+    aria-label="Toggle Table of Contents"
+    title="Table of Contents"
+  >
+    <span class="toc-icon">☰</span>
+    <span class="toc-text">Contents</span>
+  </button>
+
+  <div id="toc-backdrop" class="toc-backdrop" hidden></div>
+
+  <aside
+    id="toc-slideout-panel"
+    class="toc-panel"
+    role="dialog"
+    aria-label="Table of Contents"
+    hidden
+  >
+    <header class="toc-panel-header">
+      <h2 class="toc-panel-title">Table of Contents</h2>
+      <button id="toc-close-btn" class="toc-close-btn" aria-label="Close Table of Contents">✕</button>
+    </header>
+
+    <div class="toc-panel-body">
+      {groupedParts.map((group) => (
+        <div class="toc-part-group">
+          <h3 class="toc-part-title">
+            {formatPartHeader(group.partNumber, group.partTitle)}
+          </h3>
+
+          <ul class="toc-chapters-list">
+            {group.chapters.map((ch) => {
+              const slug = getChapterSlug(ch);
+              const isActive = slug === currentSlug;
+              return (
+                <li class="toc-chapter-item">
+                  <a
+                    href={getUrl(`/chapter/${slug}/`)}
+                    class={`toc-chapter-link ${isActive ? 'active' : ''}`}
+                    data-slug={slug}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    <span class="toc-num">
+                      {ch.data.chapterNumber !== null && ch.data.chapterNumber !== undefined
+                        ? `Ch. ${ch.data.chapterNumber.toString().padStart(2, '0')}`
+                        : 'FM'}
+                    </span>
+                    <span class="toc-title">{ch.data.title}</span>
+                    <span class="toc-completion-icon" hidden title="Completed">✓</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </aside>
+</div>
+
+<script>
+  function initTocSlideout() {
+    const toggleBtn = document.getElementById('toc-toggle-btn');
+    const closeBtn = document.getElementById('toc-close-btn');
+    const panel = document.getElementById('toc-slideout-panel');
+    const backdrop = document.getElementById('toc-backdrop');
+
+    function openToc() {
+      if (panel && toggleBtn) {
+        panel.hidden = false;
+        if (backdrop) backdrop.hidden = false;
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        closeBtn?.focus();
+      }
+    }
+
+    function closeToc() {
+      if (panel && toggleBtn) {
+        panel.hidden = true;
+        if (backdrop) backdrop.hidden = true;
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
+      }
+    }
+
+    toggleBtn?.addEventListener('click', () => {
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) closeToc();
+      else openToc();
+    });
+
+    closeBtn?.addEventListener('click', closeToc);
+    backdrop?.addEventListener('click', closeToc);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && panel && !panel.hidden) {
+        closeToc();
+      }
+    });
+
+    // Populate completed markers
+    try {
+      const raw = localStorage.getItem('bookforge_completed_chapters');
+      const completed: string[] = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(completed)) {
+        completed.forEach((slug) => {
+          const item = document.querySelector(`.toc-chapter-link[data-slug="${slug}"]`);
+          if (item) {
+            const icon = item.querySelector('.toc-completion-icon');
+            if (icon) (icon as HTMLElement).hidden = false;
+          }
+        });
+      }
+    } catch (e) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', initTocSlideout);
+</script>
+
+<style>
+  .toc-slideout-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .toc-toggle-btn {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .toc-toggle-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .toc-toggle-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .toc-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 500;
+  }
+
+  .toc-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 380px;
+    max-width: 90vw;
+    height: 100vh;
+    background-color: var(--panel-bg);
+    border-right: 1px solid var(--border-color);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.15);
+    z-index: 600;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toc-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .toc-panel-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .toc-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.25rem;
+    border-radius: 4px;
+  }
+
+  .toc-close-btn:hover {
+    color: var(--text-primary);
+  }
+
+  .toc-close-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+  }
+
+  .toc-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .toc-part-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--accent-color);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .toc-chapters-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .toc-chapter-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.925rem;
+    transition: background-color 0.15s ease;
+  }
+
+  .toc-chapter-link:hover {
+    background-color: rgba(2, 132, 199, 0.08);
+  }
+
+  .toc-chapter-link.active {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .toc-chapter-link.active .toc-num {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .toc-chapter-link:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .toc-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 2.8rem;
+  }
+
+  .toc-title {
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .toc-completion-icon {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #10b981;
+  }
+
+  .toc-chapter-link.active .toc-completion-icon {
+    color: #ffffff;
+  }
+
+  @media (max-width: 640px) {
+    .toc-panel {
+      width: 100vw;
+      max-width: 100vw;
+    }
+
+    .toc-text {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,151 @@
+---
+import '../styles/global.css';
+import {
+  getAllChapters,
+  getPreviousChapter,
+  getNextChapter,
+  getChapterSlug,
+  getChaptersGroupedByPart,
+} from '../lib/chapters';
+
+const chapters = await getAllChapters();
+const chapterDiagnostics = await Promise.all(
+  chapters.map(async (ch) => {
+    const slug = getChapterSlug(ch);
+    const prev = await getPreviousChapter(slug);
+    const next = await getNextChapter(slug);
+    return {
+      order: ch.data.order,
+      title: ch.data.title,
+      slug,
+      part: ch.data.partTitle
+        ? `Part ${ch.data.partNumber}: ${ch.data.partTitle}`
+        : ch.data.isFrontMatter
+        ? 'Front Matter'
+        : 'N/A',
+      prevTitle: prev ? prev.data.title : 'None',
+      nextTitle: next ? next.data.title : 'None',
+    };
+  })
+);
+
+const groupedParts = await getChaptersGroupedByPart();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookForge | Content Diagnostic</title>
+  </head>
+  <body>
+    <main class="wrapper">
+      <header class="header">
+        <h1>BookForge Content Diagnostic</h1>
+        <p class="summary">Loaded {chapters.length} total entries across {groupedParts.length} parts.</p>
+      </header>
+
+      <section class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Title</th>
+              <th>Slug</th>
+              <th>Part</th>
+              <th>Previous Chapter</th>
+              <th>Next Chapter</th>
+            </tr>
+          </thead>
+          <tbody>
+            {chapterDiagnostics.map((ch) => (
+              <tr>
+                <td class="num">{ch.order}</td>
+                <td class="font-semibold">{ch.title}</td>
+                <td><code>{ch.slug}</code></td>
+                <td><span class="badge">{ch.part}</span></td>
+                <td class="text-dim">{ch.prevTitle}</td>
+                <td class="text-dim">{ch.nextTitle}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+  .header {
+    margin-bottom: 2rem;
+  }
+  .header h1 {
+    font-size: 2rem;
+    color: var(--text-primary);
+  }
+  .summary {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 0.25rem;
+  }
+  .table-container {
+    overflow-x: auto;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9375rem;
+  }
+  th, td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  th {
+    background-color: rgba(0, 0, 0, 0.02);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  .num {
+    font-weight: bold;
+    color: var(--accent-color);
+  }
+  .font-semibold {
+    font-weight: 600;
+  }
+  .text-dim {
+    color: var(--text-secondary);
+  }
+  code {
+    font-family: monospace;
+    font-size: 0.85em;
+    background-color: rgba(0, 0, 0, 0.04);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    background-color: rgba(2, 132, 199, 0.1);
+    color: var(--accent-color);
+    font-weight: 500;
+  }
+</style>

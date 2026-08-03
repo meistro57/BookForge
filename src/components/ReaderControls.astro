@@ -1,0 +1,438 @@
+---
+---
+
+<div class="reader-controls-wrapper">
+  <button
+    id="reader-controls-toggle"
+    class="controls-toggle-btn"
+    aria-expanded="false"
+    aria-controls="reader-controls-panel"
+    aria-label="Adjust reading display settings"
+    title="Display Settings"
+  >
+    <span class="aa-icon">Aa</span>
+  </button>
+
+  <div id="reader-backdrop" class="controls-backdrop" hidden></div>
+
+  <div
+    id="reader-controls-panel"
+    class="controls-panel"
+    role="dialog"
+    aria-label="Reader Display & Progress Settings"
+    hidden
+  >
+    <header class="panel-header">
+      <h3 class="panel-title">Display Settings</h3>
+      <button id="controls-close-btn" class="close-btn" aria-label="Close settings panel">✕</button>
+    </header>
+
+    <div class="panel-body">
+      <!-- Theme Selection -->
+      <fieldset class="control-group">
+        <legend class="group-label">Theme</legend>
+        <div class="options-grid theme-options">
+          <button type="button" class="opt-btn" data-control="theme" data-value="light">Light</button>
+          <button type="button" class="opt-btn" data-control="theme" data-value="warm">Warm Paper</button>
+          <button type="button" class="opt-btn" data-control="theme" data-value="dark">Dark</button>
+        </div>
+      </fieldset>
+
+      <!-- Font Size Selection -->
+      <fieldset class="control-group">
+        <legend class="group-label">Font Size</legend>
+        <div class="options-grid">
+          <button type="button" class="opt-btn" data-control="fontSize" data-value="smaller">Smaller</button>
+          <button type="button" class="opt-btn" data-control="fontSize" data-value="default">Default</button>
+          <button type="button" class="opt-btn" data-control="fontSize" data-value="larger">Larger</button>
+          <button type="button" class="opt-btn" data-control="fontSize" data-value="xlarge">Extra Large</button>
+        </div>
+      </fieldset>
+
+      <!-- Line Spacing Selection -->
+      <fieldset class="control-group">
+        <legend class="group-label">Line Spacing</legend>
+        <div class="options-grid">
+          <button type="button" class="opt-btn" data-control="lineSpacing" data-value="compact">Compact</button>
+          <button type="button" class="opt-btn" data-control="lineSpacing" data-value="comfortable">Comfortable</button>
+          <button type="button" class="opt-btn" data-control="lineSpacing" data-value="spacious">Spacious</button>
+        </div>
+      </fieldset>
+
+      <!-- Reading Width Selection -->
+      <fieldset class="control-group">
+        <legend class="group-label">Reading Width</legend>
+        <div class="options-grid">
+          <button type="button" class="opt-btn" data-control="readingWidth" data-value="narrow">Narrow</button>
+          <button type="button" class="opt-btn" data-control="readingWidth" data-value="standard">Standard</button>
+          <button type="button" class="opt-btn" data-control="readingWidth" data-value="wide">Wide</button>
+        </div>
+      </fieldset>
+
+      <!-- Typeface Selection -->
+      <fieldset class="control-group">
+        <legend class="group-label">Typeface</legend>
+        <div class="options-grid">
+          <button type="button" class="opt-btn font-serif" data-control="fontFamily" data-value="serif">Serif</button>
+          <button type="button" class="opt-btn font-sans" data-control="fontFamily" data-value="sans">Sans-Serif</button>
+        </div>
+      </fieldset>
+
+      <!-- Reset Actions -->
+      <div class="panel-footer">
+        <div class="reset-buttons-grid">
+          <button id="controls-reset-display-btn" type="button" class="reset-btn">Reset Display</button>
+          <button id="controls-reset-progress-btn" type="button" class="reset-btn reset-progress-btn">Reset Progress</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DEFAULTS = {
+    theme: 'light',
+    fontSize: 'default',
+    lineSpacing: 'comfortable',
+    readingWidth: 'standard',
+    fontFamily: 'serif'
+  };
+
+  const STORAGE_KEY = 'bookforge_reader_prefs';
+
+  function getSavedPrefs() {
+    try {
+      const item = localStorage.getItem(STORAGE_KEY);
+      return item ? { ...DEFAULTS, ...JSON.parse(item) } : { ...DEFAULTS };
+    } catch {
+      return { ...DEFAULTS };
+    }
+  }
+
+  function savePrefs(prefs: typeof DEFAULTS) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    } catch {}
+  }
+
+  function applyPrefs(prefs: typeof DEFAULTS) {
+    const doc = document.documentElement;
+    doc.setAttribute('data-theme', prefs.theme);
+    doc.setAttribute('data-font-size', prefs.fontSize);
+    doc.setAttribute('data-line-spacing', prefs.lineSpacing);
+    doc.setAttribute('data-reading-width', prefs.readingWidth);
+    doc.setAttribute('data-font-family', prefs.fontFamily);
+
+    // Update active states on buttons
+    document.querySelectorAll('.opt-btn').forEach((btn) => {
+      const control = btn.getAttribute('data-control') as keyof typeof DEFAULTS;
+      const val = btn.getAttribute('data-value');
+      if (control && val) {
+        const isActive = prefs[control] === val;
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        btn.classList.toggle('active', isActive);
+      }
+    });
+  }
+
+  function initReaderControls() {
+    const toggleBtn = document.getElementById('reader-controls-toggle');
+    const closeBtn = document.getElementById('controls-close-btn');
+    const resetDisplayBtn = document.getElementById('controls-reset-display-btn');
+    const resetProgressBtn = document.getElementById('controls-reset-progress-btn');
+    const panel = document.getElementById('reader-controls-panel');
+    const backdrop = document.getElementById('reader-backdrop');
+
+    let currentPrefs = getSavedPrefs();
+    applyPrefs(currentPrefs);
+
+    function openPanel() {
+      if (panel && toggleBtn) {
+        panel.hidden = false;
+        if (backdrop) backdrop.hidden = false;
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        closeBtn?.focus();
+      }
+    }
+
+    function closePanel() {
+      if (panel && toggleBtn) {
+        panel.hidden = true;
+        if (backdrop) backdrop.hidden = true;
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
+      }
+    }
+
+    toggleBtn?.addEventListener('click', () => {
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) closePanel();
+      else openPanel();
+    });
+
+    closeBtn?.addEventListener('click', closePanel);
+    backdrop?.addEventListener('click', closePanel);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && panel && !panel.hidden) {
+        closePanel();
+      }
+    });
+
+    // Control option clicks
+    document.querySelectorAll('.opt-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const control = btn.getAttribute('data-control') as keyof typeof DEFAULTS;
+        const val = btn.getAttribute('data-value');
+        if (control && val) {
+          currentPrefs[control] = val;
+          savePrefs(currentPrefs);
+          applyPrefs(currentPrefs);
+        }
+      });
+    });
+
+    // Reset Display Settings
+    resetDisplayBtn?.addEventListener('click', () => {
+      currentPrefs = { ...DEFAULTS };
+      savePrefs(currentPrefs);
+      applyPrefs(currentPrefs);
+    });
+
+    // Reset Reading Progress Action with Confirmation Step
+    resetProgressBtn?.addEventListener('click', () => {
+      const confirmed = confirm(
+        'Are you sure you want to reset all reading progress? This will clear your saved chapter, scroll positions, and completed markers. Your display settings will be preserved.'
+      );
+
+      if (confirmed) {
+        try {
+          localStorage.removeItem('bookforge_current_chapter');
+          localStorage.removeItem('bookforge_current_chapter_title');
+          localStorage.removeItem('bookforge_current_chapter_num');
+          localStorage.removeItem('bookforge_completed_chapters');
+          localStorage.removeItem('bookforge_overall_progress');
+          localStorage.removeItem('bookforge_last_read_timestamp');
+
+          for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('bookforge_scroll_')) {
+              localStorage.removeItem(key);
+            }
+          }
+          window.location.reload();
+        } catch (e) {}
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initReaderControls);
+</script>
+
+<style>
+  .reader-controls-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .controls-toggle-btn {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .controls-toggle-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .controls-toggle-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .aa-icon {
+    letter-spacing: -0.05em;
+    font-family: var(--font-serif);
+    font-weight: 700;
+  }
+
+  .controls-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 400;
+  }
+
+  /* Controls Panel (Desktop dropdown overlay) */
+  .controls-panel {
+    position: absolute;
+    top: 125%;
+    right: 0;
+    width: 340px;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 500;
+    padding: 1.25rem;
+    color: var(--text-primary);
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .panel-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.25rem;
+    border-radius: 4px;
+  }
+
+  .close-btn:hover {
+    color: var(--text-primary);
+  }
+
+  .close-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+  }
+
+  .control-group {
+    border: none;
+    margin-bottom: 1.25rem;
+    padding: 0;
+  }
+
+  .group-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .opt-btn {
+    flex: 1;
+    min-width: 60px;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .opt-btn:hover {
+    border-color: var(--accent-color);
+  }
+
+  .opt-btn.active, .opt-btn[aria-pressed="true"] {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border-color: var(--accent-color);
+  }
+
+  .opt-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 1px;
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .panel-footer {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .reset-buttons-grid {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .reset-btn {
+    flex: 1;
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .reset-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-color);
+  }
+
+  .reset-progress-btn:hover {
+    border-color: #e11d48;
+    color: #e11d48;
+  }
+
+  .reset-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+  }
+
+  /* Mobile Bottom Sheet Overlay */
+  @media (max-width: 640px) {
+    .controls-panel {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: 16px 16px 0 0;
+      border-bottom: none;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25);
+      padding: 1.5rem 1.25rem 2rem;
+    }
+  }
+</style>

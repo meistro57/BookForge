@@ -1,0 +1,545 @@
+---
+import BookLayout from '../layouts/BookLayout.astro';
+import SoundtrackSection from '../components/SoundtrackSection.astro';
+import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from '../lib/chapters';
+
+const chapters = await getAllChapters();
+const groupedParts = await getChaptersGroupedByPart();
+const startChapter = chapters[0];
+
+function formatPartHeader(partNumber: number | null, partTitle: string): string {
+  if (partNumber === null) return partTitle.toUpperCase();
+  const names = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'];
+  const nameStr = names[partNumber - 1] || partNumber.toString();
+  return `PART ${nameStr} — ${partTitle.toUpperCase()}`;
+}
+---
+
+<BookLayout title="You’re Not Broken, You’re Broadband | Mark J. Hubrich">
+  <div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-grid">
+        <div class="hero-cover">
+          <img
+            src={getUrl('images/book_cover.jpg')}
+            alt="You're Not Broken, You're Broadband Book Cover"
+            class="cover-image"
+            width="400"
+            height="550"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+
+        <div class="hero-content">
+          <div class="blueprint-tag">STRUCTURAL STEEL EDITION • REVERSE ENGINEERED</div>
+          <h1 class="hero-title">You’re Not Broken, You’re Broadband</h1>
+          <p class="hero-subtitle">Twenty Years of Reverse Engineering an ADHD Brain</p>
+          <p class="hero-author">By <strong>Mark J. Hubrich</strong></p>
+
+          <!-- Continue Reading Card (Progressive Enhancement, hidden if no progress exists) -->
+          <div id="continue-reading-area" class="continue-card" style="display: none;">
+            <div class="continue-label">Resume Reading</div>
+            <a id="continue-reading-link" href="#" class="continue-link">
+              <div class="continue-meta">
+                <span id="continue-chapter-num" class="continue-num"></span>
+                <span id="continue-chapter-title" class="continue-title"></span>
+              </div>
+              <span class="continue-arrow">Continue Reading →</span>
+            </a>
+          </div>
+
+          <div class="hero-actions">
+            {startChapter && (
+              <a href={getUrl(`/chapter/${getChapterSlug(startChapter)}/`)} class="btn btn-primary">
+                Start Reading ({startChapter.data.title}) →
+              </a>
+            )}
+            <span id="overall-progress-badge" class="overall-progress-badge" hidden></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About This Book Section -->
+    <section class="about-section">
+      <div class="about-inner">
+        <div class="section-label">ABOUT THIS BOOK</div>
+        <h2 class="about-heading">The book remains the main event. The website gives it a better room.</h2>
+        <div class="about-prose">
+          <p>
+            Thirty years in structural steel. I started as a fabricator — hands on the metal,
+            cutting and fitting and welding, learning what actually holds and what only looks like it holds.
+            These days I'm a detailer, which means I do the drawings: take something somebody else imagined
+            and work out exactly how it goes together.
+          </p>
+          <p>
+            I was diagnosed at thirty-two. Before that I was the kid in the hallway, the one who couldn't follow
+            the program. After that I was a guy with an explanation and no instructions. So I did the only thing
+            I know how to do: I got my hands on it, and then I reverse engineered it.
+          </p>
+          <p>
+            BookForge is built for readers who operate on a high-bandwidth frequency. No clutter, no popups, no accounts.
+            Just a calm room built to hold a manuscript.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Soundtrack Section -->
+    <SoundtrackSection />
+
+    <!-- Table of Contents Section -->
+    <section class="toc-section">
+      <div class="toc-header">
+        <div class="section-label">MANUSCRIPT OUTLINE</div>
+        <h2 class="toc-main-title">Table of Contents</h2>
+      </div>
+
+      <div class="parts-container">
+        {groupedParts.map((group) => (
+          <div class="part-group">
+            <header class="part-header">
+              <h3 class="part-name">
+                {formatPartHeader(group.partNumber, group.partTitle)}
+              </h3>
+            </header>
+
+            <ul class="chapters-grid">
+              {group.chapters.map((ch) => (
+                <li class="chapter-item">
+                  <a
+                    href={getUrl(`/chapter/${getChapterSlug(ch)}/`)}
+                    class="chapter-card-link"
+                    data-chapter-slug={getChapterSlug(ch)}
+                  >
+                    <div class="chapter-num-badge">
+                      {ch.data.chapterNumber !== null && ch.data.chapterNumber !== undefined
+                        ? `Ch. ${ch.data.chapterNumber.toString().padStart(2, '0')}`
+                        : 'FM'}
+                    </div>
+                    <div class="chapter-info">
+                      <h4 class="chapter-card-title">{ch.data.title}</h4>
+                      {ch.data.description && (
+                        <p class="chapter-card-desc">{ch.data.description}</p>
+                      )}
+                    </div>
+                    <span class="completion-badge" hidden>✓ Completed</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</BookLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      // 1. Resume Reading Card
+      const savedSlug = localStorage.getItem('bookforge_current_chapter');
+      const savedTitle = localStorage.getItem('bookforge_current_chapter_title');
+      const savedNum = localStorage.getItem('bookforge_current_chapter_num');
+
+      if (savedSlug && savedTitle) {
+        const area = document.getElementById('continue-reading-area');
+        const link = document.getElementById('continue-reading-link') as HTMLAnchorElement;
+        const titleEl = document.getElementById('continue-chapter-title');
+        const numEl = document.getElementById('continue-chapter-num');
+
+        if (area && link && titleEl) {
+          // Read base path safely
+          const base = (window as any).Astro?.url?.pathname || '/broadband/';
+          const cleanBase = base.endsWith('/') ? base : base + '/';
+          link.href = `${cleanBase}chapter/${savedSlug}/`;
+          titleEl.textContent = savedTitle;
+          if (numEl) {
+            numEl.textContent = savedNum === 'FM' ? 'Front Matter' : `Chapter ${savedNum}`;
+          }
+          area.style.display = 'block';
+        }
+      }
+
+      // 2. Completed Chapter Indicators & Overall Progress Badge
+      const rawCompleted = localStorage.getItem('bookforge_completed_chapters');
+      const completedSlugs: string[] = rawCompleted ? JSON.parse(rawCompleted) : [];
+
+      if (Array.isArray(completedSlugs) && completedSlugs.length > 0) {
+        completedSlugs.forEach((slug) => {
+          const link = document.querySelector(`a[data-chapter-slug="${slug}"]`);
+          if (link) {
+            const badge = link.querySelector('.completion-badge');
+            if (badge) (badge as HTMLElement).hidden = false;
+          }
+        });
+
+        const overallPct = localStorage.getItem('bookforge_overall_progress') || Math.round((completedSlugs.length / 21) * 100);
+        const overallEl = document.getElementById('overall-progress-badge');
+        if (overallEl) {
+          overallEl.textContent = `${overallPct}% Completed`;
+          overallEl.hidden = false;
+        }
+      }
+    } catch (e) {}
+  });
+</script>
+
+<style>
+  .landing-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+    width: 100%;
+  }
+
+  /* Blueprint / Industrial Aesthetics */
+  .blueprint-tag {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+    border: 1px dashed var(--accent-color);
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding-bottom: 4rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  .hero-cover {
+    display: flex;
+    justify-content: center;
+  }
+
+  .cover-image {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+  }
+
+  .hero-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.35rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .hero-author {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .overall-progress-badge {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.1);
+    padding: 0.5rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid var(--accent-color);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.9rem 1.85rem;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-color);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .btn-primary:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 3px;
+  }
+
+  /* Continue Reading Card */
+  .continue-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--accent-color);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .continue-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-color);
+    margin-bottom: 0.4rem;
+  }
+
+  .continue-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .continue-link:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .continue-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .continue-num {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .continue-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .continue-arrow {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  /* About Section */
+  .about-section {
+    padding-bottom: 4rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .about-inner {
+    max-width: 800px;
+  }
+
+  .about-heading {
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+
+  .about-prose {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+  }
+
+  .about-prose p {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Table of Contents */
+  .toc-section {
+    width: 100%;
+  }
+
+  .toc-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .toc-main-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .parts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .part-group {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  }
+
+  .part-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .part-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--accent-color);
+  }
+
+  .chapters-grid {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .chapter-card-link {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .chapter-card-link:hover {
+    background-color: rgba(2, 132, 199, 0.05);
+    border-color: var(--border-color);
+  }
+
+  .chapter-card-link:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .chapter-num-badge {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .chapter-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+  }
+
+  .chapter-card-desc {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+
+  .completion-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #10b981;
+    background-color: rgba(16, 185, 129, 0.1);
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  /* Responsive Rules */
+  @media (max-width: 840px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .hero-cover {
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    .hero-actions {
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .chapter-card-link {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+
+    .chapter-num-badge {
+      display: inline-block;
+      width: fit-content;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title {
+      font-size: 2.1rem;
+    }
+
+    .landing-page {
+      padding: 1.75rem 1rem 4rem;
+    }
+
+    .part-group {
+      padding: 1.25rem 1rem;
+    }
+  }
+</style>

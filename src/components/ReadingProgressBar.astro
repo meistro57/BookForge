@@ -1,0 +1,121 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  chapterNumber?: number | null;
+  totalChapters?: number;
+}
+
+const { slug, title, chapterNumber = null, totalChapters = 21 } = Astro.props;
+---
+
+<div
+  id="reading-progress-bar"
+  class="reading-progress-bar"
+  aria-hidden="true"
+  data-slug={slug}
+  data-title={title}
+  data-num={chapterNumber !== null ? chapterNumber.toString() : 'FM'}
+  data-total={totalChapters.toString()}
+></div>
+
+<script>
+  function initReadingProgress() {
+    const progressBar = document.getElementById('reading-progress-bar');
+    if (!progressBar) return;
+
+    const slug = progressBar.getAttribute('data-slug');
+    const title = progressBar.getAttribute('data-title');
+    const num = progressBar.getAttribute('data-num');
+    const total = parseInt(progressBar.getAttribute('data-total') || '21', 10);
+
+    if (!slug) return;
+
+    // 1. Save Current Chapter Metadata
+    try {
+      localStorage.setItem('bookforge_current_chapter', slug);
+      if (title) localStorage.setItem('bookforge_current_chapter_title', title);
+      if (num) localStorage.setItem('bookforge_current_chapter_num', num);
+      localStorage.setItem('bookforge_last_read_timestamp', Date.now().toString());
+    } catch (e) {}
+
+    // 2. Function to mark chapter complete
+    function markChapterComplete() {
+      try {
+        const raw = localStorage.getItem('bookforge_completed_chapters');
+        const completed: string[] = raw ? JSON.parse(raw) : [];
+        if (!completed.includes(slug!)) {
+          completed.push(slug!);
+          localStorage.setItem('bookforge_completed_chapters', JSON.stringify(completed));
+          const overallPct = Math.round((completed.length / total) * 100);
+          localStorage.setItem('bookforge_overall_progress', overallPct.toString());
+        }
+      } catch (e) {}
+    }
+
+    // 3. Restore Scroll Position
+    try {
+      const savedScroll = localStorage.getItem(`bookforge_scroll_${slug}`);
+      if (savedScroll) {
+        const scrollPos = parseInt(savedScroll, 10);
+        if (scrollPos > 30) {
+          window.scrollTo({ top: scrollPos, behavior: 'instant' as ScrollBehavior });
+        }
+      }
+    } catch (e) {}
+
+    // 4. Scroll Tracking & Progress Bar Update
+    let scrollTimeout: number | undefined;
+
+    function updateProgress() {
+      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+      const currentScroll = window.scrollY;
+      const percentage = scrollTotal > 0 ? Math.min(100, Math.max(0, (currentScroll / scrollTotal) * 100)) : 0;
+
+      if (progressBar) {
+        progressBar.style.width = `${percentage}%`;
+      }
+
+      // Save scroll position throttled
+      try {
+        localStorage.setItem(`bookforge_scroll_${slug}`, Math.round(currentScroll).toString());
+      } catch (e) {}
+
+      // Mark completed if >= 90%
+      if (percentage >= 90) {
+        markChapterComplete();
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
+      scrollTimeout = requestAnimationFrame(updateProgress);
+    });
+
+    // Initial calculation
+    updateProgress();
+
+    // 5. Next Chapter Link Click Handler (counts as completed)
+    const nextLink = document.querySelector('.nav-next a');
+    if (nextLink) {
+      nextLink.addEventListener('click', () => {
+        markChapterComplete();
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initReadingProgress);
+</script>
+
+<style>
+  .reading-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background-color: var(--accent-color);
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+  }
+</style>

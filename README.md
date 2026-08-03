@@ -203,45 +203,16 @@ npm run preview
 
 ## Build Phases
 
-### Phase 1: Project Bootstrap
-
-Create the Astro project, global styles, folder structure, and temporary homepage.
-
-### Phase 2: Manuscript Content System
-
-Import the Markdown chapters, define their metadata, and establish reliable reading order.
-
-### Phase 3: Core Chapter Reader
-
-Render every chapter with a readable layout and previous/next navigation.
-
-### Phase 4: Homepage and Contents
-
-Build the book landing page and grouped table of contents.
-
-### Phase 5: Reader Controls
-
-Add themes, font controls, line spacing, and reading-width settings.
-
-### Phase 6: Reading Progress
-
-Save the current chapter, scroll position, completed chapters, and overall progress.
-
-### Phase 7: Navigation Polish
-
-Add a sticky header, keyboard navigation, and slide-out contents panel.
-
-### Phase 8: Visual Identity
-
-Apply the restrained industrial, steel-shop, and blueprint-inspired design.
-
-### Phase 9: Accessibility and Metadata
-
-Add accessibility checks, social metadata, print styles, sitemap, and page descriptions.
-
-### Phase 10: Deployment
-
-Prepare the static build for Apache, GitHub Pages, or another static host.
+- [x] **Phase 1: Project Bootstrap** — Astro project setup, global styles, directory structure.
+- [x] **Phase 2: Manuscript Content System** — Markdown content collection, metadata schema, chapter ordering.
+- [x] **Phase 3: Core Chapter Reader** — Dynamic routes, calm reading column, previous/next chapter navigation.
+- [x] **Phase 4: Homepage and Contents** — Hero cover artwork, about section, grouped table of contents.
+- [x] **Phase 5: Reader Controls** — Themes (Light, Warm, Dark), font size, line spacing, width controls, FOUC prevention script.
+- [x] **Phase 6: Reading Progress** — Progress bar, scroll position memory, completion markers, overall progress tracking.
+- [x] **Phase 7: Navigation Polish** — Sticky header, slide-out TOC panel, heading anchors, keyboard shortcuts, back-to-top control.
+- [x] **Phase 8: Visual Identity** — Blueprint styling, companion track section for "The Wrong Drawing" with audio player & lyrics.
+- [x] **Phase 9: Accessibility and Metadata** — Skip-to-content, WCAG contrast compliance, OpenGraph/Twitter cards, XML sitemaps, robots.txt, custom 404, print stylesheet.
+- [x] **Phase 10: Static Deployment** — Apache subdirectory base path configuration (`/broadband/`), `.htaccess` rules, deployment script (`scripts/deploy.sh`), GitHub Actions CI/CD workflow.
 
 ---
 
@@ -271,22 +242,40 @@ A plain reader that works is more valuable than a magnificent interface that rem
 
 ## Deployment
 
-BookForge produces static HTML, CSS, and JavaScript.
+BookForge produces clean static HTML, CSS, assets, and JavaScript.
 
-The contents of `dist/` can be hosted on:
+Target location: `https://quantummindsunited.com/broadband/`
 
-- Apache
-- GitHub Pages
-- Netlify
-- Cloudflare Pages
-- Vercel
-- Any conventional static web host
+### Apache Subdirectory Deployment Guide
 
-The first planned public location is:
+1. **Base Path Configuration**  
+   Astro is configured with `base: '/broadband'` in `astro.config.mjs`. All links, scripts, stylesheets, cover art, and audio files are scoped automatically under `/broadband/`.
 
-```text
-https://quantummindsunited.com/broadband/
-```
+2. **Deploying `dist/` Contents & `.htaccess`**  
+   Copy the contents of `dist/` into the target directory on your Apache web server (e.g. `/var/www/html/broadband/`). Ensure `dist/.htaccess` is copied.
+
+3. **Directory & File Permissions**  
+   Set permissions to standard web server defaults:
+   ```bash
+   find /var/www/html/broadband -type d -exec chmod 755 {} +
+   find /var/www/html/broadband -type f -exec chmod 644 {} +
+   ```
+
+4. **Apache `.htaccess` Features (`public/.htaccess`)**
+   - **HTTPS Redirection**: Forces HTTPS connection.
+   - **Cache Control**: Sets long-lived immutable caching for hashed Astro assets (`_astro/*`) and 0-second cache for HTML files to ensure instant updates.
+   - **Compression**: Enables `mod_deflate` Gzip/Brotli compression for HTML, CSS, JS, SVG, and JSON.
+   - **Fallback & Trailing Slashes**: Direct chapter URLs (e.g., `/broadband/chapter/the-kid-in-the-hallway/`) resolve cleanly without 404 errors on refresh.
+
+5. **Automated Bash Deployment Script**  
+   Run the automated deployment script from the project root:
+   ```bash
+   ./scripts/deploy.sh /var/www/html/broadband
+   ```
+   This script builds the project, stops on error (`set -e`), backs up existing deployments, syncs `dist/` contents, and applies permissions.
+
+6. **GitHub Actions Deployment (`.github/workflows/deploy.yml`)**  
+   An automated GitHub Actions workflow is provided. Pushing to `main` builds the project and uploads the static `dist/` bundle as an artifact for automated deployment.
 
 ---
 
