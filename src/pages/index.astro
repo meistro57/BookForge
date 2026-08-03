@@ -6,7 +6,6 @@ import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from
 const chapters = await getAllChapters();
 const groupedParts = await getChaptersGroupedByPart();
 const startChapter = chapters[0];
-const baseUrl = import.meta.env.BASE_URL || '/';
 
 function formatPartHeader(partNumber: number | null, partTitle: string): string {
   if (partNumber === null) return partTitle.toUpperCase();
@@ -54,7 +53,6 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
             id="continue-reading-area"
             class="continue-card"
             style="display: none;"
-            data-base-url={baseUrl}
           >
             <div class="continue-label">Resume Reading</div>
             <a id="continue-reading-link" href="#" class="continue-link">
@@ -168,8 +166,8 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
         const numEl = document.getElementById('continue-chapter-num');
 
         if (area && link && titleEl) {
-          const baseUrl = area.getAttribute('data-base-url') || '/broadband/';
-          const cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+          const pathname = window.location.pathname;
+          const cleanBase = pathname.includes('/broadband') ? '/broadband/' : '/';
           link.href = `${cleanBase}chapter/${savedSlug}/`;
           titleEl.textContent = savedTitle;
           if (numEl) {
