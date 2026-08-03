@@ -1,5 +1,21 @@
 # BookForge
-<img width="809" height="562" alt="image" src="https://github.com/user-attachments/assets/3ca02474-6ca5-483a-ac6c-690405bacfc9" />
+
+[![BookForge CI](https://github.com/meistro57/BookForge/actions/workflows/ci.yml/badge.svg)](https://github.com/meistro57/BookForge/actions/workflows/ci.yml)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/meistro57/BookForge/actions)
+[![Astro Version](https://img.shields.io/badge/Astro-5.0%20Static-ff5e00.svg?logo=astro&logoColor=white)](https://astro.build/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+> **"A calm, distraction-free static web reader engineered to turn a manuscript of raw Markdown into a proper reading room."**
+
+---
+
+<div align="center">
+  <img width="809" height="562" alt="BookForge Blueprint Reader Interface" src="https://github.com/user-attachments/assets/3ca02474-6ca5-483a-ac6c-690405bacfc9" />
+</div>
+
+---
 
 **Turn a folder of Markdown chapters into a proper reading experience.**
 
