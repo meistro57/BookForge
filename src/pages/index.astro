@@ -33,7 +33,17 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
         </div>
 
         <div class="hero-content">
-          <div class="blueprint-tag">STRUCTURAL STEEL EDITION • REVERSE ENGINEERED</div>
+          <div class="blueprint-tag">
+            <img
+              src={getUrl('images/BookForge_Logo.png')}
+              alt=""
+              class="tag-logo-img"
+              width="18"
+              height="18"
+              aria-hidden="true"
+            />
+            <span>STRUCTURAL STEEL EDITION • REVERSE ENGINEERED</span>
+          </div>
           <h1 class="hero-title">You’re Not Broken, You’re Broadband</h1>
           <p class="hero-subtitle">Twenty Years of Reverse Engineering an ADHD Brain</p>
           <p class="hero-author">By <strong>Mark J. Hubrich</strong></p>
@@ -152,7 +162,6 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
         const numEl = document.getElementById('continue-chapter-num');
 
         if (area && link && titleEl) {
-          // Read base path safely
           const base = (window as any).Astro?.url?.pathname || '/broadband/';
           const cleanBase = base.endsWith('/') ? base : base + '/';
           link.href = `${cleanBase}chapter/${savedSlug}/`;
@@ -198,7 +207,9 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
 
   /* Blueprint / Industrial Aesthetics */
   .blueprint-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 800;
@@ -209,6 +220,12 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
     padding: 0.3rem 0.75rem;
     border-radius: 4px;
     margin-bottom: 1.25rem;
+  }
+
+  .tag-logo-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
   }
 
   .section-label {

@@ -42,7 +42,7 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href={getUrl('favicon.svg')} />
+    <link rel="icon" type="image/png" href={getUrl('images/BookForge_Logo.png')} />
 
     <!-- Open Graph Metadata -->
     <meta property="og:site_name" content="BookForge" />
@@ -84,6 +84,15 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
         <div class="header-left">
           <TocSlideout currentSlug={currentSlug} />
           <a href={getUrl('/')} class="brand-link" aria-label="BookForge Homepage">
+            <img
+              src={getUrl('images/BookForge_Logo.png')}
+              alt="BookForge logo"
+              class="brand-logo"
+              width="28"
+              height="28"
+              loading="eager"
+              decoding="async"
+            />
             <span class="brand-name">BookForge</span>
           </a>
         </div>
@@ -107,6 +116,15 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
 
     <footer class="site-footer">
       <div class="footer-inner">
+        <img
+          src={getUrl('images/BookForge_Logo.png')}
+          alt="BookForge Logo"
+          class="footer-logo"
+          width="44"
+          height="44"
+          loading="lazy"
+          decoding="async"
+        />
         <p>BookForge &copy; {new Date().getFullYear()} Mark J. Hubrich. Static Reader.</p>
       </div>
     </footer>
@@ -190,7 +208,15 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
     text-decoration: none;
     color: var(--text-primary);
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 4px;
   }
 
   .brand-link:focus-visible {
@@ -224,6 +250,22 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
   .footer-inner {
     max-width: 1000px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .footer-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-logo:hover {
+    opacity: 1;
   }
 
   @media (max-width: 680px) {
