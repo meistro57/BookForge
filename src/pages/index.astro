@@ -152,6 +152,8 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
 </BookLayout>
 
 <script>
+  import { getUrl } from '../lib/utils';
+
   document.addEventListener('DOMContentLoaded', () => {
     try {
       // 1. Resume Reading Card
@@ -166,9 +168,7 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
         const numEl = document.getElementById('continue-chapter-num');
 
         if (area && link && titleEl) {
-          const pathname = window.location.pathname;
-          const cleanBase = pathname.includes('/broadband') ? '/broadband/' : '/';
-          link.href = `${cleanBase}chapter/${savedSlug}/`;
+          link.href = getUrl(`chapter/${savedSlug}/`);
           titleEl.textContent = savedTitle;
           if (numEl) {
             numEl.textContent = savedNum === 'FM' ? 'Front Matter' : `Chapter ${savedNum}`;

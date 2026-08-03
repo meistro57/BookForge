@@ -1,5 +1,5 @@
 # Apache .htaccess for BookForge static subdirectory deployment
-# Base URL: /broadband/
+# Base URL: /BookForge/
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -10,20 +10,20 @@
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
   # Subdirectory Base
-  RewriteBase /broadband/
+  RewriteBase /BookForge/
 
   # Trailing slash redirection for directory routes
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_URI} !/$
-  RewriteRule ^(.*)$ /broadband/$1/ [L,R=301]
+  RewriteRule ^(.*)$ /BookForge/$1/ [L,R=301]
 
   # Serving index.html inside subdirectories
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteCond %{REQUEST_FILENAME}/index.html -f
-  RewriteRule ^(.*)$ /broadband/$1/index.html [L]
+  RewriteRule ^(.*)$ /BookForge/$1/index.html [L]
 
   # Custom 404 Fallback
-  ErrorDocument 404 /broadband/404.html
+  ErrorDocument 404 /BookForge/404.html
 </IfModule>
 
 # Compression (mod_deflate)

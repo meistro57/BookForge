@@ -1,16 +1,8 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { getUrl } from './utils';
 
+export { getUrl };
 export type ChapterEntry = CollectionEntry<'chapters'>;
-
-/**
- * Returns a clean, base-aware URL for any path.
- */
-export function getUrl(path: string = ''): string {
-  const base = import.meta.env.BASE_URL || '/';
-  const cleanBase = base.endsWith('/') ? base : base + '/';
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  return `${cleanBase}${cleanPath}`;
-}
 
 /**
  * Returns all chapters sorted reliably in reading order (by `order` field ascending).

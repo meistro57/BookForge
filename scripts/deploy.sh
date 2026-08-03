@@ -4,8 +4,8 @@ set -e
 # BookForge Automated Production Build & Deployment Script
 # Usage: ./scripts/deploy.sh [TARGET_DIR] [BACKUP_DIR]
 
-TARGET_DIR="${1:-/var/www/html/broadband}"
-BACKUP_DIR="${2:-/var/www/html/broadband_backup_$(date +%Y%m%d_%H%M%S)}"
+TARGET_DIR="${1:-/var/www/html/BookForge}"
+BACKUP_DIR="${2:-/var/www/html/BookForge_backup_$(date +%Y%m%d_%H%M%S)}"
 
 echo "==> Step 1: Running production build..."
 npm run build

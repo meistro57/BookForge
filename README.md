@@ -260,38 +260,43 @@ A plain reader that works is more valuable than a magnificent interface that rem
 
 BookForge produces clean static HTML, CSS, assets, and JavaScript.
 
-Target location: `https://quantummindsunited.com/broadband/`
+Target location: `https://quantummindsunited.com/BookForge/`
 
 ### Apache Subdirectory Deployment Guide
 
 1. **Base Path Configuration**  
-   Astro is configured with `base: '/broadband'` in `astro.config.mjs`. All links, scripts, stylesheets, cover art, and audio files are scoped automatically under `/broadband/`.
+   Astro is configured with `base: '/BookForge'` and `trailingSlash: 'always'` in `astro.config.mjs`. All links, scripts, stylesheets, cover art, and audio files are scoped automatically under `/BookForge/`.
 
 2. **Deploying `dist/` Contents & `.htaccess`**  
-   Copy the contents of `dist/` into the target directory on your Apache web server (e.g. `/var/www/html/broadband/`). Ensure `dist/.htaccess` is copied.
+   Copy the complete contents of `dist/` into the target directory on your Apache web server (e.g., `/var/www/html/BookForge/`). Ensure `dist/.htaccess` is included.
 
-3. **Directory & File Permissions**  
-   Set permissions to standard web server defaults:
+3. **Rsync Deployment Command**  
+   To sync the build directly to your remote server:
    ```bash
-   find /var/www/html/broadband -type d -exec chmod 755 {} +
-   find /var/www/html/broadband -type f -exec chmod 644 {} +
+   rsync -avz --delete dist/ user@server:/var/www/html/BookForge/
    ```
 
-4. **Apache `.htaccess` Features (`public/.htaccess`)**
+4. **Directory & File Permissions**  
+   Set permissions to standard web server defaults:
+   ```bash
+   find /var/www/html/BookForge -type d -exec chmod 755 {} +
+   find /var/www/html/BookForge -type f -exec chmod 644 {} +
+   ```
+
+5. **Apache `.htaccess` Features (`public/.htaccess`)**
    - **HTTPS Redirection**: Forces HTTPS connection.
    - **Cache Control**: Sets long-lived immutable caching for hashed Astro assets (`_astro/*`) and 0-second cache for HTML files to ensure instant updates.
    - **Compression**: Enables `mod_deflate` Gzip/Brotli compression for HTML, CSS, JS, SVG, and JSON.
-   - **Fallback & Trailing Slashes**: Direct chapter URLs (e.g., `/broadband/chapter/the-kid-in-the-hallway/`) resolve cleanly without 404 errors on refresh.
+   - **Fallback & Trailing Slashes**: Direct chapter URLs (e.g., `/BookForge/chapter/the-kid-in-the-hallway/`) resolve cleanly without 404 errors on refresh.
 
-5. **Automated Bash Deployment Script**  
+6. **Automated Bash Deployment Script**  
    Run the automated deployment script from the project root:
    ```bash
-   ./scripts/deploy.sh /var/www/html/broadband
+   ./scripts/deploy.sh /var/www/html/BookForge
    ```
-   This script builds the project, stops on error (`set -e`), backs up existing deployments, syncs `dist/` contents, and applies permissions.
 
-6. **GitHub Actions Deployment (`.github/workflows/deploy.yml`)**  
-   An automated GitHub Actions workflow is provided. Pushing to `main` builds the project and uploads the static `dist/` bundle as an artifact for automated deployment.
+7. **GitHub Actions Deployment (`.github/workflows/ci.yml`)**  
+   Automated GitHub Actions workflow validates every push and pull request.
 
 ---
 
