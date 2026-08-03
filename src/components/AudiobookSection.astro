@@ -1,0 +1,190 @@
+---
+import { getUrl } from '../lib/chapters';
+---
+
+<section class="audiobook-section">
+  <div class="audiobook-container">
+    <div class="section-label">AUDIOBOOK EDITION</div>
+    <h2 class="audiobook-main-title">Narrated Audiobook</h2>
+
+    <div class="audiobook-card">
+      <div class="audiobook-cover-col">
+        <img
+          src={getUrl('images/book_cover.jpg')}
+          alt="Audiobook cover for You're Not Broken, You're Broadband"
+          class="audiobook-cover"
+          width="240"
+          height="340"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="audiobook-info-col">
+        <div class="blueprint-badge">AUDIOBOOK • MP3 PLACEHOLDER</div>
+        <h3 class="audiobook-title">You’re Not Broken, You’re Broadband</h3>
+        <p class="audiobook-narrator">Narrated by Mark J. Hubrich</p>
+        <p class="audiobook-description">
+          A full-length audio recording of the complete manuscript. Place your audiobook MP3 files inside
+          <code>public/audio/</code> for client listening.
+        </p>
+
+        <!-- HTML Audio Player Placeholder (No Autoplay) -->
+        <div class="audio-player-wrapper">
+          <audio controls preload="none" class="custom-audio-player">
+            <source src={getUrl('audio/audiobook_placeholder.mp3')} type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+
+        <div class="audiobook-status">
+          <span class="status-icon">🎙️</span>
+          <span>Audiobook recording in production. Place MP3 files in <code>public/audio/</code>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .audiobook-section {
+    padding-bottom: 4rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .audiobook-container {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .audiobook-main-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .audiobook-card {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .audiobook-cover-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  .audiobook-cover {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .blueprint-badge {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+    border: 1px dashed var(--accent-color);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+
+  .audiobook-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+  }
+
+  .audiobook-narrator {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .audiobook-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .audiobook-description code,
+  .audiobook-status code {
+    font-family: var(--font-sans);
+    background-color: rgba(2, 132, 199, 0.08);
+    color: var(--accent-color);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+
+  .audio-player-wrapper {
+    margin-bottom: 1.5rem;
+  }
+
+  .custom-audio-player {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 6px;
+  }
+
+  .audiobook-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .status-icon {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .audiobook-card {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding: 1.5rem;
+    }
+
+    .audiobook-cover-col {
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    .audiobook-main-title {
+      font-size: 1.85rem;
+    }
+  }
+</style>

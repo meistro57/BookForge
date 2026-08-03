@@ -1,6 +1,6 @@
 ---
 import BookLayout from '../layouts/BookLayout.astro';
-import SoundtrackSection from '../components/SoundtrackSection.astro';
+import AudiobookSection from '../components/AudiobookSection.astro';
 import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from '../lib/chapters';
 
 const chapters = await getAllChapters();
@@ -101,8 +101,8 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
       </div>
     </section>
 
-    <!-- Soundtrack Section -->
-    <SoundtrackSection />
+    <!-- Audiobook Section (MP3 Placeholder) -->
+    <AudiobookSection />
 
     <!-- Table of Contents Section -->
     <section class="toc-section">
