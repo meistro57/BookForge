@@ -1,0 +1,330 @@
+---
+---
+
+<div class="how-to-use-wrapper">
+  <button
+    id="how-to-use-toggle"
+    class="how-to-use-btn"
+    aria-expanded="false"
+    aria-controls="how-to-use-card"
+    aria-label="How to use BookForge instructions"
+    title="How to Use BookForge"
+  >
+    <span class="guide-icon">?</span>
+    <span class="guide-text">How to Use</span>
+  </button>
+
+  <div id="how-to-use-backdrop" class="card-backdrop" hidden></div>
+
+  <div
+    id="how-to-use-card"
+    class="instruction-card"
+    role="dialog"
+    aria-label="Reader Instructions and Tips"
+    hidden
+  >
+    <header class="card-header">
+      <div class="card-header-left">
+        <span class="blueprint-mini-tag">DWG-GUIDE • INSTRUCTIONS</span>
+        <h3 class="card-title">How to Use BookForge</h3>
+      </div>
+      <button id="how-to-use-close" class="card-close-btn" aria-label="Close instructions card">✕</button>
+    </header>
+
+    <div class="card-body">
+      <div class="instruction-item">
+        <div class="item-icon">Aa</div>
+        <div class="item-text">
+          <strong>Display Settings</strong>
+          <p>Click the <code>Aa</code> button to adjust font size, line spacing, reading column width, typeface, and color themes (Light, Warm Paper, Dark).</p>
+        </div>
+      </div>
+
+      <div class="instruction-item">
+        <div class="item-icon">☰</div>
+        <div class="item-text">
+          <strong>Navigation & Contents</strong>
+          <p>Click <code>☰ Contents</code> in the header to open the slide-out table of contents panel grouped by book parts.</p>
+        </div>
+      </div>
+
+      <div class="instruction-item">
+        <div class="item-icon">💾</div>
+        <div class="item-text">
+          <strong>Reading Progress</strong>
+          <p>Your reading position, completed chapters, and overall percentage are automatically saved in your browser. Use the <em>Resume Reading</em> button on the homepage anytime.</p>
+        </div>
+      </div>
+
+      <div class="instruction-item">
+        <div class="item-icon">⌨️</div>
+        <div class="item-text">
+          <strong>Keyboard Shortcuts</strong>
+          <ul class="key-list">
+            <li><kbd>←</kbd> Previous Chapter</li>
+            <li><kbd>→</kbd> Next Chapter</li>
+            <li><kbd>Esc</kbd> Close Open Panels</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initHowToUseCard() {
+    const toggleBtn = document.getElementById('how-to-use-toggle');
+    const closeBtn = document.getElementById('how-to-use-close');
+    const card = document.getElementById('how-to-use-card');
+    const backdrop = document.getElementById('how-to-use-backdrop');
+
+    function openCard() {
+      if (card && toggleBtn) {
+        card.hidden = false;
+        if (backdrop) backdrop.hidden = false;
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        closeBtn?.focus();
+      }
+    }
+
+    function closeCard() {
+      if (card && toggleBtn) {
+        card.hidden = true;
+        if (backdrop) backdrop.hidden = true;
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
+      }
+    }
+
+    toggleBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) closeCard();
+      else openCard();
+    });
+
+    closeBtn?.addEventListener('click', closeCard);
+    backdrop?.addEventListener('click', closeCard);
+
+    // Dismiss when clicking anywhere outside the card
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (card && !card.hidden && !card.contains(target) && !toggleBtn?.contains(target)) {
+        closeCard();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && card && !card.hidden) {
+        closeCard();
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initHowToUseCard);
+</script>
+
+<style>
+  .how-to-use-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .how-to-use-btn {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .how-to-use-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .how-to-use-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .guide-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 9999px;
+    background-color: rgba(2, 132, 199, 0.1);
+    color: var(--accent-color);
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .card-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 450;
+  }
+
+  .instruction-card {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    width: 360px;
+    max-width: 90vw;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    z-index: 500;
+    padding: 1.25rem;
+    animation: cardFadeIn 0.2s ease;
+  }
+
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+  }
+
+  .blueprint-mini-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .card-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .card-close-btn:hover {
+    color: var(--text-primary);
+  }
+
+  .card-close-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .instruction-item {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .item-icon {
+    font-size: 1.1rem;
+    min-width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 6px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--accent-color);
+  }
+
+  .item-text strong {
+    display: block;
+    font-size: 0.925rem;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+  }
+
+  .item-text p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+
+  .item-text code {
+    background-color: rgba(2, 132, 199, 0.08);
+    color: var(--accent-color);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+
+  .key-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .key-list li {
+    font-size: 0.825rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  kbd {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 640px) {
+    .instruction-card {
+      position: fixed;
+      top: 4.5rem;
+      right: 0.75rem;
+      left: 0.75rem;
+      width: auto;
+      max-width: none;
+    }
+
+    .guide-text {
+      display: none;
+    }
+  }
+</style>

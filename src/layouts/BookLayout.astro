@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import ReaderControls from '../components/ReaderControls.astro';
 import TocSlideout from '../components/TocSlideout.astro';
+import HowToUseCard from '../components/HowToUseCard.astro';
 import { getUrl } from '../lib/chapters';
 
 interface Props {
@@ -105,6 +106,7 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
         )}
 
         <div class="header-right">
+          <HowToUseCard />
           <ReaderControls />
         </div>
       </div>
