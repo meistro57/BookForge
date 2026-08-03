@@ -1,4 +1,5 @@
 # BookForge
+<img width="809" height="562" alt="image" src="https://github.com/user-attachments/assets/3ca02474-6ca5-483a-ac6c-690405bacfc9" />
 
 **Turn a folder of Markdown chapters into a proper reading experience.**
 
