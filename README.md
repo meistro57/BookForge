@@ -2,7 +2,7 @@
 
 [![BookForge CI](https://github.com/meistro57/BookForge/actions/workflows/ci.yml/badge.svg)](https://github.com/meistro57/BookForge/actions/workflows/ci.yml)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/meistro57/BookForge/actions)
-[![Astro Version](https://img.shields.io/badge/Astro-5.0%20Static-ff5e00.svg?logo=astro&logoColor=white)](https://astro.build/)
+[![Astro Version](https://img.shields.io/badge/Astro-7.1%20Static-ff5e00.svg?logo=astro&logoColor=white)](https://astro.build/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -12,20 +12,20 @@
 ---
 
 <div align="center">
-  <img width="809" height="562" alt="BookForge Blueprint Reader Interface" src="https://github.com/user-attachments/assets/3ca02474-6ca5-483a-ac6c-690405bacfc9" />
+  <img width="809" height="562" alt="BookForge Reader Interface" src="https://github.com/user-attachments/assets/3ca02474-6ca5-483a-ac6c-690405bacfc9" />
 </div>
 
 ---
 
 **Turn a folder of Markdown chapters into a proper reading experience.**
 
-BookForge is a static web reader built for books written and maintained as Markdown files. Its first publication is:
+BookForge is a static web reader built for books written and maintained as Markdown files. Its premier publication is:
 
 > **You’re Not Broken, You’re Broadband**  
 > *Twenty Years of Reverse Engineering an ADHD Brain*  
 > by Mark J. Hubrich
 
-Instead of dumping a manuscript onto a long webpage, BookForge creates a calm, responsive reading environment with ordered chapters, navigation, reader controls, and locally saved progress.
+Instead of dumping a manuscript onto a long webpage, BookForge creates a calm, responsive reading environment with ordered chapters, navigation, reader controls, audiobook integration, and locally saved progress.
 
 The book remains the main event. The website simply gives it a better room.
 
@@ -33,68 +33,56 @@ The book remains the main event. The website simply gives it a better room.
 
 ## Project Status
 
-BookForge is currently in early development.
+**All 10 Core Build Phases are Fully Implemented and Deployed.**
 
-The project is being built in small, testable phases so that every stage produces something usable before additional features are added.
-
----
-
-## Core Goals
-
-- Render Markdown files as ordered book chapters
-- Create a distraction-free reading layout
-- Preserve the manuscript’s parts and chapter structure
-- Support desktop, tablet, and mobile reading
-- Remember reader preferences and progress locally
-- Produce a fully static website
-- Deploy cleanly to Apache or GitHub Pages
-- Avoid databases, accounts, and unnecessary frameworks
+BookForge is a fully functional, static web reader featuring full audiobook narration, dynamic typography controls, progress persistence, slide-out table of contents, accessible semantic markup, and automated multi-target static deployment.
 
 ---
 
-## Technology
+## Core Features
 
-- [Astro](https://astro.build/)
-- Markdown content collections
-- Plain CSS
-- Minimal client-side JavaScript
-- Browser `localStorage`
-- Static HTML output
-
-BookForge does not require a database or permanently running Node.js server.
+- **Manuscript Renderer**: Renders Markdown files into structured, clean book chapters with custom YAML frontmatter validation.
+- **Full Audiobook Reader**: Integrated full-length audiobook player (`AudiobookSection.astro`) featuring narration by Eli C. Tric.
+- **Customizable Display Controls**:
+  - **Themes**: Light, Warm Paper, and Dark modes with instant client-side FOUC prevention.
+  - **Typography**: Toggle between Serif (`Merriweather`) and Sans-Serif (`Inter`) body typefaces.
+  - **Layout**: Adjustable font size, line height spacing, and reading column widths (Narrow, Medium, Wide).
+- **Reading Progress & Persistence**:
+  - Remembers scroll position per chapter via browser `localStorage`.
+  - Chapter completion checkmarks and overall manuscript completion percentage badge.
+  - "Resume Reading" shortcut card on the homepage hero section.
+- **Interactive Navigation**:
+  - Slide-out table of contents drawer accessible anywhere in the reader.
+  - Sticky reading header with progress bar and quick display control popouts.
+  - Quick reader instructions modal ("How To Use").
+  - Previous and Next chapter navigation buttons.
+  - Keyboard shortcuts (`?` for help, `N` next, `P` prev, `T` table of contents, `Esc` dismiss).
+- **Accessibility & SEO**:
+  - Full WCAG 2.1 AA contrast compliance, keyboard focus rings, and skip-to-content links.
+  - Automated XML sitemap generation (`@astrojs/sitemap`) and OpenGraph/Twitter card metadata.
+  - Custom 404 error layout and print-optimized CSS stylesheet.
 
 ---
 
-## Planned Reader Features
+## Technology Stack
 
-- Book landing page
-- Table of contents grouped by part
-- One clean URL per chapter
-- Previous and next chapter navigation
-- Responsive reading layout
-- Adjustable font size
-- Adjustable line spacing
-- Adjustable reading width
-- Serif and sans-serif type options
-- Light, warm-paper, and dark themes
-- Reading-progress indicator
-- Continue Reading button
-- Saved chapter and scroll position
-- Completed-chapter markers
-- Keyboard navigation
-- Slide-out table of contents
-- Print-friendly formatting
-- Accessible semantic HTML
-
-Reader settings and progress will remain private inside the visitor’s browser.
+- **Framework**: [Astro 7.1](https://astro.build/) (Static Site Generation)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
+- **Styling**: Plain CSS3 with custom variables & design system tokens
+- **Integrations**: `@astrojs/sitemap`
+- **Client Logic**: Vanilla JavaScript (Zero heavy UI dependencies, local state saved in `localStorage`)
+- **Deployment**: Apache Subdirectory & GitHub Pages
 
 ---
 
 ## Manuscript Structure
 
-The first BookForge publication contains front matter followed by twenty chapters:
+The manuscript contains front matter followed by twenty chapters divided across four parts:
 
 ```text
+FRONT MATTER
+00. Front Matter
+
 PART ONE: THE WOUND
 01. The Kid in the Hallway
 02. The Diagnosis That Explained Everything and Fixed Nothing
@@ -128,48 +116,48 @@ PART FOUR: THE LIFE
 
 ## Project Structure
 
-The planned project layout is:
-
 ```text
-bookforge/
+BookForge/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml               # Automated CI build checks
+│       └── deploy.yml           # GitHub Pages deployment workflow
 ├── public/
-│   ├── images/
-│   └── audio/
+│   ├── audio/                   # Audiobook MP3 recordings
+│   ├── images/                  # Cover artwork and branding assets
+│   ├── .htaccess                # Apache routing, caching, & HTTPS rules
+│   ├── favicon.svg
+│   └── robots.txt
+├── manuscript/                  # Raw manuscript markdown source files
 ├── src/
-│   ├── components/
+│   ├── components/              # Interactive UI components
+│   │   ├── AudiobookSection.astro
+│   │   ├── ChapterNavigation.astro
+│   │   ├── HowToUseCard.astro
+│   │   ├── ReaderControls.astro
+│   │   ├── ReadingProgressBar.astro
+│   │   └── TocSlideout.astro
 │   ├── content/
-│   │   └── chapters/
+│   │   └── chapters/            # Processed chapter content collection
 │   ├── layouts/
+│   │   └── BookLayout.astro     # Main application shell & global head
+│   ├── lib/
+│   │   ├── chapters.ts          # Chapter sorting & collection helpers
+│   │   └── utils.ts             # Base URL resolver utility
 │   ├── pages/
-│   └── styles/
-├── astro.config.mjs
+│   │   ├── index.astro          # Landing page & manuscript outline
+│   │   ├── 404.astro            # Custom 404 page
+│   │   └── chapter/
+│   │       └── [slug].astro     # Dynamic chapter reading route
+│   ├── styles/
+│   │   └── global.css           # Design tokens, themes, & global styles
+│   └── content.config.ts        # Astro content collections schema definition
+├── scripts/
+│   └── deploy.sh                # Apache deployment shell script
+├── astro.config.mjs             # Astro configuration (base path & sitemap)
 ├── package.json
+├── LICENSE
 └── README.md
-```
-
-Markdown manuscript files belong in:
-
-```text
-src/content/chapters/
-```
-
-Each file will contain YAML frontmatter describing its title, order, chapter number, and book part.
-
-Example:
-
-```markdown
----
-title: "The Kid in the Hallway"
-chapterNumber: 1
-partNumber: 1
-partTitle: "The Wound"
-order: 1
-description: "The hallway desk, the Challenger launch, and finding work that fit."
----
-
-# Chapter 1
-
-Chapter text begins here.
 ```
 
 ---
@@ -178,38 +166,43 @@ Chapter text begins here.
 
 ### Requirements
 
-- Node.js 20 or newer
-- npm
+- **Node.js**: v22 LTS or newer
+- **npm**: v10 or newer
 
-### Install
+### Installation
 
 ```bash
-git clone https://github.com/meistro57/bookforge.git
-cd bookforge
+# Clone the repository
+git clone https://github.com/meistro57/BookForge.git
+cd BookForge
+
+# Install dependencies
 npm install
 ```
 
-### Start the development server
+### Development Server
+
+Start the local development server:
 
 ```bash
 npm run dev
 ```
 
-Astro will display the local development address in the terminal.
+Astro will start a local web server (typically at `http://localhost:4321/BookForge/`).
 
-### Create a production build
+### Production Build
+
+Compile the static website:
 
 ```bash
 npm run build
 ```
 
-The finished static website will be generated in:
+The compiled static site output will be generated in the `dist/` directory.
 
-```text
-dist/
-```
+### Preview Build Locally
 
-### Preview the production build
+Preview the production static build locally:
 
 ```bash
 npm run preview
@@ -217,7 +210,7 @@ npm run preview
 
 ---
 
-## Build Phases
+## Build Phases Roadmap
 
 - [x] **Phase 1: Project Bootstrap** — Astro project setup, global styles, directory structure.
 - [x] **Phase 2: Manuscript Content System** — Markdown content collection, metadata schema, chapter ordering.
@@ -228,105 +221,43 @@ npm run preview
 - [x] **Phase 7: Navigation Polish** — Sticky header, slide-out TOC panel, heading anchors, keyboard shortcuts, back-to-top control.
 - [x] **Phase 8: Visual Identity** — Blueprint styling, companion track section for "The Wrong Drawing" with audio player & lyrics.
 - [x] **Phase 9: Accessibility and Metadata** — Skip-to-content, WCAG contrast compliance, OpenGraph/Twitter cards, XML sitemaps, robots.txt, custom 404, print stylesheet.
-- [x] **Phase 10: Static Deployment** — Apache subdirectory base path configuration (`/broadband/`), `.htaccess` rules, deployment script (`scripts/deploy.sh`), GitHub Actions CI/CD workflow.
-
----
-
-## Design Principles
-
-### The manuscript comes first
-
-Decorative textures and industrial styling belong around the reading experience, not behind the body text.
-
-### Static by default
-
-A book should not require a database, account system, or application server merely to be read.
-
-### Local and private
-
-Reading progress and display preferences stay inside the reader’s browser.
-
-### Accessible from the beginning
-
-Keyboard navigation, visible focus states, semantic HTML, readable contrast, and responsive layouts are core requirements rather than final-pass decorations.
-
-### Useful before elaborate
-
-A plain reader that works is more valuable than a magnificent interface that remains unfinished.
+- [x] **Phase 10: Static Deployment** — Subdirectory base path configuration (`/BookForge/`), `.htaccess` rules, automated deployment script (`scripts/deploy.sh`), GitHub Actions CI/CD workflows.
 
 ---
 
 ## Deployment
 
-BookForge produces clean static HTML, CSS, assets, and JavaScript.
+BookForge builds into pure static HTML, CSS, client JS, and media assets.
 
-Target location: `https://quantummindsunited.com/BookForge/`
+### 1. Apache Subdirectory Deployment
 
-### Apache Subdirectory Deployment Guide
+Target URL: `https://quantummindsunited.com/BookForge/`
 
-1. **Base Path Configuration**  
-   Astro is configured with `base: '/BookForge'` and `trailingSlash: 'always'` in `astro.config.mjs`. All links, scripts, stylesheets, cover art, and audio files are scoped automatically under `/BookForge/`.
+- **Base Path Configuration**: Configured with `base: '/BookForge'` and `trailingSlash: 'always'` in `astro.config.mjs`. All links and assets resolve under `/BookForge/`.
+- **Deploying via Bash Script**:
+  ```bash
+  ./scripts/deploy.sh /var/www/html/BookForge
+  ```
+- **Deploying via Rsync**:
+  ```bash
+  rsync -avz --delete dist/ user@server:/var/www/html/BookForge/
+  ```
+- **Apache `.htaccess`**: Bundled in `public/.htaccess` to enforce HTTPS, handle long-term caching for hashed assets, gzip compression, and resolve clean URLs.
 
-2. **Deploying `dist/` Contents & `.htaccess`**  
-   Copy the complete contents of `dist/` into the target directory on your Apache web server (e.g., `/var/www/html/BookForge/`). Ensure `dist/.htaccess` is included.
+### 2. GitHub Pages Deployment
 
-3. **Rsync Deployment Command**  
-   To sync the build directly to your remote server:
-   ```bash
-   rsync -avz --delete dist/ user@server:/var/www/html/BookForge/
-   ```
-
-4. **Directory & File Permissions**  
-   Set permissions to standard web server defaults:
-   ```bash
-   find /var/www/html/BookForge -type d -exec chmod 755 {} +
-   find /var/www/html/BookForge -type f -exec chmod 644 {} +
-   ```
-
-5. **Apache `.htaccess` Features (`public/.htaccess`)**
-   - **HTTPS Redirection**: Forces HTTPS connection.
-   - **Cache Control**: Sets long-lived immutable caching for hashed Astro assets (`_astro/*`) and 0-second cache for HTML files to ensure instant updates.
-   - **Compression**: Enables `mod_deflate` Gzip/Brotli compression for HTML, CSS, JS, SVG, and JSON.
-   - **Fallback & Trailing Slashes**: Direct chapter URLs (e.g., `/BookForge/chapter/the-kid-in-the-hallway/`) resolve cleanly without 404 errors on refresh.
-
-6. **Automated Bash Deployment Script**  
-   Run the automated deployment script from the project root:
-   ```bash
-   ./scripts/deploy.sh /var/www/html/BookForge
-   ```
-
-7. **GitHub Actions Deployment (`.github/workflows/ci.yml`)**  
-   Automated GitHub Actions workflow validates every push and pull request.
-
----
-
-## Future Possibilities
-
-Once the core reader is stable, BookForge may grow to include:
-
-- Full-book search
-- Private bookmarks and highlights
-- Shareable quote cards
-- Narrated chapters
-- Audio position memory
-- EPUB generation
-- PDF generation
-- Reusable support for other Markdown books
-
-These features remain outside the initial build so the forge does not become a swamp.
-
----
-
-## Author
-
-**Mark J. Hubrich**
-
-Steel detailer, fabricator, writer, builder, and chronic investigator of how complicated things fit together.
+Automated GitHub Pages deployment is handled by `.github/workflows/deploy.yml` on every push to the `main` branch.
 
 ---
 
 ## License
 
-A software license will be selected before the first public release.
+- **Software**: Licensed under the [MIT License](LICENSE).
+- **Manuscript Content**: *You’re Not Broken, You’re Broadband* text, audiobook audio, and manuscript files remain the intellectual property and Copyright © Mark J. Hubrich.
 
-The BookForge source code and the manuscript published through it may use separate licenses. The manuscript remains the intellectual property of its author.
+---
+
+## Author
+
+**Mark J. Hubrich**  
+Steel detailer, fabricator, writer, builder, and chronic investigator of how complicated things fit together.

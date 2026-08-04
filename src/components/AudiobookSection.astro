@@ -21,25 +21,25 @@ import { getUrl } from '../lib/chapters';
       </div>
 
       <div class="audiobook-info-col">
-        <div class="blueprint-badge">AUDIOBOOK • MP3 PLACEHOLDER</div>
+        <div class="blueprint-badge">AUDIOBOOK • FULL RECORDING</div>
         <h3 class="audiobook-title">You’re Not Broken, You’re Broadband</h3>
         <p class="audiobook-narrator">Narrated by Eli C. Tric</p>
         <p class="audiobook-description">
-          A full-length audio recording of the complete manuscript. Place your audiobook MP3 files inside
-          <code>public/audio/</code> for client listening.
+          The complete, full-length audio recording of the manuscript. Press play to listen, or use the
+          player controls to scrub to any point in the book.
         </p>
 
-        <!-- HTML Audio Player Placeholder (No Autoplay) -->
+        <!-- HTML Audio Player (No Autoplay) -->
         <div class="audio-player-wrapper">
           <audio controls preload="none" class="custom-audio-player">
-            <source src={getUrl('audio/audiobook_placeholder.mp3')} type="audio/mpeg" />
+            <source src={getUrl('audio/Your_Not_Broken_Your_Broadband.mp3')} type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>
         </div>
 
         <div class="audiobook-status">
           <span class="status-icon">🎙️</span>
-          <span>Audiobook recording in production. Place MP3 files in <code>public/audio/</code>.</span>
+          <span>Full audiobook now available — narrated by Eli C. Tric.</span>
         </div>
       </div>
     </div>
