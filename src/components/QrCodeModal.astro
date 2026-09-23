@@ -1,0 +1,648 @@
+---
+import { getUrl } from '../lib/chapters';
+
+interface Props {
+  currentSlug?: string;
+  currentChapterTitle?: string;
+}
+
+const { currentSlug = '', currentChapterTitle = '' } = Astro.props;
+
+const siteUrl = 'https://quantummindsunited.com';
+const currentPath = Astro.url.pathname;
+const chapterUrl = new URL(currentPath, siteUrl).href;
+const homeUrl = new URL(getUrl('/'), siteUrl).href;
+const isChapterPage = Boolean(currentSlug && currentChapterTitle);
+---
+
+<div class="qr-share-wrapper">
+  <button
+    id="qr-modal-toggle"
+    class="qr-share-btn"
+    type="button"
+    aria-expanded="false"
+    aria-controls="qr-modal-dialog"
+    aria-label="Share this book via QR code"
+    title="Share via QR Code"
+  >
+    <svg
+      class="qr-btn-icon"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+      <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+      <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+      <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+      <path d="M21 21v.01"></path>
+      <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+      <path d="M3 12h.01"></path>
+      <path d="M12 3h.01"></path>
+      <path d="M12 16v.01"></path>
+      <path d="M16 12h1"></path>
+      <path d="M21 12v.01"></path>
+      <path d="M12 21v-1"></path>
+    </svg>
+    <span class="qr-btn-text">Share QR</span>
+  </button>
+
+  <div id="qr-modal-backdrop" class="qr-backdrop" hidden></div>
+
+  <div
+    id="qr-modal-dialog"
+    class="qr-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Share with QR Code"
+    data-chapter-url={chapterUrl}
+    data-home-url={homeUrl}
+    data-chapter-title={currentChapterTitle}
+    data-is-chapter={isChapterPage ? 'true' : 'false'}
+    hidden
+  >
+    <header class="qr-header">
+      <div class="qr-header-left">
+        <span class="qr-mini-tag">SHARE • INSTANT ACCESS</span>
+        <h3 class="qr-title">Share BookForge</h3>
+      </div>
+      <button id="qr-modal-close" class="qr-close-btn" type="button" aria-label="Close share dialog">✕</button>
+    </header>
+
+    <div class="qr-body">
+      <p class="qr-instruction">
+        Scan with any phone camera to instantly open and read on the go.
+      </p>
+
+      {isChapterPage && (
+        <div class="qr-scope-selector" role="radiogroup" aria-label="Share link target">
+          <button
+            type="button"
+            class="scope-btn active"
+            data-scope="chapter"
+            role="radio"
+            aria-checked="true"
+          >
+            Current Chapter
+          </button>
+          <button
+            type="button"
+            class="scope-btn"
+            data-scope="book"
+            role="radio"
+            aria-checked="false"
+          >
+            Entire Book
+          </button>
+        </div>
+      )}
+
+      <!-- QR Display Container: clean, crisp, high-contrast white card for reliable camera scanning -->
+      <div class="qr-card-container">
+        <canvas id="qr-canvas" class="qr-canvas" width="220" height="220" aria-label="QR Code graphic"></canvas>
+        <span id="qr-caption" class="qr-caption">
+          {isChapterPage ? currentChapterTitle : 'You’re Not Broken, You’re Broadband'}
+        </span>
+      </div>
+
+      <!-- Link preview & quick copy row -->
+      <div class="qr-link-row">
+        <input
+          id="qr-url-input"
+          type="text"
+          readonly
+          class="qr-url-field"
+          value={chapterUrl}
+          aria-label="Shareable link URL"
+        />
+        <button id="qr-copy-btn" type="button" class="qr-copy-btn" aria-label="Copy link to clipboard">
+          <span id="qr-copy-icon" class="qr-copy-icon" aria-hidden="true">📋</span>
+          <span id="qr-copy-text" class="qr-copy-text">Copy</span>
+        </button>
+      </div>
+
+      <!-- Action row: Native share if supported & Download QR -->
+      <div class="qr-actions-row">
+        <button id="qr-native-share-btn" type="button" class="qr-action-btn" style="display: none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16 6 12 2 8 6"></polyline>
+            <line x1="12" y1="2" x2="12" y2="15"></line>
+          </svg>
+          <span>Share via Phone...</span>
+        </button>
+
+        <button id="qr-download-btn" type="button" class="qr-action-btn" title="Download QR code image file">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Save Image</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import QRCode from 'qrcode';
+
+  function initQrCodeModal() {
+    const toggleBtn = document.getElementById('qr-modal-toggle');
+    const closeBtn = document.getElementById('qr-modal-close');
+    const dialog = document.getElementById('qr-modal-dialog') as HTMLElement | null;
+    const backdrop = document.getElementById('qr-modal-backdrop');
+    const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement | null;
+    const urlInput = document.getElementById('qr-url-input') as HTMLInputElement | null;
+    const captionEl = document.getElementById('qr-caption');
+    const copyBtn = document.getElementById('qr-copy-btn');
+    const copyText = document.getElementById('qr-copy-text');
+    const copyIcon = document.getElementById('qr-copy-icon');
+    const downloadBtn = document.getElementById('qr-download-btn');
+    const nativeShareBtn = document.getElementById('qr-native-share-btn');
+    const scopeButtons = document.querySelectorAll<HTMLButtonElement>('.qr-scope-selector .scope-btn');
+
+    if (!dialog || !toggleBtn || !canvas) return;
+
+    const chapterUrl = dialog.dataset.chapterUrl || window.location.href;
+    const homeUrl = dialog.dataset.homeUrl || window.location.origin;
+    const chapterTitle = dialog.dataset.chapterTitle || 'Chapter';
+    const isChapter = dialog.dataset.isChapter === 'true';
+
+    let currentScope: 'chapter' | 'book' = isChapter ? 'chapter' : 'book';
+
+    // Show native share button if supported on mobile
+    if (nativeShareBtn && typeof navigator !== 'undefined' && 'share' in navigator) {
+      nativeShareBtn.style.display = 'inline-flex';
+    }
+
+    function getTargetUrl(): string {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (currentScope === 'book') {
+        return isLocal ? homeUrl : (window.location.origin + (import.meta.env.BASE_URL || '/BookForge/'));
+      }
+      return isLocal ? chapterUrl : window.location.href;
+    }
+
+    function renderQr() {
+      if (!canvas) return;
+      const targetUrl = getTargetUrl();
+
+      QRCode.toCanvas(
+        canvas,
+        targetUrl,
+        {
+          width: 220,
+          margin: 2,
+          color: {
+            dark: '#0f172a',
+            light: '#ffffff',
+          },
+          errorCorrectionLevel: 'M',
+        },
+        (error) => {
+          if (error) console.error('Error generating QR code:', error);
+        }
+      );
+
+      if (urlInput) {
+        urlInput.value = targetUrl;
+      }
+
+      if (captionEl) {
+        captionEl.textContent =
+          currentScope === 'chapter' && chapterTitle
+            ? chapterTitle
+            : 'You’re Not Broken, You’re Broadband';
+      }
+    }
+
+    function openModal() {
+      if (!dialog || !toggleBtn) return;
+      dialog.hidden = false;
+      if (backdrop) backdrop.hidden = false;
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      renderQr();
+      closeBtn?.focus();
+    }
+
+    function closeModal() {
+      if (!dialog || !toggleBtn) return;
+      dialog.hidden = true;
+      if (backdrop) backdrop.hidden = true;
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.focus();
+    }
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) {
+        closeModal();
+      } else {
+        openModal();
+      }
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    // Switch between Chapter and Entire Book
+    scopeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const scope = btn.dataset.scope as 'chapter' | 'book';
+        if (scope && scope !== currentScope) {
+          currentScope = scope;
+          scopeButtons.forEach((b) => {
+            const isActive = b === btn;
+            b.classList.toggle('active', isActive);
+            b.setAttribute('aria-checked', isActive ? 'true' : 'false');
+          });
+          renderQr();
+        }
+      });
+    });
+
+    // Copy URL to clipboard
+    copyBtn?.addEventListener('click', async () => {
+      const url = getTargetUrl();
+      try {
+        await navigator.clipboard.writeText(url);
+        if (copyText) copyText.textContent = 'Copied!';
+        if (copyIcon) copyIcon.textContent = '✓';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          if (copyText) copyText.textContent = 'Copy';
+          if (copyIcon) copyIcon.textContent = '📋';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        // Fallback: select input text
+        if (urlInput) {
+          urlInput.select();
+          document.execCommand('copy');
+          if (copyText) copyText.textContent = 'Copied!';
+          setTimeout(() => {
+            if (copyText) copyText.textContent = 'Copy';
+          }, 2000);
+        }
+      }
+    });
+
+    // Native Share
+    nativeShareBtn?.addEventListener('click', async () => {
+      const url = getTargetUrl();
+      const title =
+        currentScope === 'chapter' && chapterTitle
+          ? `${chapterTitle} | You're Not Broken, You're Broadband`
+          : 'You’re Not Broken, You’re Broadband';
+      try {
+        await navigator.share({
+          title,
+          text: `Check out "${title}" on BookForge:`,
+          url,
+        });
+      } catch (err) {
+        // User cancelled or unsupported
+      }
+    });
+
+    // Download QR Code image
+    downloadBtn?.addEventListener('click', () => {
+      if (!canvas) return;
+      const dataUrl = canvas.toDataURL('image/png');
+      const filename =
+        currentScope === 'chapter' && chapterTitle
+          ? `bookforge-qr-${chapterTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`
+          : 'bookforge-qr-code.png';
+
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    // Dismiss on click outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (dialog && !dialog.hidden && !dialog.contains(target) && !toggleBtn.contains(target)) {
+        closeModal();
+      }
+    });
+
+    // Dismiss on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dialog && !dialog.hidden) {
+        closeModal();
+      }
+    });
+
+    // Allow external elements (e.g. hero or footer buttons) to trigger share modal
+    window.addEventListener('bookforge:open-share-modal', () => {
+      openModal();
+    });
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQrCodeModal);
+  } else {
+    initQrCodeModal();
+  }
+</script>
+
+<style>
+  .qr-share-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .qr-share-btn {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .qr-share-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .qr-share-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .qr-btn-icon {
+    display: inline-block;
+    flex-shrink: 0;
+    color: var(--accent-color);
+  }
+
+  .qr-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 450;
+    backdrop-filter: blur(2px);
+  }
+
+  .qr-dialog {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    width: 340px;
+    max-width: 92vw;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+    z-index: 500;
+    padding: 1.25rem;
+    animation: qrFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes qrFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .qr-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .qr-mini-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .qr-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .qr-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .qr-close-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .qr-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .qr-instruction {
+    font-size: 0.825rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .qr-scope-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    background-color: var(--bg-color);
+    padding: 0.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .scope-btn {
+    background: transparent;
+    border: none;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .scope-btn.active {
+    background-color: var(--panel-bg);
+    color: var(--accent-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .qr-card-container {
+    background-color: #ffffff;
+    padding: 1rem 0.75rem 0.75rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-canvas {
+    width: 200px !important;
+    height: 200px !important;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .qr-caption {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    text-align: center;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .qr-link-row {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .qr-url-field {
+    flex: 1;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    outline: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .qr-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .qr-copy-btn:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .qr-copy-btn.copied {
+    background-color: #10b981;
+  }
+
+  .qr-actions-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .qr-action-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .qr-action-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  @media (max-width: 520px) {
+    .qr-dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      transform: translate(-50%, -50%);
+      width: calc(100vw - 2rem);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes qrFadeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .qr-btn-text {
+      display: none;
+    }
+  }
+</style>

@@ -65,6 +65,36 @@ const partText = chapter.data.partTitle
       <Content />
     </div>
 
+    <div class="chapter-share-bar">
+      <div class="share-bar-info">
+        <span class="share-bar-title">Share this chapter</span>
+        <span class="share-bar-desc">Point someone’s phone camera at the screen to open and read immediately.</span>
+      </div>
+      <button
+        id="chapter-share-qr-btn"
+        type="button"
+        class="chapter-share-btn"
+        aria-label="Open QR code for this chapter"
+        title="Share via QR Code"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+          <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+          <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+          <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+          <path d="M21 21v.01"></path>
+          <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+          <path d="M3 12h.01"></path>
+          <path d="M12 3h.01"></path>
+          <path d="M12 16v.01"></path>
+          <path d="M16 12h1"></path>
+          <path d="M21 12v.01"></path>
+          <path d="M12 21v-1"></path>
+        </svg>
+        <span>Share QR</span>
+      </button>
+    </div>
+
     <footer>
       <ChapterNavigation
         prevChapter={prevChapter}
@@ -155,6 +185,12 @@ const partText = chapter.data.partTitle
           window.location.href = nextLink.href;
         }
       }
+    });
+
+    // 4. Chapter Share QR Button
+    const chapterShareBtn = document.getElementById('chapter-share-qr-btn');
+    chapterShareBtn?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('bookforge:open-share-modal'));
     });
   });
 </script>
@@ -321,6 +357,61 @@ const partText = chapter.data.partTitle
     outline-offset: 2px;
   }
 
+  .chapter-share-bar {
+    margin-top: 3.5rem;
+    margin-bottom: 2rem;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .share-bar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .share-bar-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  .share-bar-desc {
+    font-size: 0.825rem;
+    color: var(--text-secondary);
+  }
+
+  .chapter-share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+
+  .chapter-share-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .chapter-share-btn svg {
+    color: var(--accent-color);
+  }
+
   @media (max-width: 640px) {
     .reading-container {
       padding: 1.75rem 1rem 3rem;
@@ -328,6 +419,17 @@ const partText = chapter.data.partTitle
 
     .chapter-title {
       font-size: 1.75rem;
+    }
+
+    .chapter-share-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    .chapter-share-btn {
+      width: 100%;
+      justify-content: center;
     }
 
     .back-to-top-btn {

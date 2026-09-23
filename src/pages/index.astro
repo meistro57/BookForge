@@ -70,6 +70,29 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
                 Start Reading ({startChapter.data.title}) →
               </a>
             )}
+            <button
+              id="hero-share-qr-btn"
+              type="button"
+              class="btn btn-secondary"
+              aria-label="Open QR code to share book"
+              title="Share via QR Code"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+                <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+                <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+                <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+                <path d="M21 21v.01"></path>
+                <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+                <path d="M3 12h.01"></path>
+                <path d="M12 3h.01"></path>
+                <path d="M12 16v.01"></path>
+                <path d="M16 12h1"></path>
+                <path d="M21 12v.01"></path>
+                <path d="M12 21v-1"></path>
+              </svg>
+              Share QR
+            </button>
             <span id="overall-progress-badge" class="overall-progress-badge" hidden></span>
           </div>
         </div>
@@ -197,6 +220,12 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
           overallEl.hidden = false;
         }
       }
+
+      // 3. Hero Share QR Button
+      const heroShareBtn = document.getElementById('hero-share-qr-btn');
+      heroShareBtn?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('bookforge:open-share-modal'));
+      });
     } catch (e) {}
   });
 </script>
@@ -328,6 +357,24 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
   }
 
   .btn-primary:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 3px;
+  }
+
+  .btn-secondary {
+    background-color: var(--panel-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    gap: 0.5rem;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .btn-secondary:focus-visible {
     outline: 3px solid var(--accent-color);
     outline-offset: 3px;
   }
