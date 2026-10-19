@@ -3,16 +3,18 @@ import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from
 
 interface Props {
   currentSlug?: string;
+  bookSlug?: string;
 }
 
-const { currentSlug = '' } = Astro.props;
-const groupedParts = await getChaptersGroupedByPart();
+const { currentSlug = '', bookSlug = '' } = Astro.props;
+const groupedParts = bookSlug ? await getChaptersGroupedByPart(bookSlug) : await getChaptersGroupedByPart('');
+const linkBase = bookSlug ? '/books/' + bookSlug + '/chapter/' : '/chapter/';
 
 function formatPartHeader(partNumber: number | null, partTitle: string): string {
   if (partNumber === null) return partTitle.toUpperCase();
   const names = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'];
   const nameStr = names[partNumber - 1] || partNumber.toString();
-  return `PART ${nameStr} — ${partTitle.toUpperCase()}`;
+  return 'PART ' + nameStr + ' — ' + partTitle.toUpperCase();
 }
 ---
 
@@ -57,7 +59,7 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
               return (
                 <li class="toc-chapter-item">
                   <a
-                    href={getUrl(`/chapter/${slug}/`)}
+                    href={getUrl(linkBase + slug + '/')}
                     class={`toc-chapter-link ${isActive ? 'active' : ''}`}
                     data-slug={slug}
                     aria-current={isActive ? 'page' : undefined}
@@ -128,14 +130,15 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
 
     // Populate completed markers
     try {
-      const raw = localStorage.getItem('bookforge_completed_chapters');
-      const completed: string[] = raw ? JSON.parse(raw) : [];
+      const ns = document.documentElement.getAttribute('data-book-slug') || '';
+      const raw = localStorage.getItem('bookforge:' + ns + ':completed_chapters');
+      const completed = raw ? JSON.parse(raw) : [];
       if (Array.isArray(completed)) {
         completed.forEach((slug) => {
-          const item = document.querySelector(`.toc-chapter-link[data-slug="${slug}"]`);
+          const item = document.querySelector('.toc-chapter-link[data-slug="' + slug + '"]');
           if (item) {
             const icon = item.querySelector('.toc-completion-icon');
-            if (icon) (icon as HTMLElement).hidden = false;
+            if (icon) icon.hidden = false;
           }
         });
       }

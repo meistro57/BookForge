@@ -1,4 +1,9 @@
 ---
+interface Props {
+  bookSlug?: string;
+}
+
+const { bookSlug = '' } = Astro.props;
 ---
 
 <div class="reader-controls-wrapper">
@@ -28,7 +33,6 @@
     </header>
 
     <div class="panel-body">
-      <!-- Theme Selection -->
       <fieldset class="control-group">
         <legend class="group-label">Theme</legend>
         <div class="options-grid theme-options">
@@ -38,7 +42,6 @@
         </div>
       </fieldset>
 
-      <!-- Font Size Selection -->
       <fieldset class="control-group">
         <legend class="group-label">Font Size</legend>
         <div class="options-grid">
@@ -49,7 +52,6 @@
         </div>
       </fieldset>
 
-      <!-- Line Spacing Selection -->
       <fieldset class="control-group">
         <legend class="group-label">Line Spacing</legend>
         <div class="options-grid">
@@ -59,7 +61,6 @@
         </div>
       </fieldset>
 
-      <!-- Reading Width Selection -->
       <fieldset class="control-group">
         <legend class="group-label">Reading Width</legend>
         <div class="options-grid">
@@ -69,7 +70,6 @@
         </div>
       </fieldset>
 
-      <!-- Typeface Selection -->
       <fieldset class="control-group">
         <legend class="group-label">Typeface</legend>
         <div class="options-grid">
@@ -78,7 +78,6 @@
         </div>
       </fieldset>
 
-      <!-- Reset Actions -->
       <div class="panel-footer">
         <div class="reset-buttons-grid">
           <button id="controls-reset-display-btn" type="button" class="reset-btn">Reset Display</button>
@@ -90,6 +89,8 @@
 </div>
 
 <script>
+  const BOOK_SLUG = document.documentElement.getAttribute('data-book-slug') || '';
+
   const DEFAULTS = {
     theme: 'light',
     fontSize: 'default',
@@ -98,7 +99,8 @@
     fontFamily: 'serif'
   };
 
-  const STORAGE_KEY = 'bookforge_reader_prefs';
+  const STORAGE_KEY = 'bookforge:' + BOOK_SLUG + ':prefs';
+  const PROGRESS_PREFIX = 'bookforge:' + BOOK_SLUG + ':';
 
   function getSavedPrefs() {
     try {
@@ -109,13 +111,13 @@
     }
   }
 
-  function savePrefs(prefs: typeof DEFAULTS) {
+  function savePrefs(prefs) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     } catch {}
   }
 
-  function applyPrefs(prefs: typeof DEFAULTS) {
+  function applyPrefs(prefs) {
     const doc = document.documentElement;
     doc.setAttribute('data-theme', prefs.theme);
     doc.setAttribute('data-font-size', prefs.fontSize);
@@ -123,9 +125,8 @@
     doc.setAttribute('data-reading-width', prefs.readingWidth);
     doc.setAttribute('data-font-family', prefs.fontFamily);
 
-    // Update active states on buttons
     document.querySelectorAll('.opt-btn').forEach((btn) => {
-      const control = btn.getAttribute('data-control') as keyof typeof DEFAULTS;
+      const control = btn.getAttribute('data-control');
       const val = btn.getAttribute('data-value');
       if (control && val) {
         const isActive = prefs[control] === val;
@@ -179,10 +180,9 @@
       }
     });
 
-    // Control option clicks
     document.querySelectorAll('.opt-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const control = btn.getAttribute('data-control') as keyof typeof DEFAULTS;
+        const control = btn.getAttribute('data-control');
         const val = btn.getAttribute('data-value');
         if (control && val) {
           currentPrefs[control] = val;
@@ -192,14 +192,12 @@
       });
     });
 
-    // Reset Display Settings
     resetDisplayBtn?.addEventListener('click', () => {
       currentPrefs = { ...DEFAULTS };
       savePrefs(currentPrefs);
       applyPrefs(currentPrefs);
     });
 
-    // Reset Reading Progress Action with Confirmation Step
     resetProgressBtn?.addEventListener('click', () => {
       const confirmed = confirm(
         'Are you sure you want to reset all reading progress? This will clear your saved chapter, scroll positions, and completed markers. Your display settings will be preserved.'
@@ -207,16 +205,20 @@
 
       if (confirmed) {
         try {
-          localStorage.removeItem('bookforge_current_chapter');
-          localStorage.removeItem('bookforge_current_chapter_title');
-          localStorage.removeItem('bookforge_current_chapter_num');
-          localStorage.removeItem('bookforge_completed_chapters');
-          localStorage.removeItem('bookforge_overall_progress');
-          localStorage.removeItem('bookforge_last_read_timestamp');
+          const keysToRemove = [
+            PROGRESS_PREFIX + 'current_chapter',
+            PROGRESS_PREFIX + 'current_chapter_title',
+            PROGRESS_PREFIX + 'current_chapter_num',
+            PROGRESS_PREFIX + 'completed_chapters',
+            PROGRESS_PREFIX + 'overall_progress',
+            PROGRESS_PREFIX + 'last_read_timestamp',
+          ];
+          keysToRemove.forEach((k) => localStorage.removeItem(k));
 
+          const scrollPrefix = PROGRESS_PREFIX + 'scroll_';
           for (let i = localStorage.length - 1; i >= 0; i--) {
             const key = localStorage.key(i);
-            if (key && key.startsWith('bookforge_scroll_')) {
+            if (key && key.startsWith(scrollPrefix)) {
               localStorage.removeItem(key);
             }
           }
@@ -281,7 +283,6 @@
     z-index: 400;
   }
 
-  /* Controls Panel (Desktop dropdown overlay) */
   .controls-panel {
     position: absolute;
     top: 125%;
@@ -423,7 +424,6 @@
     outline: 2px solid var(--accent-color);
   }
 
-  /* Mobile Bottom Sheet Overlay */
   @media (max-width: 640px) {
     .controls-panel {
       position: fixed;

@@ -4,15 +4,17 @@ import { getUrl } from '../lib/chapters';
 interface Props {
   currentSlug?: string;
   currentChapterTitle?: string;
+  bookTitle?: string;
 }
 
-const { currentSlug = '', currentChapterTitle = '' } = Astro.props;
+const { currentSlug = '', currentChapterTitle = '', bookTitle = '' } = Astro.props;
 
 const siteUrl = 'https://quantummindsunited.com';
 const currentPath = Astro.url.pathname;
 const chapterUrl = new URL(currentPath, siteUrl).href;
 const homeUrl = new URL(getUrl('/'), siteUrl).href;
 const isChapterPage = Boolean(currentSlug && currentChapterTitle);
+const displayBookTitle = bookTitle || 'BookForge';
 ---
 
 <div class="qr-share-wrapper">
@@ -64,6 +66,7 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
     data-chapter-url={chapterUrl}
     data-home-url={homeUrl}
     data-chapter-title={currentChapterTitle}
+    data-book-title={displayBookTitle}
     data-is-chapter={isChapterPage ? 'true' : 'false'}
     hidden
   >
@@ -103,15 +106,13 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
         </div>
       )}
 
-      <!-- QR Display Container: clean, crisp, high-contrast white card for reliable camera scanning -->
       <div class="qr-card-container">
         <canvas id="qr-canvas" class="qr-canvas" width="220" height="220" aria-label="QR Code graphic"></canvas>
         <span id="qr-caption" class="qr-caption">
-          {isChapterPage ? currentChapterTitle : 'You’re Not Broken, You’re Broadband'}
+          {isChapterPage ? currentChapterTitle : displayBookTitle}
         </span>
       </div>
 
-      <!-- Link preview & quick copy row -->
       <div class="qr-link-row">
         <input
           id="qr-url-input"
@@ -127,7 +128,6 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
         </button>
       </div>
 
-      <!-- Action row: Native share if supported & Download QR -->
       <div class="qr-actions-row">
         <button id="qr-native-share-btn" type="button" class="qr-action-btn" style="display: none;">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -157,33 +157,33 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
   function initQrCodeModal() {
     const toggleBtn = document.getElementById('qr-modal-toggle');
     const closeBtn = document.getElementById('qr-modal-close');
-    const dialog = document.getElementById('qr-modal-dialog') as HTMLElement | null;
+    const dialog = document.getElementById('qr-modal-dialog');
     const backdrop = document.getElementById('qr-modal-backdrop');
-    const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement | null;
-    const urlInput = document.getElementById('qr-url-input') as HTMLInputElement | null;
+    const canvas = document.getElementById('qr-canvas');
+    const urlInput = document.getElementById('qr-url-input');
     const captionEl = document.getElementById('qr-caption');
     const copyBtn = document.getElementById('qr-copy-btn');
     const copyText = document.getElementById('qr-copy-text');
     const copyIcon = document.getElementById('qr-copy-icon');
     const downloadBtn = document.getElementById('qr-download-btn');
     const nativeShareBtn = document.getElementById('qr-native-share-btn');
-    const scopeButtons = document.querySelectorAll<HTMLButtonElement>('.qr-scope-selector .scope-btn');
+    const scopeButtons = document.querySelectorAll('.qr-scope-selector .scope-btn');
 
     if (!dialog || !toggleBtn || !canvas) return;
 
     const chapterUrl = dialog.dataset.chapterUrl || window.location.href;
     const homeUrl = dialog.dataset.homeUrl || window.location.origin;
     const chapterTitle = dialog.dataset.chapterTitle || 'Chapter';
+    const bookTitle = dialog.dataset.bookTitle || 'BookForge';
     const isChapter = dialog.dataset.isChapter === 'true';
 
-    let currentScope: 'chapter' | 'book' = isChapter ? 'chapter' : 'book';
+    let currentScope = isChapter ? 'chapter' : 'book';
 
-    // Show native share button if supported on mobile
     if (nativeShareBtn && typeof navigator !== 'undefined' && 'share' in navigator) {
       nativeShareBtn.style.display = 'inline-flex';
     }
 
-    function getTargetUrl(): string {
+    function getTargetUrl() {
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       if (currentScope === 'book') {
         return isLocal ? homeUrl : (window.location.origin + (import.meta.env.BASE_URL || '/BookForge/'));
@@ -220,7 +220,7 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
         captionEl.textContent =
           currentScope === 'chapter' && chapterTitle
             ? chapterTitle
-            : 'You’re Not Broken, You’re Broadband';
+            : bookTitle;
       }
     }
 
@@ -254,10 +254,9 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
     closeBtn?.addEventListener('click', closeModal);
     backdrop?.addEventListener('click', closeModal);
 
-    // Switch between Chapter and Entire Book
     scopeButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const scope = btn.dataset.scope as 'chapter' | 'book';
+        const scope = btn.dataset.scope;
         if (scope && scope !== currentScope) {
           currentScope = scope;
           scopeButtons.forEach((b) => {
@@ -270,7 +269,6 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
       });
     });
 
-    // Copy URL to clipboard
     copyBtn?.addEventListener('click', async () => {
       const url = getTargetUrl();
       try {
@@ -284,7 +282,6 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
           copyBtn.classList.remove('copied');
         }, 2000);
       } catch (err) {
-        // Fallback: select input text
         if (urlInput) {
           urlInput.select();
           document.execCommand('copy');
@@ -296,17 +293,16 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
       }
     });
 
-    // Native Share
     nativeShareBtn?.addEventListener('click', async () => {
       const url = getTargetUrl();
       const title =
         currentScope === 'chapter' && chapterTitle
-          ? `${chapterTitle} | You're Not Broken, You're Broadband`
-          : 'You’re Not Broken, You’re Broadband';
+          ? chapterTitle + ' | ' + bookTitle
+          : bookTitle;
       try {
         await navigator.share({
           title,
-          text: `Check out "${title}" on BookForge:`,
+          text: 'Check out "' + title + '" on BookForge:',
           url,
         });
       } catch (err) {
@@ -314,13 +310,12 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
       }
     });
 
-    // Download QR Code image
     downloadBtn?.addEventListener('click', () => {
       if (!canvas) return;
       const dataUrl = canvas.toDataURL('image/png');
       const filename =
         currentScope === 'chapter' && chapterTitle
-          ? `bookforge-qr-${chapterTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`
+          ? 'bookforge-qr-' + chapterTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png'
           : 'bookforge-qr-code.png';
 
       const a = document.createElement('a');
@@ -331,28 +326,24 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
       document.body.removeChild(a);
     });
 
-    // Dismiss on click outside
     document.addEventListener('click', (e) => {
-      const target = e.target as Node;
+      const target = e.target;
       if (dialog && !dialog.hidden && !dialog.contains(target) && !toggleBtn.contains(target)) {
         closeModal();
       }
     });
 
-    // Dismiss on Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && dialog && !dialog.hidden) {
         closeModal();
       }
     });
 
-    // Allow external elements (e.g. hero or footer buttons) to trigger share modal
     window.addEventListener('bookforge:open-share-modal', () => {
       openModal();
     });
   }
 
-  // Initialize on page load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initQrCodeModal);
   } else {
@@ -361,288 +352,34 @@ const isChapterPage = Boolean(currentSlug && currentChapterTitle);
 </script>
 
 <style>
-  .qr-share-wrapper {
-    position: relative;
-    display: inline-block;
-  }
-
-  .qr-share-btn {
-    background: var(--panel-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-  }
-
-  .qr-share-btn:hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-  }
-
-  .qr-share-btn:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 2px;
-  }
-
-  .qr-btn-icon {
-    display: inline-block;
-    flex-shrink: 0;
-    color: var(--accent-color);
-  }
-
-  .qr-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 450;
-    backdrop-filter: blur(2px);
-  }
-
-  .qr-dialog {
-    position: absolute;
-    top: calc(100% + 0.6rem);
-    right: 0;
-    width: 340px;
-    max-width: 92vw;
-    background-color: var(--panel-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
-    z-index: 500;
-    padding: 1.25rem;
-    animation: qrFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes qrFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-8px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  .qr-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 0.85rem;
-    padding-bottom: 0.65rem;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .qr-mini-tag {
-    font-size: 0.65rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: var(--accent-color);
-    display: block;
-    margin-bottom: 0.2rem;
-  }
-
-  .qr-title {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
-
-  .qr-close-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: color 0.15s ease, background-color 0.15s ease;
-  }
-
-  .qr-close-btn:hover {
-    color: var(--text-primary);
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-
-  .qr-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-
-  .qr-instruction {
-    font-size: 0.825rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-    margin: 0;
-  }
-
-  .qr-scope-selector {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.35rem;
-    background-color: var(--bg-color);
-    padding: 0.25rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-  }
-
-  .scope-btn {
-    background: transparent;
-    border: none;
-    padding: 0.4rem 0.5rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .scope-btn.active {
-    background-color: var(--panel-bg);
-    color: var(--accent-color);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .qr-card-container {
-    background-color: #ffffff;
-    padding: 1rem 0.75rem 0.75rem 0.75rem;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .qr-canvas {
-    width: 200px !important;
-    height: 200px !important;
-    display: block;
-    border-radius: 4px;
-  }
-
-  .qr-caption {
-    margin-top: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #475569;
-    text-align: center;
-    max-width: 220px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .qr-link-row {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  .qr-url-field {
-    flex: 1;
-    background-color: var(--bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 0.4rem 0.6rem;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    outline: none;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-  .qr-copy-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background-color: var(--accent-color);
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-    white-space: nowrap;
-  }
-
-  .qr-copy-btn:hover {
-    background-color: var(--accent-hover);
-  }
-
-  .qr-copy-btn.copied {
-    background-color: #10b981;
-  }
-
-  .qr-actions-row {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .qr-action-btn {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 0.45rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
-  }
-
-  .qr-action-btn:hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-  }
-
-  @media (max-width: 520px) {
-    .qr-dialog {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      right: auto;
-      transform: translate(-50%, -50%);
-      width: calc(100vw - 2rem);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    @keyframes qrFadeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -48%) scale(0.96);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-
-    .qr-btn-text {
-      display: none;
-    }
-  }
+  .qr-share-wrapper { position: relative; display: inline-block; }
+  .qr-share-btn { background: var(--panel-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.875rem; display: flex; align-items: center; gap: 0.45rem; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+  .qr-share-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+  .qr-share-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .qr-btn-icon { display: inline-block; flex-shrink: 0; color: var(--accent-color); }
+  .qr-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.4); z-index: 450; backdrop-filter: blur(2px); }
+  .qr-dialog { position: absolute; top: calc(100% + 0.6rem); right: 0; width: 340px; max-width: 92vw; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22); z-index: 500; padding: 1.25rem; animation: qrFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes qrFadeIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .qr-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.85rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border-color); }
+  .qr-mini-tag { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-color); display: block; margin-bottom: 0.2rem; }
+  .qr-title { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+  .qr-close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0.25rem; border-radius: 4px; transition: color 0.15s ease, background-color 0.15s ease; }
+  .qr-close-btn:hover { color: var(--text-primary); background-color: rgba(0, 0, 0, 0.05); }
+  .qr-body { display: flex; flex-direction: column; gap: 0.85rem; }
+  .qr-instruction { font-size: 0.825rem; color: var(--text-secondary); line-height: 1.4; margin: 0; }
+  .qr-scope-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; background-color: var(--bg-color); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border-color); }
+  .scope-btn { background: transparent; border: none; padding: 0.4rem 0.5rem; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); border-radius: 6px; cursor: pointer; transition: all 0.15s ease; }
+  .scope-btn.active { background-color: var(--panel-bg); color: var(--accent-color); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+  .qr-card-container { background-color: #ffffff; padding: 1rem 0.75rem 0.75rem 0.75rem; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .qr-canvas { width: 200px !important; height: 200px !important; display: block; border-radius: 4px; }
+  .qr-caption { margin-top: 0.5rem; font-size: 0.75rem; font-weight: 700; color: #475569; text-align: center; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .qr-link-row { display: flex; gap: 0.4rem; }
+  .qr-url-field { flex: 1; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.75rem; color: var(--text-secondary); outline: none; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+  .qr-copy-btn { display: inline-flex; align-items: center; gap: 0.3rem; background-color: var(--accent-color); color: #ffffff; border: none; border-radius: 6px; padding: 0.4rem 0.75rem; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease; white-space: nowrap; }
+  .qr-copy-btn:hover { background-color: var(--accent-hover); }
+  .qr-copy-btn.copied { background-color: #10b981; }
+  .qr-actions-row { display: flex; gap: 0.5rem; }
+  .qr-action-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.45rem 0.6rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease; }
+  .qr-action-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+  @media (max-width: 520px) { .qr-dialog { position: fixed; top: 50%; left: 50%; right: auto; transform: translate(-50%, -50%); width: calc(100vw - 2rem); max-height: 90vh; overflow-y: auto; } @keyframes qrFadeIn { from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } } .qr-btn-text { display: none; } }
 </style>

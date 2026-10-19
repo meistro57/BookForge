@@ -1,0 +1,249 @@
+---
+import BookLayout from '../../../../layouts/BookLayout.astro';
+import ChapterNavigation from '../../../../components/ChapterNavigation.astro';
+import ReadingProgressBar from '../../../../components/ReadingProgressBar.astro';
+import {
+  getAllChapters,
+  getPreviousChapter,
+  getNextChapter,
+  getChapterSlug,
+  getBookSlugFromChapter,
+  type ChapterEntry,
+} from '../../../../lib/chapters';
+import { listBooks, getBookBySlug, getBookSlug, type BookEntry } from '../../../../lib/books';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await listBooks();
+  const paths: { params: { book: string; slug: string }; props: { book: BookEntry; chapter: ChapterEntry } }[] = [];
+  for (const book of books) {
+    const bookSlug = getBookSlug(book);
+    const chapters = await getAllChapters(bookSlug);
+    for (const chapter of chapters) {
+      paths.push({
+        params: { book: bookSlug, slug: getChapterSlug(chapter) },
+        props: { book, chapter },
+      });
+    }
+  }
+  return paths;
+}
+
+interface Props {
+  book: BookEntry;
+  chapter: ChapterEntry;
+}
+
+const { book, chapter } = Astro.props;
+const bookSlug = getBookSlug(book);
+const slug = getChapterSlug(chapter);
+const { Content } = await render(chapter);
+
+const chapters = await getAllChapters(bookSlug);
+const prevChapter = await getPreviousChapter(bookSlug, slug);
+const nextChapter = await getNextChapter(bookSlug, slug);
+
+const partText = chapter.data.partTitle
+  ? 'Part ' + chapter.data.partNumber + ': ' + chapter.data.partTitle
+  : chapter.data.isFrontMatter
+  ? 'Front Matter'
+  : undefined;
+---
+
+<BookLayout
+  title={chapter.data.title}
+  description={chapter.data.description || book.data.description}
+  currentSlug={slug}
+  currentChapterTitle={chapter.data.title}
+  book={book}
+  bookSlug={bookSlug}
+>
+  <ReadingProgressBar
+    slug={slug}
+    title={chapter.data.title}
+    chapterNumber={chapter.data.chapterNumber}
+    totalChapters={chapters.length}
+    bookSlug={bookSlug}
+  />
+
+  <article class="reading-container">
+    <header class="chapter-header">
+      {partText && <span class="part-badge">{partText}</span>}
+      {chapter.data.chapterNumber && (
+        <span class="chapter-number">Chapter {chapter.data.chapterNumber}</span>
+      )}
+      <h1 class="chapter-title">{chapter.data.title}</h1>
+      {chapter.data.description && (
+        <p class="chapter-description">{chapter.data.description}</p>
+      )}
+    </header>
+
+    <div class="prose-content">
+      <Content />
+    </div>
+
+    <div class="chapter-share-bar">
+      <div class="share-bar-info">
+        <span class="share-bar-title">Share this chapter</span>
+        <span class="share-bar-desc">Point someone’s phone camera at the screen to open and read immediately.</span>
+      </div>
+      <button
+        id="chapter-share-qr-btn"
+        type="button"
+        class="chapter-share-btn"
+        aria-label="Open QR code for this chapter"
+        title="Share via QR Code"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+          <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+          <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+          <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+          <path d="M21 21v.01"></path>
+          <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+          <path d="M3 12h.01"></path>
+          <path d="M12 3h.01"></path>
+          <path d="M12 16v.01"></path>
+          <path d="M16 12h1"></path>
+          <path d="M21 12v.01"></path>
+          <path d="M12 21v-1"></path>
+        </svg>
+        <span>Share QR</span>
+      </button>
+    </div>
+
+    <footer>
+      <ChapterNavigation
+        prevChapter={prevChapter}
+        nextChapter={nextChapter}
+        contentsLink={undefined}
+        bookSlug={bookSlug}
+      />
+    </footer>
+  </article>
+
+  <button
+    id="back-to-top-btn"
+    class="back-to-top-btn"
+    aria-label="Back to top of page"
+    hidden
+  >
+    ↑ Top
+  </button>
+</BookLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const headings = document.querySelectorAll(
+      '.prose-content h1, .prose-content h2, .prose-content h3, .prose-content h4'
+    );
+    headings.forEach((heading) => {
+      if (!heading.id) {
+        const text = heading.textContent || '';
+        heading.id = text
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+      const anchor = document.createElement('a');
+      anchor.href = '#' + heading.id;
+      anchor.className = 'heading-anchor';
+      anchor.setAttribute('aria-label', 'Link to section: ' + heading.textContent);
+      anchor.textContent = '#';
+      heading.appendChild(anchor);
+    });
+
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    const readPctEl = document.getElementById('header-read-pct');
+
+    function updateScrollState() {
+      const scrollY = window.scrollY;
+
+      if (backToTopBtn) {
+        backToTopBtn.hidden = scrollY <= 400;
+      }
+
+      if (readPctEl) {
+        const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = scrollTotal > 0 ? Math.min(100, Math.max(0, Math.round((scrollY / scrollTotal) * 100))) : 0;
+        readPctEl.textContent = pct + '%';
+      }
+    }
+
+    window.addEventListener('scroll', updateScrollState);
+    updateScrollState();
+
+    backToTopBtn?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const active = document.activeElement;
+      const isFormControl =
+        active &&
+        (active.tagName === 'INPUT' ||
+          active.tagName === 'TEXTAREA' ||
+          active.tagName === 'SELECT' ||
+          active.isContentEditable);
+
+      if (isFormControl) return;
+
+      if (e.key === 'ArrowLeft') {
+        const prevLink = document.querySelector('.nav-prev a');
+        if (prevLink && prevLink.href) {
+          window.location.href = prevLink.href;
+        }
+      } else if (e.key === 'ArrowRight') {
+        const nextLink = document.querySelector('.nav-next a');
+        if (nextLink && nextLink.href) {
+          window.location.href = nextLink.href;
+        }
+      }
+    });
+
+    const chapterShareBtn = document.getElementById('chapter-share-qr-btn');
+    chapterShareBtn?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('bookforge:open-share-modal'));
+    });
+  });
+</script>
+
+<style>
+  .reading-container { width: 100%; max-width: var(--reader-max-width, 70ch); margin: 0 auto; padding: 3rem 1.5rem 5rem; box-sizing: border-box; }
+  .chapter-header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-color); }
+  .part-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-color); background-color: rgba(2, 132, 199, 0.1); padding: 0.25rem 0.65rem; border-radius: 4px; margin-bottom: 0.75rem; }
+  .chapter-number { display: block; font-size: 0.9375rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 0.5rem; }
+  .chapter-title { font-size: 2.25rem; font-weight: 800; line-height: 1.25; color: var(--text-primary); letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+  .chapter-description { font-size: 1.125rem; color: var(--text-secondary); font-style: italic; line-height: 1.5; }
+  .prose-content { font-family: var(--reader-font-family, var(--font-serif)); font-size: var(--reader-font-size, 1.125rem); line-height: var(--reader-line-height, 1.8); color: var(--text-primary); }
+  .prose-content :global(p) { margin-bottom: 1.75rem; overflow-wrap: break-word; word-break: break-word; }
+  .prose-content :global(h1), .prose-content :global(h2), .prose-content :global(h3), .prose-content :global(h4) { font-family: var(--font-sans); font-weight: 700; line-height: 1.3; color: var(--text-primary); margin-top: 2.5rem; margin-bottom: 1.25rem; position: relative; }
+  .prose-content :global(h1) { font-size: 1.85rem; }
+  .prose-content :global(h2) { font-size: 1.5rem; }
+  .prose-content :global(h3) { font-size: 1.25rem; }
+  .prose-content :global(.heading-anchor) { opacity: 0; margin-left: 0.5rem; color: var(--accent-color); text-decoration: none; font-size: 0.85em; transition: opacity 0.2s ease; }
+  .prose-content :global(:is(h1, h2, h3, h4):hover .heading-anchor), .prose-content :global(.heading-anchor:focus-visible) { opacity: 1; }
+  .prose-content :global(blockquote) { border-left: 3px solid var(--accent-color); padding-left: 1.25rem; margin: 2rem 0; font-style: italic; color: var(--text-secondary); }
+  .prose-content :global(hr) { border: none; border-top: 1px solid var(--border-color); margin: 3rem 0; }
+  .prose-content :global(ul), .prose-content :global(ol) { margin-bottom: 1.75rem; padding-left: 1.75rem; }
+  .prose-content :global(li) { margin-bottom: 0.5rem; }
+  .prose-content :global(a) { color: var(--accent-color); text-decoration: underline; }
+  .prose-content :global(a:focus-visible) { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .back-to-top-btn { position: fixed; bottom: 2rem; right: 2rem; background-color: var(--panel-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem 1.1rem; border-radius: 9999px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); z-index: 900; transition: transform 0.2s ease, border-color 0.2s ease; }
+  .back-to-top-btn:hover { border-color: var(--accent-color); color: var(--accent-color); transform: translateY(-2px); }
+  .back-to-top-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .chapter-share-bar { margin-top: 3.5rem; margin-bottom: 2rem; padding: 1.25rem 1.5rem; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .share-bar-info { display: flex; flex-direction: column; gap: 0.2rem; }
+  .share-bar-title { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+  .share-bar-desc { font-size: 0.825rem; color: var(--text-secondary); }
+  .chapter-share-btn { display: inline-flex; align-items: center; gap: 0.45rem; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem 0.9rem; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.15s ease; }
+  .chapter-share-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+  .chapter-share-btn svg { color: var(--accent-color); }
+  @media (max-width: 640px) {
+    .reading-container { padding: 1.75rem 1rem 3rem; }
+    .chapter-title { font-size: 1.75rem; }
+    .chapter-share-bar { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
+    .chapter-share-btn { width: 100%; justify-content: center; }
+    .back-to-top-btn { bottom: 1.5rem; right: 1.25rem; padding: 0.5rem 0.85rem; }
+  }
+</style>

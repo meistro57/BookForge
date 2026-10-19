@@ -4,7 +4,9 @@ import ReaderControls from '../components/ReaderControls.astro';
 import TocSlideout from '../components/TocSlideout.astro';
 import HowToUseCard from '../components/HowToUseCard.astro';
 import QrCodeModal from '../components/QrCodeModal.astro';
-import { getUrl } from '../lib/chapters';
+import { getUrl } from '../lib/utils';
+import type { BookEntry } from '../lib/books';
+import { bookThemeStyle, bookStorageNamespace } from '../lib/theme';
 
 interface Props {
   title: string;
@@ -12,61 +14,69 @@ interface Props {
   currentSlug?: string;
   currentChapterTitle?: string;
   ogImage?: string;
+  book?: BookEntry;
+  bookSlug?: string;
 }
 
 const {
   title,
-  description = 'You’re Not Broken, You’re Broadband: Twenty Years of Reverse Engineering an ADHD Brain by Mark J. Hubrich.',
+  description = '',
   currentSlug = '',
   currentChapterTitle = '',
-  ogImage = 'images/book_cover.jpg',
+  ogImage = '',
+  book,
+  bookSlug = '',
 } = Astro.props;
 
 const siteUrl = 'https://quantummindsunited.com';
 const currentPath = Astro.url.pathname;
 const canonicalUrl = new URL(currentPath, siteUrl).href;
-const fullOgImageUrl = new URL(getUrl(ogImage), siteUrl).href;
-const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
+
+const bookTitle = book?.data.title || '';
+const author = book?.data.author || '';
+const metaDescription = description || book?.data.description || 'BookForge — a calm room built to hold a manuscript.';
+const metaAuthor = author || 'BookForge';
+const metaOgImage = ogImage || book?.data.ogImage || book?.data.cover || '';
+const fullOgImageUrl = metaOgImage ? new URL(getUrl(metaOgImage), siteUrl).href : '';
+const pageTitle = bookTitle ? title + ' | ' + bookTitle : title;
+const themeStyle = book ? bookThemeStyle(book) : '';
+const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style={themeStyle} data-book-slug={ns}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
 
-    <!-- Meta Description & Author -->
-    <meta name="description" content={description} />
-    <meta name="author" content="Mark J. Hubrich" />
+    <meta name="description" content={metaDescription} />
+    <meta name="author" content={metaAuthor} />
 
-    <!-- Canonical URL -->
     <link rel="canonical" href={canonicalUrl} />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href={getUrl('images/BookForge_Logo.png')} />
 
-    <!-- Open Graph Metadata -->
     <meta property="og:site_name" content="BookForge" />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="book" />
-    <meta property="og:image" content={fullOgImageUrl} />
+    {fullOgImageUrl && <meta property="og:image" content={fullOgImageUrl} />}
 
-    <!-- Twitter Card Metadata -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={fullOgImageUrl} />
+    <meta name="twitter:description" content={metaDescription} />
+    {fullOgImageUrl && <meta name="twitter:image" content={fullOgImageUrl} />}
 
     <!-- Immediate preference application to eliminate layout & theme flashing -->
     <script is:inline>
       (function () {
         try {
-          var item = localStorage.getItem('bookforge_reader_prefs');
-          var prefs = item ? JSON.parse(item) : {};
           var doc = document.documentElement;
+          var ns = doc.getAttribute('data-book-slug') || '';
+          var item = localStorage.getItem('bookforge:' + ns + ':prefs');
+          var prefs = item ? JSON.parse(item) : {};
           doc.setAttribute('data-theme', prefs.theme || 'light');
           doc.setAttribute('data-font-size', prefs.fontSize || 'default');
           doc.setAttribute('data-line-spacing', prefs.lineSpacing || 'comfortable');
@@ -77,14 +87,12 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
     </script>
   </head>
   <body>
-    <!-- Skip to Content Link for Keyboard & Screen Reader Users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Sticky Reading Header -->
     <header class="site-header">
       <div class="header-inner">
         <div class="header-left">
-          <TocSlideout currentSlug={currentSlug} />
+          <TocSlideout currentSlug={currentSlug} bookSlug={ns} />
           <a href={getUrl('/')} class="brand-link" aria-label="BookForge Homepage">
             <img
               src={getUrl('images/BookForge_Logo.png')}
@@ -107,9 +115,9 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
         )}
 
         <div class="header-right">
-          <QrCodeModal currentSlug={currentSlug} currentChapterTitle={currentChapterTitle} />
+          <QrCodeModal currentSlug={currentSlug} currentChapterTitle={currentChapterTitle} bookTitle={bookTitle} />
           <HowToUseCard />
-          <ReaderControls />
+          <ReaderControls bookSlug={ns} />
         </div>
       </div>
     </header>
@@ -136,7 +144,6 @@ const pageTitle = `${title} | You’re Not Broken, You’re Broadband`;
 </html>
 
 <style>
-  /* Skip Link for Accessibility */
   .skip-link {
     position: absolute;
     top: -100px;

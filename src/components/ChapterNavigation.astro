@@ -6,15 +6,19 @@ interface Props {
   prevChapter?: ChapterEntry;
   nextChapter?: ChapterEntry;
   contentsLink?: string;
+  bookSlug?: string;
 }
 
-const { prevChapter, nextChapter, contentsLink = getUrl('/') } = Astro.props;
+const { prevChapter, nextChapter, contentsLink, bookSlug = '' } = Astro.props;
+const linkBase = bookSlug ? '/books/' + bookSlug + '/chapter/' : '/chapter/';
+const fallbackContents = getUrl('/');
+const resolvedContents = contentsLink || (bookSlug ? getUrl('/books/' + bookSlug + '/') : fallbackContents);
 ---
 
 <nav class="chapter-nav" aria-label="Chapter Navigation">
   <div class="nav-item nav-prev">
     {prevChapter ? (
-      <a href={getUrl(`/chapter/${getChapterSlug(prevChapter)}/`)} class="nav-link" rel="prev">
+      <a href={getUrl(linkBase + getChapterSlug(prevChapter) + '/')} class="nav-link" rel="prev">
         <span class="nav-label">← Previous</span>
         <span class="nav-title">{prevChapter.data.title}</span>
       </a>
@@ -27,7 +31,7 @@ const { prevChapter, nextChapter, contentsLink = getUrl('/') } = Astro.props;
   </div>
 
   <div class="nav-item nav-contents">
-    <a href={contentsLink} class="nav-link contents-link" aria-label="Return to Table of Contents">
+    <a href={resolvedContents} class="nav-link contents-link" aria-label="Return to Table of Contents">
       <span class="nav-icon">☰</span>
       <span class="nav-label">Contents</span>
     </a>
@@ -35,7 +39,7 @@ const { prevChapter, nextChapter, contentsLink = getUrl('/') } = Astro.props;
 
   <div class="nav-item nav-next">
     {nextChapter ? (
-      <a href={getUrl(`/chapter/${getChapterSlug(nextChapter)}/`)} class="nav-link" rel="next">
+      <a href={getUrl(linkBase + getChapterSlug(nextChapter) + '/')} class="nav-link" rel="next">
         <span class="nav-label">Next →</span>
         <span class="nav-title">{nextChapter.data.title}</span>
       </a>
@@ -111,17 +115,6 @@ const { prevChapter, nextChapter, contentsLink = getUrl('/') } = Astro.props;
     margin-bottom: 0.25rem;
   }
 
-  .nav-title {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--text-primary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
   .nav-disabled {
     padding: 0.75rem 1rem;
     opacity: 0.4;
@@ -131,6 +124,17 @@ const { prevChapter, nextChapter, contentsLink = getUrl('/') } = Astro.props;
     font-size: 1.25rem;
     line-height: 1;
     margin-bottom: 0.2rem;
+  }
+
+  .nav-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   @media (max-width: 640px) {

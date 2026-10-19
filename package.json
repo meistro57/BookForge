@@ -18,5 +18,8 @@
     "@types/qrcode": "^1.5.6",
     "astro": "^7.1.6",
     "qrcode": "^1.5.4"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }
