@@ -1,0 +1,11 @@
+# Justified protected-term deltas for run_tests.py
+#
+# Lines here whitelist a specific, logged removal where a protected term was
+# legitimately deleted because it appeared INSIDE a removed session-chatter block.
+# Format (one per line):
+#   <term>|<expected_delta>|<short reason>
+#
+# This keeps the protected-term check strict, but lets us record WHY a count
+# legitimately changed, instead of silently passing or failing blindly.
+
+Meistro Manual|-1|Removed with Chap-10 "rename the chat" UI-instruction block ("The Meistro Manual | Writing the Book")

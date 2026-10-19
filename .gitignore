@@ -19,3 +19,7 @@ yarn-error.log*
 # Large media files
 *.mp3
 public/audio/*.mp3
+
+# python
+__pycache__/
+*.pyc
