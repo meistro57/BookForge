@@ -1,0 +1,28 @@
+{
+  "slug": "the-meistro-manual",
+  "title": "THE MEISTRO MANUAL",
+  "author": "Mark Hubrich",
+  "subtitle": "A Field Guide to Discovering How You Really Work",
+  "description": "An investigation into the mind, identity, curiosity, experience, and the art of understanding yourself — with Eli as AI research and writing collaborator.",
+  "cover": "",
+  "ogImage": "",
+  "order": 2,
+  "theme": {
+    "palette": {
+      "bg": "#fbf7ef",
+      "panel": "#fffdf7",
+      "textPrimary": "#2b2118",
+      "textSecondary": "#7a6a55",
+      "accent": "#b45309",
+      "border": "#e7dcc8"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "parchment"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
