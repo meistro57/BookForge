@@ -1,8 +1,9 @@
 import type { BookEntry } from './books';
 
 /**
- * Compute CSS custom properties (inline style string) from a book.json theme block.
- * Falls back to the global :root defaults for any missing value.
+ * Compute the book's authored theme as a scoped CSS block string.
+ * Scoped to html[data-book-theme] so the reader's transient theme
+ * (Light / Warm Paper / Dark) can override the book palette via data-theme.
  */
 export function bookThemeStyle(book: BookEntry): string {
   const palette = book.data.theme?.palette || {};
@@ -21,11 +22,13 @@ export function bookThemeStyle(book: BookEntry): string {
   if (font.serif) vars['--font-serif'] = font.serif;
   if (font.sans) vars['--font-sans'] = font.sans;
 
-  const parts: string[] = [];
+  const decls: string[] = [];
   for (const k of Object.keys(vars)) {
-    parts.push(k + ':' + vars[k]);
+    decls.push(k + ':' + vars[k]);
   }
-  return parts.join(';') + ';';
+
+  // Default layer: applies only when no transient data-theme override is chosen.
+  return 'html[data-book-theme] {' + decls.join(';') + ';}';
 }
 
 /**
@@ -34,3 +37,4 @@ export function bookThemeStyle(book: BookEntry): string {
 export function bookStorageNamespace(book: BookEntry): string {
   return book.data.slug || book.slug || book.id;
 }
+

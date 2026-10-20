@@ -44,8 +44,9 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
 ---
 
 <!DOCTYPE html>
-<html lang="en" style={themeStyle} data-book-slug={ns}>
+<html lang="en" data-book-slug={ns} data-book-theme={ns ? "true" : undefined}>
   <head>
+    {themeStyle && <style set:html={themeStyle} />}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
@@ -285,3 +286,4 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
     }
   }
 </style>
+
