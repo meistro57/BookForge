@@ -4,8 +4,8 @@
   "author": "Mark Hubrich",
   "subtitle": "A Field Guide to Discovering How You Really Work",
   "description": "An investigation into the mind, identity, curiosity, experience, and the art of understanding yourself — with Eli as AI research and writing collaborator.",
-  "cover": "",
-  "ogImage": "",
+  "cover": "images/meistro-manual-cover.png",
+  "ogImage": "images/meistro-manual-cover.png",
   "order": 2,
   "theme": {
     "palette": {
