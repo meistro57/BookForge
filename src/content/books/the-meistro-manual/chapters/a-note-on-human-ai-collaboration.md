@@ -1,7 +1,7 @@
 ---
 title: "A Note on Human-AI Collaboration"
 order: 47
-isFrontMatter: true
+isFrontMatter: false
 slug: "a-note-on-human-ai-collaboration"
 ---
 

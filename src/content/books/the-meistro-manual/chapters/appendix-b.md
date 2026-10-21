@@ -1,7 +1,7 @@
 ---
 title: "Appendix B: The Personal Observation Journal"
 order: 42
-isFrontMatter: true
+isFrontMatter: false
 slug: "appendix-b"
 ---
 

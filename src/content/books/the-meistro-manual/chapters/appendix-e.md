@@ -1,7 +1,7 @@
 ---
 title: "Appendix E: The Personal Operating Manual Template"
 order: 45
-isFrontMatter: true
+isFrontMatter: false
 slug: "appendix-e"
 ---
 

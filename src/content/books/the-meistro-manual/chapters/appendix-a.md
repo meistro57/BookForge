@@ -1,7 +1,7 @@
 ---
 title: "Appendix A: The Meistro Self-Discovery Interview"
 order: 41
-isFrontMatter: true
+isFrontMatter: false
 slug: "appendix-a"
 ---
 

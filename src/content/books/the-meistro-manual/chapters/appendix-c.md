@@ -1,7 +1,7 @@
 ---
 title: "Appendix C: The Cognitive Pattern Mapping Workbook"
 order: 43
-isFrontMatter: true
+isFrontMatter: false
 slug: "appendix-c"
 ---
 

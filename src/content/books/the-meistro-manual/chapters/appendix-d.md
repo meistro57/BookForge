@@ -1,7 +1,7 @@
 ---
 title: "Appendix D: The Capability Loop Experiment"
 order: 44
-isFrontMatter: true
+isFrontMatter: false
 slug: "appendix-d"
 ---
 

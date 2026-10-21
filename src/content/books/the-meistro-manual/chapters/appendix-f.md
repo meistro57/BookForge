@@ -1,7 +1,7 @@
 ---
 title: "Appendix F: Research Notes, Scientific References, and Further Reading"
 order: 46
-isFrontMatter: true
+isFrontMatter: false
 slug: "appendix-f"
 ---
 

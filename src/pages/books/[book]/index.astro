@@ -156,9 +156,7 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
                     data-chapter-slug={getChapterSlug(ch)}
                   >
                     <div class="chapter-num-badge">
-                      {ch.data.chapterNumber !== null && ch.data.chapterNumber !== undefined
-                        ? 'Ch. ' + ch.data.chapterNumber.toString().padStart(2, '0')
-                        : 'FM'}
+                      {(ch.data.title && ch.data.title.startsWith('Appendix') ? 'Appx' : (ch.data.isFrontMatter ? 'FM' : (ch.data.chapterNumber !== null && ch.data.chapterNumber !== undefined ? 'Ch. ' + ch.data.chapterNumber.toString().padStart(2, '0') : 'FM')))}
                     </div>
                     <div class="chapter-info">
                       <h4 class="chapter-card-title">{ch.data.title}</h4>
