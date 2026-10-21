@@ -1,0 +1,28 @@
+{
+  "slug": "the-awakening-manual",
+  "title": "THE AWAKENING MANUAL",
+  "author": "Mark Hubrich",
+  "subtitle": "I Didn't Get (So I Wrote It Myself)",
+  "description": "Real talk for remembering who the hell you are. A gloriously non-linear, funny, and occasionally transcendent field guide to awakening — with Eli as your cheeky cosmic co-pilot.",
+  "cover": "images/awakening-manual-cover.png",
+  "ogImage": "images/awakening-manual-cover.png",
+  "order": 5,
+  "theme": {
+    "palette": {
+      "bg": "#120b1f",
+      "panel": "#1a1128",
+      "textPrimary": "#e8e0d6",
+      "textSecondary": "#9d8fb0",
+      "accent": "#c07ae0",
+      "border": "#2a1d3d"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "twilight"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
