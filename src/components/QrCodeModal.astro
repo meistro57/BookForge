@@ -9,7 +9,7 @@ interface Props {
 
 const { currentSlug = '', currentChapterTitle = '', bookTitle = '' } = Astro.props;
 
-const siteUrl = 'https://quantummindsunited.com';
+const siteUrl = 'https://meistro57.github.io';
 const currentPath = Astro.url.pathname;
 const chapterUrl = new URL(currentPath, siteUrl).href;
 const homeUrl = new URL(getUrl('/'), siteUrl).href;
