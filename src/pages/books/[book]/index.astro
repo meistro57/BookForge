@@ -28,6 +28,7 @@ const title = book.data.title;
 const author = book.data.author;
 const subtitle = book.data.subtitle || '';
 const description = book.data.description || '';
+const badge = book.data.badge || '';
 const cover = book.data.cover || 'images/book_cover.jpg';
 
 function formatPartHeader(partNumber: number | null, partTitle: string): string {
@@ -55,6 +56,7 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
         </div>
 
         <div class="hero-content">
+          {badge && (
           <div class="blueprint-tag">
             <img
               src={getUrl('images/BookForge_Logo.png')}
@@ -64,8 +66,9 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
               height="18"
               aria-hidden="true"
             />
-            <span>STRUCTURAL STEEL EDITION • REVERSE ENGINEERED</span>
+            <span>{badge}</span>
           </div>
+          )}
           <h1 class="hero-title">{title}</h1>
           {subtitle && <p class="hero-subtitle">{subtitle}</p>}
           <p class="hero-author">By <strong>{author}</strong></p>

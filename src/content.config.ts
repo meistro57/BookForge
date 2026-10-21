@@ -9,6 +9,7 @@ const books = defineCollection({
     author: z.string(),
     subtitle: z.string().optional(),
     description: z.string().optional(),
+    badge: z.string().optional(),
     cover: z.string().optional(),
     ogImage: z.string().optional(),
     theme: z
