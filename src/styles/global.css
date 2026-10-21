@@ -56,6 +56,26 @@ html[data-theme="dark"] {
   --border-color: #334155;
 }
 
+html[data-theme="slate"] {
+  --bg-color: #1a1f2b;
+  --panel-bg: #232936;
+  --text-primary: #e6e9f0;
+  --text-secondary: #8a93a6;
+  --accent-color: #7aa2c4;
+  --accent-hover: #9dbfdd;
+  --border-color: #333c4d;
+}
+
+html[data-theme="honey-bee"] {
+  --bg-color: #1f1a10;
+  --panel-bg: #2b2414;
+  --text-primary: #f4e8c8;
+  --text-secondary: #b8a875;
+  --accent-color: #e8a520;
+  --accent-hover: #f6bc3c;
+  --border-color: #463a1f;
+}
+
 /* System Dark Mode Fallback if data-theme is unset */
 @media (prefers-color-scheme: dark) {
   html:not([data-theme]) {
