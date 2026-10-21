@@ -1,0 +1,28 @@
+{
+  "slug": "the-imaginal-human",
+  "title": "THE IMAGINAL HUMAN",
+  "author": "Mark Hubrich",
+  "subtitle": "Awakening Your Creative Power",
+  "description": "Imagination is not pretend — it's the original technology of the soul. A transmission on reclaiming the creative power that was quietly shamed out of you.",
+  "cover": "images/imaginal-human-cover.png",
+  "ogImage": "images/imaginal-human-cover.png",
+  "order": 3,
+  "theme": {
+    "palette": {
+      "bg": "#0b1f2a",
+      "panel": "#102936",
+      "textPrimary": "#e8e0d0",
+      "textSecondary": "#9cb3b8",
+      "accent": "#e8893a",
+      "border": "#1d3a48"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "cosmic"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
