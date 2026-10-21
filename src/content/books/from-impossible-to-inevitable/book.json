@@ -1,0 +1,28 @@
+{
+  "slug": "from-impossible-to-inevitable",
+  "title": "FROM IMPOSSIBLE TO INEVITABLE",
+  "author": "Mark Hubrich & Eli",
+  "subtitle": "A Field Guide to the Collapse of Limits",
+  "description": "What happens when the impossible becomes the default. A field guide to the post-impossible era — quantum, biology, light-speed intelligence, and the 7-step pattern behind every breakthrough.",
+  "cover": "images/from-impossible-cover.png",
+  "ogImage": "images/from-impossible-cover.png",
+  "order": 4,
+  "theme": {
+    "palette": {
+      "bg": "#080d18",
+      "panel": "#0d1424",
+      "textPrimary": "#e8e3d5",
+      "textSecondary": "#8fa0b0",
+      "accent": "#e8893a",
+      "border": "#1d2a3d"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "deep-space"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
