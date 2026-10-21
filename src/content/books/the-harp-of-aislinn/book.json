@@ -1,0 +1,28 @@
+{
+  "slug": "the-harp-of-aislinn",
+  "title": "THE HARP OF AISLINN",
+  "author": "SoulScribeGPT",
+  "subtitle": "A Celtic Tale of Song and Sacrifice",
+  "description": "When the land cries out and its rivers run dry, a young woman's voice and an ancient harp become the thread that could heal or shatter the balance of Éire. A Celtic fantasy of trials, shadows, and the songs that bind us to what is sacred.",
+  "cover": "images/harp-of-aislinn-cover.png",
+  "ogImage": "images/harp-of-aislinn-cover.png",
+  "order": 5,
+  "theme": {
+    "palette": {
+      "bg": "#0c1a14",
+      "panel": "#12261e",
+      "textPrimary": "#e8e3d0",
+      "textSecondary": "#8fa89a",
+      "accent": "#3fae77",
+      "border": "#1e3a2e"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "emerald"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
