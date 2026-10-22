@@ -45,7 +45,22 @@ const books = defineCollection({
 });
 
 const chapters = defineCollection({
-  loader: glob({ pattern: '**/chapters/*.md', base: './src/content/books' }),
+  loader: glob({
+    pattern: '**/chapters/*.md',
+    base: './src/content/books',
+    // Chapters live under <book>/chapters/<file>.md and share generic filenames
+    // (ch-1.md ... ch-N.md) across multiple books. Derive a globally unique id
+    // from the full path so entries don't collide in the content collection, and
+    // so getBookSlugFromChapter can recover the owning book slug.
+    generateId: ({ entry }) => {
+      const parts = entry.split('/');
+      const chaptersIdx = parts.indexOf('chapters');
+      if (chaptersIdx > 0) {
+        return parts.slice(0, chaptersIdx + 1).join('/') + '/' + parts[chaptersIdx + 1];
+      }
+      return entry;
+    },
+  }),
   schema: z.object({
     title: z.string(),
     chapterNumber: z.number().optional().nullable(),
