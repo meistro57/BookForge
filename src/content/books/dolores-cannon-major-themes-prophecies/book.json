@@ -1,0 +1,29 @@
+{
+  "slug": "dolores-cannon-major-themes-prophecies",
+  "title": "DOLORES CANNON: MAJOR THEMES & PROPHECIES",
+  "author": "Mark Hubrich",
+  "subtitle": "Correlations with History, Today's World, and Future Trends",
+  "description": "A thematic examination of Dolores Cannon's major prophecies and metaphysical themes, cross-referenced against documented history, current world developments, and emerging trends.",
+  "badge": "RESEARCH REPORT",
+  "cover": "images/book_cover.jpg",
+  "ogImage": "images/book_cover.jpg",
+  "order": 6,
+  "theme": {
+    "palette": {
+      "bg": "#0d0a14",
+      "panel": "#16111f",
+      "textPrimary": "#e8e0f0",
+      "textSecondary": "#9a8fae",
+      "accent": "#8f6fd0",
+      "border": "#2a1f3a"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "celestial"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
