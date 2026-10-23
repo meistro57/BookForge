@@ -46,7 +46,11 @@ const title = book.data.title || '';
         </div>
       </div>
 
-      <div class="chapter-list">
+      <button type="button" class="chapter-toggle" id="audiobook-chapter-toggle" aria-expanded="false" aria-controls="audiobook-chapter-list">
+        Show chapters ({chapters.length})
+      </button>
+
+      <div class="chapter-list" id="audiobook-chapter-list">
         {chapters.map((ch, i) => (
           <div class="chapter-row">
             <div class="chapter-index">{String(i + 1).padStart(2, '0')}</div>
@@ -83,7 +87,12 @@ const title = book.data.title || '';
   .audiobook-narrator { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1rem; }
   .audiobook-description { font-size: 1rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 0; }
   .audiobook-description code, .audiobook-status code { font-family: var(--font-sans); background-color: rgba(2, 132, 199, 0.08); color: var(--accent-color); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em; }
-  .chapter-list { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .chapter-toggle { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; padding: 0.6rem 1.1rem; font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; }
+  .chapter-toggle:hover { background-color: var(--bg-color); border-color: var(--accent-color); }
+  .chapter-toggle::after { content: '▾'; font-size: 0.8em; transition: transform 0.15s ease; }
+  .chapter-toggle[aria-expanded='true']::after { transform: rotate(180deg); }
+  .chapter-list { margin-top: 1rem; display: none; flex-direction: column; gap: 0.5rem; }
+  .chapter-list.open { display: flex; }
   .chapter-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.75rem 1rem; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; }
   .chapter-index { font-family: var(--font-sans); font-size: 0.85rem; font-weight: 800; color: var(--accent-color); min-width: 2rem; padding-top: 0.4rem; text-align: right; }
   .chapter-body { flex: 1; }
@@ -99,3 +108,16 @@ const title = book.data.title || '';
     .chapter-index { text-align: left; }
   }
 </style>
+
+<script>
+  const toggle = document.getElementById('audiobook-chapter-toggle');
+  const list = document.getElementById('audiobook-chapter-list');
+  if (toggle && list) {
+    toggle.addEventListener('click', () => {
+      const open = list.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      const label = toggle.querySelector('.chapter-toggle-label');
+      if (label) label.textContent = open ? 'Hide chapters' : 'Show chapters (' + list.children.length + ')';
+    });
+  }
+</script>
