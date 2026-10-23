@@ -24,6 +24,8 @@
     "mood": "parchment"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Mark Hubrich",
+    "audioUrl": "https://quantummindsunited.com/books/audio/The%20Meistro%20Manual.m4b"
   }
 }

@@ -45,6 +45,7 @@ const title = book.data.title || '';
 
           <div class="audio-player-wrapper">
             <audio controls preload="none" class="custom-audio-player">
+              <source src={getUrl(audioUrl)} type="audio/mp4" />
               <source src={getUrl(audioUrl)} type="audio/mpeg" />
               Your browser does not support the audio element.
             </audio>
