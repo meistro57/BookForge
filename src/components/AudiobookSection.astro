@@ -10,7 +10,8 @@ const { book } = Astro.props;
 const audiobook = book.data.audiobook;
 const enabled = audiobook?.enabled ?? false;
 const narrator = audiobook?.narrator || '';
-const audioUrl = audiobook?.audioUrl || '';
+const chaptersUrl = audiobook?.chaptersUrl || '';
+const chapters = (audiobook?.chapters || []) as Array<{ title: string; file: string }>;
 const cover = book.data.cover || 'images/book_cover.jpg';
 const title = book.data.title || '';
 ---
@@ -35,27 +36,35 @@ const title = book.data.title || '';
         </div>
 
         <div class="audiobook-info-col">
-          <div class="blueprint-badge">AUDIOBOOK • FULL RECORDING</div>
+          <div class="blueprint-badge">AUDIOBOOK • {chapters.length} CHAPTERS</div>
           <h3 class="audiobook-title">{title}</h3>
           {narrator && <p class="audiobook-narrator">Narrated by {narrator}</p>}
           <p class="audiobook-description">
-            The complete, full-length audio recording of the manuscript. Press play to listen, or use the
-            player controls to scrub to any point in the book.
+            The complete, full-length audio recording of the manuscript. Select a chapter below to listen,
+            or pick up wherever you left off.
           </p>
-
-          <div class="audio-player-wrapper">
-            <audio controls preload="none" class="custom-audio-player">
-              <source src={getUrl(audioUrl)} type="audio/mp4" />
-              <source src={getUrl(audioUrl)} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
-
-          <div class="audiobook-status">
-            <span class="status-icon">🎙️</span>
-            <span>Full audiobook now available{narrator ? ' — narrated by ' + narrator + '.' : '.'}</span>
-          </div>
         </div>
+      </div>
+
+      <div class="chapter-list">
+        {chapters.map((ch, i) => (
+          <div class="chapter-row">
+            <div class="chapter-index">{String(i + 1).padStart(2, '0')}</div>
+            <div class="chapter-body">
+              <div class="chapter-title">{ch.title}</div>
+              <audio controls preload="none" class="chapter-player">
+                <source src={chaptersUrl + encodeURIComponent(ch.file)} type="audio/mp4" />
+                <source src={chaptersUrl + encodeURIComponent(ch.file)} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="audiobook-status">
+        <span class="status-icon">🎙️</span>
+        <span>Full audiobook now available{narrator ? ' — narrated by ' + narrator + '.' : '.'}</span>
       </div>
     </div>
   </section>
@@ -72,15 +81,21 @@ const title = book.data.title || '';
   .blueprint-badge { display: inline-block; font-family: var(--font-sans); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-color); background-color: rgba(2, 132, 199, 0.08); border: 1px dashed var(--accent-color); padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 0.75rem; }
   .audiobook-title { font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.3rem; }
   .audiobook-narrator { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1rem; }
-  .audiobook-description { font-size: 1rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1.5rem; }
+  .audiobook-description { font-size: 1rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 0; }
   .audiobook-description code, .audiobook-status code { font-family: var(--font-sans); background-color: rgba(2, 132, 199, 0.08); color: var(--accent-color); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em; }
-  .audio-player-wrapper { margin-bottom: 1.5rem; }
-  .custom-audio-player { width: 100%; max-width: 500px; border-radius: 6px; }
-  .audiobook-status { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary); }
+  .chapter-list { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .chapter-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.75rem 1rem; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; }
+  .chapter-index { font-family: var(--font-sans); font-size: 0.85rem; font-weight: 800; color: var(--accent-color); min-width: 2rem; padding-top: 0.4rem; text-align: right; }
+  .chapter-body { flex: 1; }
+  .chapter-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem; }
+  .chapter-player { width: 100%; max-width: 520px; }
+  .audiobook-status { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary); margin-top: 1.5rem; }
   .status-icon { font-size: 1.1rem; }
   @media (max-width: 768px) {
     .audiobook-card { grid-template-columns: 1fr; gap: 1.75rem; padding: 1.5rem; }
     .audiobook-cover-col { max-width: 200px; margin: 0 auto; }
     .audiobook-main-title { font-size: 1.85rem; }
+    .chapter-row { flex-direction: column; gap: 0.5rem; }
+    .chapter-index { text-align: left; }
   }
 </style>

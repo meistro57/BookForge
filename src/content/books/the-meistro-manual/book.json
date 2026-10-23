@@ -24,8 +24,198 @@
     "mood": "parchment"
   },
   "audiobook": {
-    "enabled": false,
+    "enabled": true,
     "narrator": "Mark Hubrich",
-    "audioUrl": "https://quantummindsunited.com/books/audio/The%20Meistro%20Manual.m4b"
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/Meistro_Manual_Chapters/",
+    "chapters": [
+      {
+        "title": "Foreword",
+        "file": "01 - Foreword.m4b"
+      },
+      {
+        "title": "How to Use This Book",
+        "file": "02 - How to Use This Book.m4b"
+      },
+      {
+        "title": "The Meistro Method at a Glance",
+        "file": "03 - The Meistro Method at a Glance.m4b"
+      },
+      {
+        "title": "Introduction The Most Interesting Thing You've Never Investigated",
+        "file": "04 - Introduction The Most Interesting Thing You've Never Investigated.m4b"
+      },
+      {
+        "title": "Chapter One The Question Nobody Taught You to Ask",
+        "file": "05 - Chapter One The Question Nobody Taught You to Ask.m4b"
+      },
+      {
+        "title": "Chapter Two The Mind You Were Never Taught to Observe",
+        "file": "06 - Chapter Two The Mind You Were Never Taught to Observe.m4b"
+      },
+      {
+        "title": "Chapter Three You Are Not the Label",
+        "file": "07 - Chapter Three You Are Not the Label.m4b"
+      },
+      {
+        "title": "Chapter Four The Difference Between Experience and Explanation",
+        "file": "08 - Chapter Four The Difference Between Experience and Explanation.m4b"
+      },
+      {
+        "title": "Chapter Five Learning to Catch Yourself Thinking",
+        "file": "09 - Chapter Five Learning to Catch Yourself Thinking.m4b"
+      },
+      {
+        "title": "Chapter Six The Curious Art of Not Knowing",
+        "file": "10 - Chapter Six The Curious Art of Not Knowing.m4b"
+      },
+      {
+        "title": "Chapter Seven The Child Before the World Explained You",
+        "file": "11 - Chapter Seven The Child Before the World Explained You.m4b"
+      },
+      {
+        "title": "Chapter Eight Following the Trail of Curiosity",
+        "file": "12 - Chapter Eight Following the Trail of Curiosity.m4b"
+      },
+      {
+        "title": "Chapter Nine The Things You Learned Without Being Taught",
+        "file": "13 - Chapter Nine The Things You Learned Without Being Taught.m4b"
+      },
+      {
+        "title": "Chapter Ten Failure, Friction, and Formative Experiences",
+        "file": "14 - Chapter Ten Failure, Friction, and Formative Experiences.m4b"
+      },
+      {
+        "title": "Chapter Eleven The People Who Helped Shape Your Identity",
+        "file": "15 - Chapter Eleven The People Who Helped Shape Your Identity.m4b"
+      },
+      {
+        "title": "Chapter Twelve The Stories You've Been Telling Yourself",
+        "file": "16 - Chapter Twelve The Stories You've Been Telling Yourself.m4b"
+      },
+      {
+        "title": "Chapter Thirteen The Many Languages of Thought",
+        "file": "17 - Chapter Thirteen The Many Languages of Thought.m4b"
+      },
+      {
+        "title": "Chapter Fourteen When Pictures Arrive Before Words",
+        "file": "18 - Chapter Fourteen When Pictures Arrive Before Words.m4b"
+      },
+      {
+        "title": "Chapter Fifteen Memory Is Not a Recording",
+        "file": "19 - Chapter Fifteen Memory Is Not a Recording.m4b"
+      },
+      {
+        "title": "Chapter Sixteen Attention, Distraction, and the Wandering Mind",
+        "file": "20 - Chapter Sixteen Attention, Distraction, and the Wandering Mind.m4b"
+      },
+      {
+        "title": "Chapter Seventeen Intuition Knowing Before You Know Why",
+        "file": "21 - Chapter Seventeen Intuition Knowing Before You Know Why.m4b"
+      },
+      {
+        "title": "Chapter Eighteen The Cognitive Mesh How Ideas Find Each Other",
+        "file": "22 - Chapter Eighteen The Cognitive Mesh How Ideas Find Each Other.m4b"
+      },
+      {
+        "title": "Chapter Nineteen The Capability Loop How Understanding Becomes Ability",
+        "file": "23 - Chapter Nineteen The Capability Loop How Understanding Becomes Ability.m4b"
+      },
+      {
+        "title": "Chapter Twenty Feelings Are Information, Not Instructions",
+        "file": "24 - Chapter Twenty Feelings Are Information, Not Instructions.m4b"
+      },
+      {
+        "title": "Chapter Twenty-One The Hidden Economics of Curiosity",
+        "file": "25 - Chapter Twenty-One The Hidden Economics of Curiosity.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Two Motivation, Resistance, and the Conditions for Action",
+        "file": "26 - Chapter Twenty-Two Motivation, Resistance, and the Conditions for Action.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Three Fear, Shame, Guilt, and the Stories They Create",
+        "file": "27 - Chapter Twenty-Three Fear, Shame, Guilt, and the Stories They Create.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Four Connection, Belonging, and the Need to Be Understood",
+        "file": "28 - Chapter Twenty-Four Connection, Belonging, and the Need to Be Understood.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Five The Self You Protect and the Self You Become",
+        "file": "29 - Chapter Twenty-Five The Self You Protect and the Self You Become.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Six Becoming Your Own Research Subject",
+        "file": "30 - Chapter Twenty-Six Becoming Your Own Research Subject.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Seven The Art of Asking Better Questions",
+        "file": "31 - Chapter Twenty-Seven The Art of Asking Better Questions.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Eight Designing Experiments Around Your Life",
+        "file": "32 - Chapter Twenty-Eight Designing Experiments Around Your Life.m4b"
+      },
+      {
+        "title": "Chapter Twenty-Nine Recognising Patterns Without Inventing Them",
+        "file": "33 - Chapter Twenty-Nine Recognising Patterns Without Inventing Them.m4b"
+      },
+      {
+        "title": "Chapter Thirty Contradictions, Surprises, and Changing Your Mind",
+        "file": "34 - Chapter Thirty Contradictions, Surprises, and Changing Your Mind.m4b"
+      },
+      {
+        "title": "Chapter Thirty-One Using Conversation and AI as Thinking Instruments",
+        "file": "35 - Chapter Thirty-One Using Conversation and AI as Thinking Instruments.m4b"
+      },
+      {
+        "title": "Chapter Thirty-Two Finding the Conditions Where You Thrive",
+        "file": "36 - Chapter Thirty-Two Finding the Conditions Where You Thrive.m4b"
+      },
+      {
+        "title": "Chapter Thirty-Three Working With Your Mind Instead of Against It",
+        "file": "37 - Chapter Thirty-Three Working With Your Mind Instead of Against It.m4b"
+      },
+      {
+        "title": "Chapter Thirty-Four Understanding Other Minds Without Assuming They're Yours",
+        "file": "38 - Chapter Thirty-Four Understanding Other Minds Without Assuming They're Yours.m4b"
+      },
+      {
+        "title": "Chapter Thirty-Five Building Your Personal Operating Manual",
+        "file": "39 - Chapter Thirty-Five Building Your Personal Operating Manual.m4b"
+      },
+      {
+        "title": "Chapter Thirty-Six The Person You Haven't Met Yet",
+        "file": "40 - Chapter Thirty-Six The Person You Haven't Met Yet.m4b"
+      },
+      {
+        "title": "Appendix A The Meistro Self-Discovery Interview",
+        "file": "41 - Appendix A The Meistro Self-Discovery Interview.m4b"
+      },
+      {
+        "title": "Appendix B The Personal Observation Journal",
+        "file": "42 - Appendix B The Personal Observation Journal.m4b"
+      },
+      {
+        "title": "Appendix C The Cognitive Pattern Mapping Workbook",
+        "file": "43 - Appendix C The Cognitive Pattern Mapping Workbook.m4b"
+      },
+      {
+        "title": "Appendix D The Capability Loop Experiment",
+        "file": "44 - Appendix D The Capability Loop Experiment.m4b"
+      },
+      {
+        "title": "Appendix E The Personal Operating Manual Template",
+        "file": "45 - Appendix E The Personal Operating Manual Template.m4b"
+      },
+      {
+        "title": "Appendix F Research Notes, Scientific References, and Further Reading",
+        "file": "46 - Appendix F Research Notes, Scientific References, and Further Reading.m4b"
+      },
+      {
+        "title": "A Note on Human-AI Collaboration",
+        "file": "47 - A Note on Human-AI Collaboration.m4b"
+      }
+    ]
   }
 }

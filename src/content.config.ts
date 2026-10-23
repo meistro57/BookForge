@@ -38,6 +38,15 @@ const books = defineCollection({
         enabled: z.boolean().default(false),
         narrator: z.string().optional(),
         audioUrl: z.string().optional(),
+        chaptersUrl: z.string().optional(),
+        chapters: z
+          .array(
+            z.object({
+              title: z.string(),
+              file: z.string(),
+            })
+          )
+          .optional(),
       })
       .optional(),
     order: z.number().default(999),
