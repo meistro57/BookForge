@@ -25,6 +25,10 @@
   "audiobook": {
     "enabled": true,
     "narrator": "Eli C. Tric",
-    "audioUrl": "audio/Your_Not_Broken_Your_Broadband.mp3"
+    "audioUrl": "audio/Your_Not_Broken_Your_Broadband.mp3",
+    "chaptersUrl": "/BookForge/audio/",
+    "chapters": [
+      { "title": "Introduction", "file": "00_intro_eli_FULL.mp3" }
+    ]
   }
 }
