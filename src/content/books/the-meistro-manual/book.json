@@ -26,6 +26,8 @@
   "audiobook": {
     "enabled": true,
     "narrator": "Mark Hubrich",
+    "voice": "meistro",
+    "refAudio": "voices/meistro_voice_ref_continuous.wav",
     "chaptersUrl": "https://quantummindsunited.com/books/audio/Meistro_Manual_Chapters/",
     "chapters": [
       {

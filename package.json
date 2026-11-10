@@ -7,7 +7,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "audiobook:list": "python3 scripts/audiobook/make_audiobook.py --list",
+    "audiobook:script": "python3 scripts/audiobook/make_audiobook.py --script-only",
+    "audiobook:sample": "python3 scripts/audiobook/make_audiobook.py --only front-matter --max-paragraphs 8",
+    "audiobook:build": "python3 scripts/audiobook/make_audiobook.py --publish",
+    "audiobook:check": "python3 scripts/audiobook/check_track.py --all"
   },
   "bugs": {
     "url": "https://github.com/meistro57/BookForge/issues"

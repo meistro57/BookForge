@@ -43,7 +43,7 @@ BookForge is a fully functional, static web reader featuring full audiobook narr
 ## Core Features
 
 - **Manuscript Renderer**: Renders Markdown files into structured, clean book chapters with custom YAML frontmatter validation.
-- **Full Audiobook Reader**: Integrated full-length audiobook player (`AudiobookSection.astro`) featuring narration by Eli C. Tric.
+- **Full Audiobook Reader**: Integrated full-length audiobook player (`AudiobookSection.astro`) featuring narration by Eli C. Tric, plus an optional per-chapter player with playback speed, timestamp memory, and auto-advance (`ChapterAudioPlayer.astro`).
 - **Customizable Display Controls**:
   - **Themes**: Light, Warm Paper, and Dark modes with instant client-side FOUC prevention.
   - **Typography**: Toggle between Serif (`Merriweather`) and Sans-Serif (`Inter`) body typefaces.
@@ -208,6 +208,24 @@ Preview the production static build locally:
 ```bash
 npm run preview
 ```
+
+### Audiobook Narration Pipeline
+
+`scripts/audiobook/` turns chapter Markdown into per-chapter MP3s, a full-book
+MP3/M4B, and the manifest the reader uses for chapter playlists, narrator
+switching, and downloads.
+
+```bash
+npm run audiobook:list     # chapter order, word counts, runtime estimate
+npm run audiobook:script   # narration text for proofing
+npm run audiobook:sample   # voice one chapter sample
+npm run audiobook:build    # synthesize and publish
+npm run audiobook:check    # Whisper QA over generated tracks
+```
+
+Requirements, flags, and output layout are documented in
+[`scripts/audiobook/README.md`](scripts/audiobook/README.md). Audio is generated
+locally and deployed out of band; the MP3/M4B files are not committed to git.
 
 ---
 

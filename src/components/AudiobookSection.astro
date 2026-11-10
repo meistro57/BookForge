@@ -1,5 +1,12 @@
 ---
 import { getUrl } from '../lib/chapters';
+import {
+  audioAssetExists,
+  audiobookUrl,
+  loadAudiobookManifest,
+  resolveNarrator,
+  type ManifestNarrator,
+} from '../lib/audiobook';
 import type { BookEntry } from '../lib/books';
 
 interface Props {
@@ -8,16 +15,38 @@ interface Props {
 
 const { book } = Astro.props;
 const audiobook = book.data.audiobook;
-const enabled = audiobook?.enabled ?? false;
-const narrator = audiobook?.narrator || '';
-const chaptersUrl = audiobook?.chaptersUrl || '';
-const chapters = (audiobook?.chapters || []) as Array<{ title: string; file: string }>;
+const bookSlug = book.data.slug || book.slug || book.id;
 const cover = book.data.cover || 'images/book_cover.jpg';
 const title = book.data.title || '';
+
+const manifest = loadAudiobookManifest(bookSlug);
+const manifestNarrators: ManifestNarrator[] = manifest?.narrators ?? [];
+const activeNarrator = resolveNarrator(manifest);
+
+const legacyChapters = (audiobook?.chapters || []) as Array<{ title: string; file: string }>;
+const legacyChaptersUrl = audiobook?.chaptersUrl || '';
+const legacyNarrator = audiobook?.narrator || '';
+const legacyFull = audiobook?.audioUrl && audioAssetExists(bookSlug, audiobook.audioUrl)
+  ? audiobook.audioUrl
+  : '';
+const legacyPlayable = legacyChapters.filter((ch) =>
+  audioAssetExists(bookSlug, legacyChaptersUrl + ch.file)
+);
+const enabled = Boolean(audiobook?.enabled) || manifestNarrators.length > 0;
+
+const narratorName = activeNarrator?.name || legacyNarrator;
+const chapterCount = activeNarrator?.chapters.length ?? legacyPlayable.length;
+const firstAvailable = manifestNarrators.length > 0;
+const activeSlug = activeNarrator?.slug || '';
 ---
 
 {enabled ? (
-  <section class="audiobook-section">
+  <section
+    class="audiobook-section"
+    data-book-slug={bookSlug}
+    data-active-narrator={activeSlug}
+    aria-label="Audiobook edition"
+  >
     <div class="audiobook-container">
       <div class="section-label">AUDIOBOOK EDITION</div>
       <h2 class="audiobook-main-title">Narrated Audiobook</h2>
@@ -36,39 +65,152 @@ const title = book.data.title || '';
         </div>
 
         <div class="audiobook-info-col">
-          <div class="blueprint-badge">AUDIOBOOK • {chapters.length} CHAPTERS</div>
+          <div class="blueprint-badge">AUDIOBOOK - {chapterCount} CHAPTERS</div>
           <h3 class="audiobook-title">{title}</h3>
-          {narrator && <p class="audiobook-narrator">Narrated by {narrator}</p>}
+          {narratorName && <p class="audiobook-narrator">Narrated by {narratorName}</p>}
           <p class="audiobook-description">
-            The complete, full-length audio recording of the manuscript. Select a chapter below to listen,
-            or pick up wherever you left off.
+            {firstAvailable
+              ? 'The complete, full-length audio recording of the manuscript. Stream the whole book, jump to any chapter, or download the M4B for offline listening.'
+              : 'The complete, full-length audio recording of the manuscript. Select a chapter below to listen, or pick up wherever you left off.'}
           </p>
         </div>
       </div>
 
-      <button type="button" class="chapter-toggle" id="audiobook-chapter-toggle" aria-expanded="false" aria-controls="audiobook-chapter-list">
-        Show chapters ({chapters.length})
-      </button>
+      {firstAvailable ? (
+        <>
+          {manifestNarrators.length > 1 && (
+            <div class="narrator-tabs" role="tablist" aria-label="Choose narrator">
+              {manifestNarrators.map((n) => (
+                <button
+                  type="button"
+                  role="tab"
+                  class="narrator-tab"
+                  data-narrator={n.slug}
+                  aria-selected={n.slug === activeSlug ? 'true' : 'false'}
+                  aria-controls={'narrator-panel-' + n.slug}
+                >
+                  {n.name}
+                </button>
+              ))}
+            </div>
+          )}
 
-      <div class="chapter-list" id="audiobook-chapter-list">
-        {chapters.map((ch, i) => (
-          <div class="chapter-row">
-            <div class="chapter-index">{String(i + 1).padStart(2, '0')}</div>
-            <div class="chapter-body">
-              <div class="chapter-title">{ch.title}</div>
-              <audio controls preload="none" class="chapter-player">
-                <source src={chaptersUrl + encodeURIComponent(ch.file)} type="audio/mp4" />
-                <source src={chaptersUrl + encodeURIComponent(ch.file)} type="audio/mpeg" />
+          {manifestNarrators.map((n) => (
+            <div
+              class="narrator-panel"
+              id={'narrator-panel-' + n.slug}
+              data-narrator-panel={n.slug}
+              role="tabpanel"
+              hidden={n.slug !== activeSlug}
+            >
+              {n.fullMp3 && (
+                <div class="full-audio-wrap">
+                  <div class="full-audio-label">FULL AUDIOBOOK</div>
+                  <audio controls preload="none" class="full-audio-player" src={audiobookUrl(bookSlug, n.fullMp3)}>
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
+
+              {(n.m4b || n.fullMp3) && (
+                <div class="audiobook-actions">
+                  {n.m4b && (
+                    <a class="download-btn" href={audiobookUrl(bookSlug, n.m4b)} download>
+                      Download .m4b
+                    </a>
+                  )}
+                  {n.fullMp3 && (
+                    <a class="download-btn" href={audiobookUrl(bookSlug, n.fullMp3)} download>
+                      Download full .mp3
+                    </a>
+                  )}
+                </div>
+              )}
+
+              <button
+                type="button"
+                class="chapter-toggle"
+                aria-expanded="false"
+                aria-controls={'chapter-list-' + n.slug}
+              >
+                <span class="chapter-toggle-label">Show chapters ({n.chapters.length})</span>
+              </button>
+
+              <div class="chapter-list" id={'chapter-list-' + n.slug}>
+                {n.chapters.map((ch, i) => (
+                  <div class="chapter-row">
+                    <div class="chapter-index">
+                      {ch.isFrontMatter
+                        ? 'FM'
+                        : ch.chapterNumber
+                        ? String(ch.chapterNumber).padStart(2, '0')
+                        : String(i + 1).padStart(2, '0')}
+                    </div>
+                    <div class="chapter-body">
+                      <div class="chapter-heading">
+                        <a class="chapter-title" href={getUrl('/books/' + bookSlug + '/chapter/' + ch.slug + '/')}>
+                          {ch.title}
+                        </a>
+                        {ch.durationHuman && <span class="chapter-duration">{ch.durationHuman}</span>}
+                      </div>
+                      <audio controls preload="none" class="chapter-player" src={audiobookUrl(bookSlug, ch.audioFile)}>
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        <>
+          {legacyFull && (
+            <div class="full-audio-wrap">
+              <div class="full-audio-label">FULL AUDIOBOOK</div>
+              <audio controls preload="none" class="full-audio-player" src={audiobookUrl(bookSlug, legacyFull)}>
                 Your browser does not support the audio element.
               </audio>
             </div>
+          )}
+
+          <button
+            type="button"
+            class="chapter-toggle"
+            aria-expanded="false"
+            aria-controls="audiobook-chapter-list"
+          >
+            <span class="chapter-toggle-label">Show chapters ({legacyPlayable.length})</span>
+          </button>
+
+          <div class="chapter-list" id="audiobook-chapter-list">
+            {legacyPlayable.map((ch, i) => (
+              <div class="chapter-row">
+                <div class="chapter-index">{String(i + 1).padStart(2, '0')}</div>
+                <div class="chapter-body">
+                  <div class="chapter-heading">
+                    <span class="chapter-title">{ch.title}</span>
+                  </div>
+                  <audio
+                    controls
+                    preload="none"
+                    class="chapter-player"
+                    src={audiobookUrl(bookSlug, legacyChaptersUrl + encodeURIComponent(ch.file))}
+                  >
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
       <div class="audiobook-status">
         <span class="status-icon">🎙️</span>
-        <span>Full audiobook now available{narrator ? ' — narrated by ' + narrator + '.' : '.'}</span>
+        <span>
+          Full audiobook now available{narratorName ? ' - narrated by ' + narratorName + '.' : '.'}
+        </span>
       </div>
     </div>
   </section>
@@ -86,8 +228,20 @@ const title = book.data.title || '';
   .audiobook-title { font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.3rem; }
   .audiobook-narrator { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1rem; }
   .audiobook-description { font-size: 1rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 0; }
-  .audiobook-description code, .audiobook-status code { font-family: var(--font-sans); background-color: rgba(2, 132, 199, 0.08); color: var(--accent-color); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em; }
-  .chapter-toggle { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; padding: 0.6rem 1.1rem; font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; }
+  .narrator-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.75rem; }
+  .narrator-tab { font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 9999px; padding: 0.4rem 1rem; cursor: pointer; transition: color 0.15s ease, border-color 0.15s ease; }
+  .narrator-tab:hover { color: var(--accent-color); border-color: var(--accent-color); }
+  .narrator-tab[aria-selected='true'] { color: #ffffff; background-color: var(--accent-color); border-color: var(--accent-color); }
+  .narrator-tab:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .narrator-panel { margin-top: 1.5rem; }
+  .full-audio-wrap { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem 1.25rem; }
+  .full-audio-label { font-family: var(--font-sans); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-color); margin-bottom: 0.5rem; }
+  .full-audio-player { display: block; width: 100%; height: 3rem; }
+  .audiobook-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  .download-btn { display: inline-flex; align-items: center; font-family: var(--font-sans); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.45rem 0.9rem; text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease; }
+  .download-btn:hover { color: var(--accent-color); border-color: var(--accent-color); }
+  .download-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .chapter-toggle { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; padding: 0.6rem 1.1rem; font-family: var(--font-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; }
   .chapter-toggle:hover { background-color: var(--bg-color); border-color: var(--accent-color); }
   .chapter-toggle::after { content: '▾'; font-size: 0.8em; transition: transform 0.15s ease; }
   .chapter-toggle[aria-expanded='true']::after { transform: rotate(180deg); }
@@ -96,7 +250,11 @@ const title = book.data.title || '';
   .chapter-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.75rem 1rem; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; }
   .chapter-index { font-family: var(--font-sans); font-size: 0.85rem; font-weight: 800; color: var(--accent-color); min-width: 2rem; padding-top: 0.4rem; text-align: right; }
   .chapter-body { flex: 1; min-width: 0; }
-  .chapter-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem; }
+  .chapter-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.4rem; }
+  .chapter-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+  a.chapter-title:hover { color: var(--accent-color); text-decoration: underline; }
+  a.chapter-title:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .chapter-duration { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); white-space: nowrap; }
   .chapter-player { display: block; width: 100%; min-width: 100%; max-width: 100%; height: 3rem; }
   .audiobook-status { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary); margin-top: 1.5rem; }
   .status-icon { font-size: 1.1rem; }
@@ -106,20 +264,76 @@ const title = book.data.title || '';
     .audiobook-main-title { font-size: 1.85rem; }
     .chapter-row { flex-direction: column; gap: 0.5rem; }
     .chapter-index { text-align: left; }
+    .chapter-heading { flex-direction: column; gap: 0.2rem; }
     .chapter-body { width: 100%; min-width: 0; }
     .chapter-player { width: 100%; min-width: 100%; max-width: 100%; height: 3.25rem; }
+    .full-audio-player { height: 3.25rem; }
   }
 </style>
 
 <script>
-  const toggle = document.getElementById('audiobook-chapter-toggle');
-  const list = document.getElementById('audiobook-chapter-list');
-  if (toggle && list) {
-    toggle.addEventListener('click', () => {
-      const open = list.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      const label = toggle.querySelector('.chapter-toggle-label');
-      if (label) label.textContent = open ? 'Hide chapters' : 'Show chapters (' + list.children.length + ')';
+  const section = document.querySelector('.audiobook-section') as HTMLElement | null;
+  if (section) {
+    const bookSlug = section.getAttribute('data-book-slug') || '';
+    const NARRATOR_KEY = 'bookforge:' + bookSlug + ':audio_narrator';
+
+    function readNarrator(): string | null {
+      try {
+        return localStorage.getItem(NARRATOR_KEY);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function writeNarrator(slug: string) {
+      try {
+        localStorage.setItem(NARRATOR_KEY, slug);
+      } catch (e) {}
+    }
+
+    const tabs = Array.from(section.querySelectorAll('.narrator-tab')) as HTMLElement[];
+    const panels = Array.from(section.querySelectorAll('[data-narrator-panel]')) as HTMLElement[];
+
+    function activate(slug: string, persist: boolean) {
+      if (!panels.some((panel) => panel.getAttribute('data-narrator-panel') === slug)) return;
+      tabs.forEach((tab) => {
+        tab.setAttribute('aria-selected', tab.getAttribute('data-narrator') === slug ? 'true' : 'false');
+      });
+      panels.forEach((panel) => {
+        const active = panel.getAttribute('data-narrator-panel') === slug;
+        panel.hidden = !active;
+        if (!active) {
+          panel.querySelectorAll('audio').forEach((audio) => (audio as HTMLAudioElement).pause());
+        }
+      });
+      section.setAttribute('data-active-narrator', slug);
+      if (persist) writeNarrator(slug);
+    }
+
+    if (tabs.length > 1) {
+      const remembered = readNarrator();
+      const current = section.getAttribute('data-active-narrator') || '';
+      if (remembered && remembered !== current) activate(remembered, false);
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          activate(tab.getAttribute('data-narrator') || '', true);
+        });
+      });
+    }
+
+    section.querySelectorAll('.chapter-toggle').forEach((toggle) => {
+      const targetId = toggle.getAttribute('aria-controls') || '';
+      const list = targetId ? document.getElementById(targetId) : null;
+      if (!list) return;
+      toggle.addEventListener('click', () => {
+        const open = list.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const label = toggle.querySelector('.chapter-toggle-label');
+        if (label) {
+          const count = list.querySelectorAll('.chapter-row').length;
+          label.textContent = open ? 'Hide chapters' : 'Show chapters (' + count + ')';
+        }
+      });
     });
   }
 </script>

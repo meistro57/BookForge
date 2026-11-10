@@ -37,6 +37,8 @@ const books = defineCollection({
       .object({
         enabled: z.boolean().default(false),
         narrator: z.string().optional(),
+        voice: z.string().optional(),
+        refAudio: z.string().optional(),
         audioUrl: z.string().optional(),
         chaptersUrl: z.string().optional(),
         chapters: z
@@ -79,6 +81,9 @@ const chapters = defineCollection({
     order: z.number(),
     isFrontMatter: z.boolean().default(false),
     slug: z.string().optional(),
+    audioFile: z.string().optional(),
+    audioDuration: z.string().optional(),
+    narrator: z.string().optional(),
   }),
 });
 

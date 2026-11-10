@@ -1,0 +1,194 @@
+---
+import { audiobookUrl } from '../lib/audiobook';
+
+interface Props {
+  bookSlug: string;
+  slug: string;
+  title: string;
+  audioFile?: string;
+  duration?: string;
+  narrator?: string;
+  nextHref?: string;
+  nextTitle?: string;
+}
+
+const {
+  bookSlug,
+  slug,
+  title,
+  audioFile = '',
+  duration = '',
+  narrator = '',
+  nextHref = '',
+  nextTitle = '',
+} = Astro.props;
+
+const src = audioFile ? audiobookUrl(bookSlug, audioFile) : '';
+---
+
+{audioFile && (
+  <section
+    id="chapter-audio"
+    class="chapter-audio"
+    data-book-slug={bookSlug}
+    data-slug={slug}
+    data-next-href={nextHref}
+    data-next-title={nextTitle}
+    aria-label="Chapter audiobook player"
+  >
+    <div class="chapter-audio-header">
+      <span class="chapter-audio-label">LISTEN TO THIS CHAPTER</span>
+      {narrator && <span class="chapter-audio-narrator">Narrated by {narrator}</span>}
+      {duration && <span class="chapter-audio-duration">{duration}</span>}
+    </div>
+
+    <audio
+      id="chapter-audio-player"
+      class="chapter-audio-player"
+      controls
+      preload="metadata"
+      src={src}
+      data-title={title}
+    >
+      Your browser does not support the audio element.
+    </audio>
+
+    <div class="chapter-audio-controls">
+      <label class="chapter-audio-speed-label" for="chapter-audio-speed">Speed</label>
+      <select id="chapter-audio-speed" class="chapter-audio-speed">
+        <option value="0.85">0.85x</option>
+        <option value="1">1.0x</option>
+        <option value="1.15">1.15x</option>
+        <option value="1.25">1.25x</option>
+        <option value="1.5">1.5x</option>
+      </select>
+
+      <label class="chapter-audio-autoadvance">
+        <input type="checkbox" id="chapter-audio-autoadvance" />
+        <span>Auto-advance to next chapter</span>
+      </label>
+
+      <span id="chapter-audio-resume" class="chapter-audio-resume" hidden></span>
+    </div>
+  </section>
+)}
+
+<style>
+  .chapter-audio { margin: 0 0 2.5rem; padding: 1.1rem 1.25rem; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; }
+  .chapter-audio-header { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 0.75rem; }
+  .chapter-audio-label { font-family: var(--font-sans); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-color); }
+  .chapter-audio-narrator { font-size: 0.85rem; color: var(--text-secondary); }
+  .chapter-audio-duration { margin-left: auto; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+  .chapter-audio-player { display: block; width: 100%; height: 2.75rem; }
+  .chapter-audio-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.7rem; font-family: var(--font-sans); font-size: 0.82rem; color: var(--text-secondary); }
+  .chapter-audio-speed-label { font-weight: 700; }
+  .chapter-audio-speed { font-family: var(--font-sans); font-size: 0.82rem; color: var(--text-primary); background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 5px; padding: 0.2rem 0.4rem; }
+  .chapter-audio-speed:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .chapter-audio-autoadvance { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+  .chapter-audio-autoadvance input:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+  .chapter-audio-resume { color: var(--accent-color); font-weight: 700; }
+  @media (max-width: 640px) {
+    .chapter-audio { padding: 0.9rem 1rem; }
+    .chapter-audio-player { height: 3.1rem; }
+    .chapter-audio-duration { margin-left: 0; width: 100%; }
+  }
+</style>
+
+<script>
+  const root = document.getElementById('chapter-audio');
+  if (root) {
+    const bookSlug = root.getAttribute('data-book-slug') || '';
+    const slug = root.getAttribute('data-slug') || '';
+    const nextHref = root.getAttribute('data-next-href') || '';
+    const prefix = 'bookforge:' + bookSlug + ':';
+    const SPEED_KEY = prefix + 'audio_speed';
+    const POS_KEY = prefix + 'audio_pos_' + slug;
+    const AUTO_KEY = prefix + 'audio_autoadvance';
+
+    const audio = document.getElementById('chapter-audio-player') as HTMLAudioElement | null;
+    const speed = document.getElementById('chapter-audio-speed') as HTMLSelectElement | null;
+    const auto = document.getElementById('chapter-audio-autoadvance') as HTMLInputElement | null;
+    const resume = document.getElementById('chapter-audio-resume');
+
+    if (!audio || !slug) {
+      // no player on this page
+    } else {
+      const player: HTMLAudioElement = audio;
+      let lastSaved = 0;
+
+      function read(key: string): string | null {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function write(key: string, value: string) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {}
+      }
+
+      function remove(key: string) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {}
+      }
+
+      function savePosition(force = false) {
+        const now = Math.floor(player.currentTime);
+        if (now === lastSaved && !force) return;
+        lastSaved = now;
+        if (now > 0) write(POS_KEY, String(now));
+        else remove(POS_KEY);
+      }
+
+      const savedSpeed = parseFloat(read(SPEED_KEY) || '1');
+      const initialSpeed = Number.isFinite(savedSpeed) ? savedSpeed : 1;
+      player.playbackRate = initialSpeed;
+      if (speed) speed.value = String(initialSpeed);
+
+      if (auto) {
+        const savedAuto = read(AUTO_KEY);
+        auto.checked = savedAuto === '1';
+        auto.addEventListener('change', () => write(AUTO_KEY, auto.checked ? '1' : '0'));
+      }
+
+      if (speed) {
+        speed.addEventListener('change', () => {
+          const value = parseFloat(speed.value) || 1;
+          player.playbackRate = value;
+          write(SPEED_KEY, String(value));
+        });
+      }
+
+      player.addEventListener('loadedmetadata', () => {
+        const saved = parseFloat(read(POS_KEY) || '0');
+        if (Number.isFinite(saved) && saved > 5 && saved < (player.duration || 0) - 3) {
+          player.currentTime = saved;
+          if (resume) {
+            const minutes = Math.floor(saved / 60);
+            const seconds = Math.floor(saved % 60);
+            resume.textContent = 'Resumed at ' + minutes + ':' + String(seconds).padStart(2, '0');
+            resume.hidden = false;
+          }
+        }
+      });
+
+      player.addEventListener('timeupdate', () => savePosition());
+      player.addEventListener('pause', () => savePosition(true));
+      window.addEventListener('pagehide', () => savePosition(true));
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') savePosition(true);
+      });
+
+      player.addEventListener('ended', () => {
+        remove(POS_KEY);
+        if (auto && auto.checked && nextHref) {
+          window.location.href = nextHref;
+        }
+      });
+    }
+  }
+</script>

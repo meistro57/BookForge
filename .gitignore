@@ -17,8 +17,17 @@ yarn-error.log*
 .idea/
 
 # Large media files
+# Audiobook audio is deployed out of band (rsync/deploy.sh), not committed:
+# the full-book MP3 alone is ~240 MB, above GitHub's per-file limit.
 *.mp3
+*.m4b
 public/audio/*.mp3
+
+# Audiobook build workspace (cache, scripts, uncompressed masters)
+audiobook-build/
+
+# Voice reference recordings (large, personal)
+voices/*.wav
 
 # python
 __pycache__/

@@ -1,6 +1,7 @@
 ---
 import BookLayout from '../../../../layouts/BookLayout.astro';
 import ChapterNavigation from '../../../../components/ChapterNavigation.astro';
+import ChapterAudioPlayer from '../../../../components/ChapterAudioPlayer.astro';
 import ReadingProgressBar from '../../../../components/ReadingProgressBar.astro';
 import {
   getAllChapters,
@@ -8,9 +9,11 @@ import {
   getNextChapter,
   getChapterSlug,
   getBookSlugFromChapter,
+  getUrl,
   type ChapterEntry,
 } from '../../../../lib/chapters';
 import { listBooks, getBookBySlug, getBookSlug, type BookEntry } from '../../../../lib/books';
+import { getChapterAudio } from '../../../../lib/audiobook';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -42,6 +45,17 @@ const { Content } = await render(chapter);
 const chapters = await getAllChapters(bookSlug);
 const prevChapter = await getPreviousChapter(bookSlug, slug);
 const nextChapter = await getNextChapter(bookSlug, slug);
+
+const chapterAudio = getChapterAudio(
+  bookSlug,
+  slug,
+  chapter.data.audioFile,
+  chapter.data.audioDuration,
+  chapter.data.narrator
+);
+const nextHref = nextChapter
+  ? getUrl('/books/' + bookSlug + '/chapter/' + getChapterSlug(nextChapter) + '/')
+  : '';
 
 const partText = chapter.data.partTitle
   ? 'Part ' + chapter.data.partNumber + ': ' + chapter.data.partTitle
@@ -77,6 +91,17 @@ const partText = chapter.data.partTitle
         <p class="chapter-description">{chapter.data.description}</p>
       )}
     </header>
+
+    <ChapterAudioPlayer
+      bookSlug={bookSlug}
+      slug={slug}
+      title={chapter.data.title}
+      audioFile={chapterAudio?.audioFile}
+      duration={chapterAudio?.duration}
+      narrator={chapterAudio?.narrator}
+      nextHref={nextHref}
+      nextTitle={nextChapter?.data.title}
+    />
 
     <div class="prose-content">
       <Content />
