@@ -111,32 +111,50 @@ const partText = chapter.data.partTitle
 
     <div class="chapter-share-bar">
       <div class="share-bar-info">
-        <span class="share-bar-title">Share this chapter</span>
-        <span class="share-bar-desc">Point someone’s phone camera at the screen to open and read immediately.</span>
+        <span class="share-bar-title">Share or listen to this chapter</span>
+        <span class="share-bar-desc">Scan the QR code on another device, or copy the full text into a reading app like Speechify.</span>
       </div>
-      <button
-        id="chapter-share-qr-btn"
-        type="button"
-        class="chapter-share-btn"
-        aria-label="Open QR code for this chapter"
-        title="Share via QR Code"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect width="5" height="5" x="3" y="3" rx="1"></rect>
-          <rect width="5" height="5" x="16" y="3" rx="1"></rect>
-          <rect width="5" height="5" x="3" y="16" rx="1"></rect>
-          <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
-          <path d="M21 21v.01"></path>
-          <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
-          <path d="M3 12h.01"></path>
-          <path d="M12 3h.01"></path>
-          <path d="M12 16v.01"></path>
-          <path d="M16 12h1"></path>
-          <path d="M21 12v.01"></path>
-          <path d="M12 21v-1"></path>
-        </svg>
-        <span>Share QR</span>
-      </button>
+      <div class="share-bar-actions">
+        <button
+          id="chapter-copy-btn"
+          type="button"
+          class="chapter-share-btn"
+          aria-label="Copy the full chapter text to the clipboard"
+          title="Copy chapter text"
+          data-chapter-title={chapter.data.title}
+          data-book-title={book.data.title}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+          </svg>
+          <span id="chapter-copy-label">Copy chapter</span>
+        </button>
+        <button
+          id="chapter-share-qr-btn"
+          type="button"
+          class="chapter-share-btn"
+          aria-label="Open QR code for this chapter"
+          title="Share via QR Code"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+            <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+            <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+            <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+            <path d="M21 21v.01"></path>
+            <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+            <path d="M3 12h.01"></path>
+            <path d="M12 3h.01"></path>
+            <path d="M12 16v.01"></path>
+            <path d="M16 12h1"></path>
+            <path d="M21 12v.01"></path>
+            <path d="M12 21v-1"></path>
+          </svg>
+          <span>Share QR</span>
+        </button>
+      </div>
+      <span id="chapter-copy-status" class="chapter-copy-status" role="status" aria-live="polite"></span>
     </div>
 
     <footer>
@@ -232,6 +250,68 @@ const partText = chapter.data.partTitle
     chapterShareBtn?.addEventListener('click', () => {
       window.dispatchEvent(new CustomEvent('bookforge:open-share-modal'));
     });
+
+    const copyBtn = document.getElementById('chapter-copy-btn');
+    const copyLabel = document.getElementById('chapter-copy-label');
+    const copyStatus = document.getElementById('chapter-copy-status');
+
+    function getChapterText() {
+      const prose = document.querySelector('.prose-content');
+      if (!prose) return '';
+      const clone = prose.cloneNode(true);
+      clone.querySelectorAll('.heading-anchor').forEach((el) => el.remove());
+      const holder = document.createElement('div');
+      holder.style.position = 'absolute';
+      holder.style.left = '-99999px';
+      holder.style.top = '0';
+      holder.appendChild(clone);
+      document.body.appendChild(holder);
+      const body = clone.innerText.replace(/\n{3,}/g, '\n\n').trim();
+      holder.remove();
+
+      const title = copyBtn?.dataset.chapterTitle || '';
+      const bookTitle = copyBtn?.dataset.bookTitle || '';
+      const heading = [title, bookTitle].filter(Boolean).join('\n');
+      return heading ? heading + '\n\n' + body : body;
+    }
+
+    async function writeToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        const copied = document.execCommand('copy');
+        area.remove();
+        if (!copied) throw err;
+        return true;
+      }
+    }
+
+    copyBtn?.addEventListener('click', async () => {
+      const text = getChapterText();
+      if (!text) return;
+      try {
+        await writeToClipboard(text);
+        if (copyLabel) copyLabel.textContent = 'Copied!';
+        if (copyStatus) copyStatus.textContent = 'Full chapter copied to clipboard.';
+        copyBtn.classList.add('copied');
+      } catch (err) {
+        if (copyLabel) copyLabel.textContent = 'Copy failed';
+        if (copyStatus) copyStatus.textContent = 'Could not copy the chapter. Select the text manually.';
+      }
+      setTimeout(() => {
+        if (copyLabel) copyLabel.textContent = 'Copy chapter';
+        if (copyStatus) copyStatus.textContent = '';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
   });
 </script>
 
@@ -265,11 +345,15 @@ const partText = chapter.data.partTitle
   .share-bar-desc { font-size: 0.825rem; color: var(--text-secondary); }
   .chapter-share-btn { display: inline-flex; align-items: center; gap: 0.45rem; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem 0.9rem; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.15s ease; }
   .chapter-share-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+  .chapter-share-btn.copied { border-color: var(--accent-color); color: var(--accent-color); }
   .chapter-share-btn svg { color: var(--accent-color); }
+  .share-bar-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .chapter-copy-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   @media (max-width: 640px) {
     .reading-container { padding: 1.75rem 1rem 3rem; }
     .chapter-title { font-size: 1.75rem; }
     .chapter-share-bar { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
+    .share-bar-actions { width: 100%; flex-direction: column; align-items: stretch; }
     .chapter-share-btn { width: 100%; justify-content: center; }
     .back-to-top-btn { bottom: 1.5rem; right: 1.25rem; padding: 0.5rem 0.85rem; }
   }

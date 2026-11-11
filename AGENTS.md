@@ -221,6 +221,11 @@ Cross-component communication uses `window` events, e.g. chapter and landing-pag
 buttons dispatch `bookforge:open-share-modal`, which `QrCodeModal.astro` listens for.
 The QR library (`qrcode`) is imported lazily inside the client script.
 
+The chapter share bar's "Copy chapter" button (`#chapter-copy-btn`) serializes the
+rendered `.prose-content` to plain text at click time, strips heading anchors, and
+prepends the chapter and book titles. It reads those titles from `data-chapter-title`
+and `data-book-title` on the button, so keep them in sync if the markup moves.
+
 ## Audiobook pipeline
 
 `scripts/audiobook/` synthesizes audio from the chapter Markdown and publishes a

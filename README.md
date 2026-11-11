@@ -57,6 +57,7 @@ BookForge is a fully functional, static web reader featuring full audiobook narr
   - Sticky reading header with progress bar and quick display control popouts.
   - Quick reader instructions modal ("How To Use").
   - Previous and Next chapter navigation buttons.
+  - Copy the full chapter as plain text for reading or speech apps such as Speechify.
   - Keyboard shortcuts (`?` for help, `N` next, `P` prev, `T` table of contents, `Esc` dismiss).
 - **Accessibility & SEO**:
   - Full WCAG 2.1 AA contrast compliance, keyboard focus rings, and skip-to-content links.
