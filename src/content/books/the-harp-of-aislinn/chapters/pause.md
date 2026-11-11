@@ -1,7 +1,7 @@
 ---
 title: "A Pause for Reflection"
 order: 10
-isFrontMatter: true
+isFrontMatter: false
 slug: "pause"
 ---
 

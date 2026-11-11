@@ -1,7 +1,7 @@
 ---
 title: "The Echo of the Harp"
 order: 18
-isFrontMatter: true
+isFrontMatter: false
 slug: "conclusion"
 ---
 

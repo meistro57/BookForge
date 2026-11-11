@@ -1,6 +1,6 @@
 ---
 title: "The Mind You Were Never Taught to Observe"
-chapterNumber: 1
+chapterNumber: 2
 partNumber: 1
 partTitle: "PART I: BECOMING THE INVESTIGATOR"
 order: 6

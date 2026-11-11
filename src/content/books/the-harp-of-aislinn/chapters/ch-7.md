@@ -6,7 +6,7 @@ isFrontMatter: false
 slug: "ch-7"
 ---
 
-**Chapter 7: The Harp’s Echo**
+# Chapter 7: The Harp’s Echo
 
 The morning sun crept over the horizon, casting a warm, golden light across the highlands. Yet, despite the beauty of the day, Aislinn felt a weight pressing down upon her. The dream of the shadowed figure with the discordant harp lingered, haunting her thoughts. She could not ignore the warning carried in its song, nor the deepening sense that the balance she was meant to protect was slipping further out of reach.
 

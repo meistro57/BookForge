@@ -1,9 +1,9 @@
 ---
-title: "Chapter Five"
+title: "Fantasy vs. Frequency"
 chapterNumber: 5
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 5
+order: 6
 isFrontMatter: false
 slug: "ch-5"
 ---

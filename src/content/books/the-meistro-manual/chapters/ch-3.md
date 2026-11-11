@@ -1,6 +1,6 @@
 ---
 title: "You Are Not the Label"
-chapterNumber: 1
+chapterNumber: 3
 partNumber: 1
 partTitle: "PART I: BECOMING THE INVESTIGATOR"
 order: 7

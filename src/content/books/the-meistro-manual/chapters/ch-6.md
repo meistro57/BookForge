@@ -1,6 +1,6 @@
 ---
 title: "The Curious Art of Not Knowing"
-chapterNumber: 1
+chapterNumber: 6
 partNumber: 1
 partTitle: "PART I: BECOMING THE INVESTIGATOR"
 order: 10

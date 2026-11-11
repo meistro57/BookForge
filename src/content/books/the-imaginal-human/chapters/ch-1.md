@@ -1,9 +1,9 @@
 ---
-title: "Chapter One"
+title: "The Lie We’ve Been Told"
 chapterNumber: 1
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 1
+order: 2
 isFrontMatter: false
 slug: "ch-1"
 ---

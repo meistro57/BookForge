@@ -1,6 +1,6 @@
 ---
 title: "Following the Trail of Curiosity"
-chapterNumber: 2
+chapterNumber: 8
 partNumber: 2
 partTitle: "PART II: THE ARCHAEOLOGY OF YOU"
 order: 12

@@ -1,9 +1,9 @@
 ---
-title: "Chapter Three"
+title: "The Sacred Origins of Imagination"
 chapterNumber: 3
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 3
+order: 4
 isFrontMatter: false
 slug: "ch-3"
 ---

@@ -1,9 +1,9 @@
 ---
-title: "Chapter Eight"
+title: "Dreams, Daydreams, and Downloads"
 chapterNumber: 8
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 8
+order: 9
 isFrontMatter: false
 slug: "ch-8"
 ---

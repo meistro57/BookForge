@@ -1,9 +1,9 @@
 ---
-title: "Chapter Six"
+title: "The Subconscious Picks Up Everything"
 chapterNumber: 6
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 6
+order: 7
 isFrontMatter: false
 slug: "ch-6"
 ---

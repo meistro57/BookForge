@@ -1,6 +1,6 @@
 ---
 title: "The Child Before the World Explained You"
-chapterNumber: 2
+chapterNumber: 7
 partNumber: 2
 partTitle: "PART II: THE ARCHAEOLOGY OF YOU"
 order: 11

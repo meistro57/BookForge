@@ -8,7 +8,9 @@ import {
   getPreviousChapter,
   getNextChapter,
   getChapterSlug,
+  getChapterLongLabel,
   getBookSlugFromChapter,
+  formatPartTitle,
   getUrl,
   type ChapterEntry,
 } from '../../../../lib/chapters';
@@ -58,7 +60,7 @@ const nextHref = nextChapter
   : '';
 
 const partText = chapter.data.partTitle
-  ? 'Part ' + chapter.data.partNumber + ': ' + chapter.data.partTitle
+  ? formatPartTitle(chapter.data.partNumber ?? null, chapter.data.partTitle)
   : chapter.data.isFrontMatter
   ? 'Front Matter'
   : undefined;
@@ -75,7 +77,7 @@ const partText = chapter.data.partTitle
   <ReadingProgressBar
     slug={slug}
     title={chapter.data.title}
-    chapterNumber={chapter.data.chapterNumber}
+    chapterLabel={getChapterLongLabel(chapter)}
     totalChapters={chapters.length}
     bookSlug={bookSlug}
   />

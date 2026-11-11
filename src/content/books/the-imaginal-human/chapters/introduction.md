@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-order: 0
+order: 1
 isFrontMatter: true
 slug: "introduction"
 ---

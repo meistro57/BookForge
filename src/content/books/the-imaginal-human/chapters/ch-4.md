@@ -1,9 +1,9 @@
 ---
-title: "Chapter Four"
+title: "Children Know the Truth"
 chapterNumber: 4
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 4
+order: 5
 isFrontMatter: false
 slug: "ch-4"
 ---

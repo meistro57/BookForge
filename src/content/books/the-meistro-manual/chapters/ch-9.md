@@ -1,6 +1,6 @@
 ---
 title: "The Things You Learned Without Being Taught"
-chapterNumber: 2
+chapterNumber: 9
 partNumber: 2
 partTitle: "PART II: THE ARCHAEOLOGY OF YOU"
 order: 13

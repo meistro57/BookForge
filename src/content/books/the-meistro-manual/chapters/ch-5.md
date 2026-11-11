@@ -1,6 +1,6 @@
 ---
 title: "Learning to Catch Yourself Thinking"
-chapterNumber: 1
+chapterNumber: 5
 partNumber: 1
 partTitle: "PART I: BECOMING THE INVESTIGATOR"
 order: 9

@@ -1,7 +1,7 @@
 ---
 title: "Epilogue"
-order: 21
-isFrontMatter: true
+order: 22
+isFrontMatter: false
 slug: "epilogue"
 ---
 

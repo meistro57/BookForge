@@ -1,9 +1,9 @@
 ---
-title: "Chapter Two"
+title: "What Dolores Cannon Revealed"
 chapterNumber: 2
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 2
+order: 3
 isFrontMatter: false
 slug: "ch-2"
 ---

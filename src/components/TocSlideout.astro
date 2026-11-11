@@ -1,5 +1,11 @@
 ---
-import { getAllChapters, getChaptersGroupedByPart, getChapterSlug, getUrl } from '../lib/chapters';
+import {
+  getChaptersGroupedByPart,
+  getChapterBadge,
+  getChapterSlug,
+  formatPartHeader,
+  getUrl,
+} from '../lib/chapters';
 
 interface Props {
   currentSlug?: string;
@@ -9,13 +15,6 @@ interface Props {
 const { currentSlug = '', bookSlug = '' } = Astro.props;
 const groupedParts = bookSlug ? await getChaptersGroupedByPart(bookSlug) : await getChaptersGroupedByPart('');
 const linkBase = bookSlug ? '/books/' + bookSlug + '/chapter/' : '/chapter/';
-
-function formatPartHeader(partNumber: number | null, partTitle: string): string {
-  if (partNumber === null) return partTitle.toUpperCase();
-  const names = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'];
-  const nameStr = names[partNumber - 1] || partNumber.toString();
-  return 'PART ' + nameStr + ' — ' + partTitle.toUpperCase();
-}
 ---
 
 <div class="toc-slideout-wrapper">
@@ -65,9 +64,7 @@ function formatPartHeader(partNumber: number | null, partTitle: string): string 
                     aria-current={isActive ? 'page' : undefined}
                   >
                     <span class="toc-num">
-                      {ch.data.chapterNumber !== null && ch.data.chapterNumber !== undefined
-                        ? `Ch. ${ch.data.chapterNumber.toString().padStart(2, '0')}`
-                        : 'FM'}
+                      {getChapterBadge(ch)}
                     </span>
                     <span class="toc-title">{ch.data.title}</span>
                     <span class="toc-completion-icon" hidden title="Completed">✓</span>

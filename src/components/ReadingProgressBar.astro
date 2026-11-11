@@ -2,12 +2,12 @@
 interface Props {
   slug: string;
   title: string;
-  chapterNumber?: number | null;
+  chapterLabel?: string;
   totalChapters?: number;
   bookSlug?: string;
 }
 
-const { slug, title, chapterNumber = null, totalChapters = 21, bookSlug = '' } = Astro.props;
+const { slug, title, chapterLabel = '', totalChapters = 21, bookSlug = '' } = Astro.props;
 ---
 
 <div
@@ -16,7 +16,7 @@ const { slug, title, chapterNumber = null, totalChapters = 21, bookSlug = '' } =
   aria-hidden="true"
   data-slug={slug}
   data-title={title}
-  data-num={chapterNumber !== null ? chapterNumber.toString() : 'FM'}
+  data-num={chapterLabel}
   data-total={totalChapters.toString()}
   data-book-slug={bookSlug}
 ></div>

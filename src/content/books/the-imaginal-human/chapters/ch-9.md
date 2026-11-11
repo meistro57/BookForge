@@ -1,9 +1,9 @@
 ---
-title: "Chapter Nine"
+title: "The Inner Eye Is an Antenna"
 chapterNumber: 9
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 9
+order: 10
 isFrontMatter: false
 slug: "ch-9"
 ---

@@ -1,6 +1,6 @@
 ---
 title: "The Difference Between Experience and Explanation"
-chapterNumber: 1
+chapterNumber: 4
 partNumber: 1
 partTitle: "PART I: BECOMING THE INVESTIGATOR"
 order: 8

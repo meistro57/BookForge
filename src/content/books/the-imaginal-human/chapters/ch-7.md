@@ -1,9 +1,9 @@
 ---
-title: "Chapter Seven"
+title: "The Quantum Mechanics of Visualization"
 chapterNumber: 7
 partNumber: 1
 partTitle: "PART I: THE GREAT FORGETTING"
-order: 7
+order: 8
 isFrontMatter: false
 slug: "ch-7"
 ---
