@@ -1,0 +1,28 @@
+{
+  "slug": "project-crystal",
+  "title": "PROJECT CRYSTAL",
+  "author": "Mark Hubrich",
+  "subtitle": "The Conversational Writing Field Guide",
+  "description": "A practical, compassionate guide to preserving memories, discovering stories, and creating books through human-AI collaboration.",
+  "cover": "images/project-crystal-cover.png",
+  "ogImage": "images/project-crystal-cover.png",
+  "order": 7,
+  "theme": {
+    "palette": {
+      "bg": "#0d1220",
+      "panel": "#121a2e",
+      "textPrimary": "#e8ecf7",
+      "textSecondary": "#9fb0d6",
+      "accent": "#7c8cf8",
+      "border": "#2a3553"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "crystal"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
