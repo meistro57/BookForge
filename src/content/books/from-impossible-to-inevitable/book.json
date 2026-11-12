@@ -23,6 +23,75 @@
     "mood": "deep-space"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Mark Hubrich & Eli",
+    "voice": "meistro",
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/From_Impossible_to_Inevitable/",
+    "chapters": [
+      {
+        "title": "Title and Contents",
+        "file": "01 - Title and Contents.mp3"
+      },
+      {
+        "title": "Introduction: Welcome to the Post-Impossible Era",
+        "file": "02 - Introduction - Welcome to the Post-Impossible Era.mp3"
+      },
+      {
+        "title": "The Prison of Consensus",
+        "file": "03 - The Prison of Consensus.mp3"
+      },
+      {
+        "title": "Breaking the Frame",
+        "file": "04 - Breaking the Frame.mp3"
+      },
+      {
+        "title": "Fusion Ignition: The New Fire",
+        "file": "05 - Fusion Ignition - The New Fire.mp3"
+      },
+      {
+        "title": "Quantum Rebellion",
+        "file": "06 - Quantum Rebellion.mp3"
+      },
+      {
+        "title": "BioLogic: Engineering Life",
+        "file": "07 - BioLogic - Engineering Life.mp3"
+      },
+      {
+        "title": "Light-Speed Intelligence",
+        "file": "08 - Light-Speed Intelligence.mp3"
+      },
+      {
+        "title": "The Materials Genesis",
+        "file": "09 - The Materials Genesis.mp3"
+      },
+      {
+        "title": "Matter Awakens",
+        "file": "10 - Matter Awakens.mp3"
+      },
+      {
+        "title": "Gravity, Interrupted",
+        "file": "11 - Gravity, Interrupted.mp3"
+      },
+      {
+        "title": "Consciousness, Reconsidered",
+        "file": "12 - Consciousness, Reconsidered.mp3"
+      },
+      {
+        "title": "The Post-Impossible Pattern",
+        "file": "13 - The Post-Impossible Pattern.mp3"
+      },
+      {
+        "title": "Your Turn",
+        "file": "14 - Your Turn.mp3"
+      },
+      {
+        "title": "Let Us Imagine the Future",
+        "file": "15 - Let Us Imagine the Future.mp3"
+      },
+      {
+        "title": "Epilogue: The Age of the Post-Impossible",
+        "file": "16 - Epilogue - The Quiet After the Shift.mp3"
+      }
+    ]
   }
 }
