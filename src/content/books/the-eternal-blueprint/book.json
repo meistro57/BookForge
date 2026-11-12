@@ -1,0 +1,26 @@
+{
+  "slug": "the-eternal-blueprint",
+  "title": "The Eternal Blueprint",
+  "author": "Mark Hubrich",
+  "subtitle": "Connecting the Dots of Existence",
+  "description": "A bridge between science, philosophy, and lived experience — consciousness, the illusion of reality, reincarnation, sacred geometry, multidimensional selfhood, and co-creating a new world.",
+  "order": 12,
+  "theme": {
+    "palette": {
+      "bg": "#0a0d16",
+      "panel": "#101524",
+      "textPrimary": "#e8e5da",
+      "textSecondary": "#8fa0b5",
+      "accent": "#4d8fc7",
+      "border": "#1d2740"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "cosmic"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
