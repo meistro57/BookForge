@@ -23,6 +23,79 @@
     "mood": "deep-space"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Mark J. Hubrich & Eli",
+    "voice": "meistro",
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/The_Misfit%27s_Guide_to_Reclaiming_Your_Power/",
+    "chapters": [
+      {
+        "title": "Title and Contents",
+        "file": "01 - Title and Contents.mp3"
+      },
+      {
+        "title": "Introduction: Welcome to the Island of Misfits",
+        "file": "02 - Introduction Welcome to the Island of Misfits.mp3"
+      },
+      {
+        "title": "Chapter One: Doubt Is Sexy",
+        "file": "03 - Chapter One Doubt Is Sexy.mp3"
+      },
+      {
+        "title": "Chapter 2: Energy Isn’t Woo — It’s Your Everyday Frequency",
+        "file": "04 - Chapter 2 - Energy Isn’t Woo—It’s Your Everyday Frequency.mp3"
+      },
+      {
+        "title": "Chapter 3: Reality Check – Who’s Driving This Thing?",
+        "file": "05 - Chapter 3 - Reality Check – Who’s Driving This Thing.mp3"
+      },
+      {
+        "title": "Chapter 4: From Wishing to Intending",
+        "file": "06 - Chapter 4 From Wishing to Intending.mp3"
+      },
+      {
+        "title": "Chapter 5: Meeting Your Shadow (Without Burning Sage or Moving to a Cave)",
+        "file": "07 - Chapter 5 Meeting Your Shadow (Without Burning Sage or Moving to a Cave).mp3"
+      },
+      {
+        "title": "Chapter 6: Listening to Your Meat Suit",
+        "file": "08 - Chapter 6 Listening to Your Meat Suit.mp3"
+      },
+      {
+        "title": "Chapter 7: The Alchemy of Joy and Gratitude",
+        "file": "09 - Chapter 7 The Alchemy of Joy and Gratitude.mp3"
+      },
+      {
+        "title": "Chapter 8: The Gift of Mind-Wandering",
+        "file": "10 - Chapter 8.mp3"
+      },
+      {
+        "title": "Chapter 9: It’s Not Broken — It’s Broadband",
+        "file": "11 - Chapter 9.mp3"
+      },
+      {
+        "title": "Chapter 10: Breaking Free from the Work Prison",
+        "file": "12 - Chapter 10 - Breaking Free from the Work Prison.mp3"
+      },
+      {
+        "title": "Chapter 11: The Power of Side Quests",
+        "file": "13 - Chapter 11 The Power of Side Quests.mp3"
+      },
+      {
+        "title": "Chapter 12: Progress Looks Like Jazz",
+        "file": "14 - Chapter 12 Progress Looks Like Jazz.mp3"
+      },
+      {
+        "title": "Chapter 13: The Playground Principle: Build Your Own Damn Sky",
+        "file": "15 - Chapter 13 - The Playground Principle Build Your Own Damn Sky.mp3"
+      },
+      {
+        "title": "Chapter 14: Curiosity — The Currency That Never Crashes",
+        "file": "16 - Chapter 14 - Curiosity The Currency That Never Crashes.mp3"
+      },
+      {
+        "title": "Chapter 15: Sorry, Not Sorry",
+        "file": "17 - Chapter 15 - Sorry, Not Sorry.mp3"
+      }
+    ]
   }
 }
