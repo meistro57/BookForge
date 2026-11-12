@@ -1,0 +1,28 @@
+{
+  "slug": "the-power-of-intention",
+  "title": "The Power of Intention",
+  "author": "Mark Hubrich",
+  "subtitle": "Unlocking Your Infinite Potential",
+  "description": "A guide to conscious creation — setting clear intentions, aligning thought and energy, surrendering to flow, and stepping into your role as the architect of your own reality.",
+  "cover": "images/the-power-of-intention-cover.png",
+  "ogImage": "images/the-power-of-intention-cover.png",
+  "order": 11,
+  "theme": {
+    "palette": {
+      "bg": "#0d0a14",
+      "panel": "#151020",
+      "textPrimary": "#f3ead1",
+      "textSecondary": "#a89a7e",
+      "accent": "#d4a72c",
+      "border": "#2a2140"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "cosmic"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
