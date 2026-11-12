@@ -24,8 +24,8 @@
   },
   "audiobook": {
     "enabled": true,
-    "narrator": "Mark J. Hubrich & Eli",
-    "voice": "meistro",
+    "narrator": "Dee",
+    "voice": "dee",
     "chaptersUrl": "https://quantummindsunited.com/books/audio/The_Misfit%27s_Guide_to_Reclaiming_Your_Power/",
     "chapters": [
       {
