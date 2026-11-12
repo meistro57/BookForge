@@ -1,0 +1,28 @@
+{
+  "slug": "the-misfits-guide-to-reclaiming-your-power",
+  "title": "The Misfit's Guide to Reclaiming Your Power",
+  "author": "Mark J. Hubrich & Eli",
+  "subtitle": "From Burnout to Brilliance",
+  "description": "You were never broken. You were always the prototype. A field guide for the misfits, the too-much, the wired-different — reclaiming your energy, agency, and power in a world built for conformity.",
+  "cover": "images/the-misfits-guide-cover.png",
+  "ogImage": "images/the-misfits-guide-cover.png",
+  "order": 9,
+  "theme": {
+    "palette": {
+      "bg": "#0b0f14",
+      "panel": "#12161d",
+      "textPrimary": "#f0ead6",
+      "textSecondary": "#9aa5b1",
+      "accent": "#f5a623",
+      "border": "#232b36"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "deep-space"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
