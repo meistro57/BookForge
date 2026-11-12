@@ -23,6 +23,168 @@
     "mood": "crystal"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Tim",
+    "voice": "tim",
+    "refAudio": "voices/tim_voice_ref_continuous.wav",
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/Project_Crystal_Chapters/",
+    "chapters": [
+      {
+        "title": "You Don't Have to Be a Writer",
+        "file": "01 - You Don't Have to Be a Writer.mp3"
+      },
+      {
+        "title": "Meet Your New Writing Partner",
+        "file": "02 - Meet Your New Writing Partner.mp3"
+      },
+      {
+        "title": "The Meistro Method",
+        "file": "03 - The Meistro Method.mp3"
+      },
+      {
+        "title": "Creating a Comfortable, Private Workspace",
+        "file": "04 - Creating a Comfortable, Private Workspace.mp3"
+      },
+      {
+        "title": "Start Talking",
+        "file": "05 - Start Talking.mp3"
+      },
+      {
+        "title": "The Art of Remembering",
+        "file": "06 - The Art of Remembering.mp3"
+      },
+      {
+        "title": "Recording Your Memories",
+        "file": "07 - Recording Your Memories.mp3"
+      },
+      {
+        "title": "Creating Your Memory Library",
+        "file": "08 - Creating Your Memory Library.mp3"
+      },
+      {
+        "title": "Turning Recordings into Usable Material",
+        "file": "09 - Turning Recordings into Usable Material.mp3"
+      },
+      {
+        "title": "Having a Conversation Instead of Giving Commands",
+        "file": "10 - Having a Conversation Instead of Giving Commands.mp3"
+      },
+      {
+        "title": "Teaching Your AI to Understand You",
+        "file": "11 - Teaching Your AI to Understand You.mp3"
+      },
+      {
+        "title": "Following the Threads",
+        "file": "12 - Following the Threads.mp3"
+      },
+      {
+        "title": "Ask Better Questions, Find Richer Stories",
+        "file": "13 - Ask Better Questions, Find Richer Stories.mp3"
+      },
+      {
+        "title": "Keeping the Human in Charge",
+        "file": "14 - Keeping the Human in Charge.mp3"
+      },
+      {
+        "title": "When Does a Collection of Memories Become a Book?",
+        "file": "15 - When Does a Collection of Memories Become a Book.mp3"
+      },
+      {
+        "title": "Finding the Story Within the Stories",
+        "file": "16 - Finding the Story Within the Stories.mp3"
+      },
+      {
+        "title": "Building Your Table of Contents",
+        "file": "17 - Building Your Table of Contents.mp3"
+      },
+      {
+        "title": "Finding Your Voice on the Page",
+        "file": "18 - Finding Your Voice on the Page.mp3"
+      },
+      {
+        "title": "From Memory to Manuscript",
+        "file": "19 - From Memory to Manuscript.mp3"
+      },
+      {
+        "title": "The Three-Stage Demonstration",
+        "file": "20 - The Three-Stage Demonstration.mp3"
+      },
+      {
+        "title": "Writing Your First Chapter",
+        "file": "21 - Writing Your First Chapter.mp3"
+      },
+      {
+        "title": "The \"Next Chapter Please\" Method",
+        "file": "22 - The Next Chapter Please Method.mp3"
+      },
+      {
+        "title": "Making the Book Feel Like One Book",
+        "file": "23 - Making the Book Feel Like One Book.mp3"
+      },
+      {
+        "title": "The First Complete Read",
+        "file": "24 - The First Complete Read.mp3"
+      },
+      {
+        "title": "Editing with AI",
+        "file": "25 - Editing with AI.mp3"
+      },
+      {
+        "title": "Accuracy, Privacy, and Respect",
+        "file": "26 - Accuracy, Privacy, and Respect.mp3"
+      },
+      {
+        "title": "Organising Your Final Manuscript",
+        "file": "27 - Organising Your Final Manuscript.mp3"
+      },
+      {
+        "title": "From Manuscript to Printed Book",
+        "file": "28 - From Manuscript to Printed Book.mp3"
+      },
+      {
+        "title": "Creating an Audiobook",
+        "file": "29 - Creating an Audiobook.mp3"
+      },
+      {
+        "title": "Sharing the Story",
+        "file": "30 - Sharing the Story.mp3"
+      },
+      {
+        "title": "The Conversations Before the Book",
+        "file": "31 - The Conversations Before the Book.mp3"
+      },
+      {
+        "title": "Finding the Structure",
+        "file": "32 - Finding the Structure.mp3"
+      },
+      {
+        "title": "Writing The Meistro Manual",
+        "file": "33 - Writing The Meistro Manual.mp3"
+      },
+      {
+        "title": "From Draft to BookForge",
+        "file": "34 - From Draft to BookForge.mp3"
+      },
+      {
+        "title": "What Worked, What Didn't, and What We'd Do Differently",
+        "file": "35 - What Worked, What Didn't, and What We'd Do Differently.mp3"
+      },
+      {
+        "title": "Your First Seven Conversations",
+        "file": "36 - Your First Seven Conversations.mp3"
+      },
+      {
+        "title": "Your First Memory Collection",
+        "file": "37 - Your First Memory Collection.mp3"
+      },
+      {
+        "title": "Your First Book Blueprint",
+        "file": "38 - Your First Book Blueprint.mp3"
+      },
+      {
+        "title": "Becoming Your Own Creative Partner",
+        "file": "39 - Becoming Your Own Creative Partner.mp3"
+      }
+    ]
   }
 }
