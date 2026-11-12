@@ -116,6 +116,9 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
         )}
 
         <div class="header-right">
+          <a href="https://quantummindsunited.com/" target="_blank" rel="noopener noreferrer" class="qmu-link" aria-label="Quantum Minds United">
+            Quantum Minds United ↗
+          </a>
           <QrCodeModal currentSlug={currentSlug} currentChapterTitle={currentChapterTitle} bookTitle={bookTitle} />
           <HowToUseCard />
           <ReaderControls bookSlug={ns} />
@@ -187,6 +190,29 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
     display: flex;
     align-items: center;
     gap: 0.75rem;
+  }
+
+  .qmu-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .qmu-link:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-color: rgba(2, 132, 199, 0.08);
+  }
+
+  .qmu-link:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
   }
 
   .header-center {
