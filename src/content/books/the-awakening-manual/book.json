@@ -1,0 +1,26 @@
+{
+  "slug": "the-awakening-manual",
+  "title": "The Awakening Manual I Didn't Get (So I Wrote It Myself)",
+  "author": "Mark J. Hubrich",
+  "subtitle": "Real Talk for Remembering Who the Hell You Are",
+  "description": "A gloriously non-linear, often hilarious companion for the spiritually curious. Wake up, heal, expand, and remember who you've been all along.",
+  "order": 8,
+  "theme": {
+    "palette": {
+      "bg": "#faf7ff",
+      "panel": "#ffffff",
+      "textPrimary": "#2a1f3d",
+      "textSecondary": "#6b5b8a",
+      "accent": "#7c4dff",
+      "border": "#eadff7"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif"
+    },
+    "mood": "light"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
