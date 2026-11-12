@@ -23,6 +23,99 @@
     "mood": "cosmic"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Lawrence",
+    "voice": "lawrence",
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/The_Imaginal_Human_Chapters/",
+    "chapters": [
+      {
+        "title": "Introduction",
+        "file": "01 - Introduction.mp3"
+      },
+      {
+        "title": "The Lie We've Been Told",
+        "file": "02 - Chapter 1.mp3"
+      },
+      {
+        "title": "What Dolores Cannon Revealed",
+        "file": "03 - Chapter 2.mp3"
+      },
+      {
+        "title": "The Sacred Origins of Imagination",
+        "file": "04 - Chapter 3.mp3"
+      },
+      {
+        "title": "Children Know the Truth",
+        "file": "05 - Chapter 4.mp3"
+      },
+      {
+        "title": "Fantasy vs. Frequency",
+        "file": "06 - Chapter 5.mp3"
+      },
+      {
+        "title": "The Subconscious Picks Up Everything",
+        "file": "07 - Chapter 6.mp3"
+      },
+      {
+        "title": "The Quantum Mechanics of Visualization",
+        "file": "08 - Chapter 7.mp3"
+      },
+      {
+        "title": "Dreams, Daydreams, and Downloads",
+        "file": "09 - Chapter 8.mp3"
+      },
+      {
+        "title": "The Inner Eye Is an Antenna",
+        "file": "10 - Chapter 9.mp3"
+      },
+      {
+        "title": "Thoughtforms and Tulpas",
+        "file": "11 - Chapter 10.mp3"
+      },
+      {
+        "title": "The Muscle of Focused Imagination",
+        "file": "12 - Chapter 11.mp3"
+      },
+      {
+        "title": "Reality Sculpting: Step by Step",
+        "file": "13 - Chapter 12.mp3"
+      },
+      {
+        "title": "Healing With Imagination",
+        "file": "14 - Chapter 13.mp3"
+      },
+      {
+        "title": "The Architect Within",
+        "file": "15 - Chapter 14.mp3"
+      },
+      {
+        "title": "Meeting Higher Beings Through Imaginal Contact",
+        "file": "16 - Chapter 15.mp3"
+      },
+      {
+        "title": "Accessing the Akashic Through Inner Vision",
+        "file": "17 - Chapter 16.mp3"
+      },
+      {
+        "title": "Imagination as Communication Tech",
+        "file": "18 - Chapter 17.mp3"
+      },
+      {
+        "title": "The Resistance – Why This Power Is Suppressed",
+        "file": "19 - Chapter 18.mp3"
+      },
+      {
+        "title": "You Are the Portal",
+        "file": "20 - Chapter 19.mp3"
+      },
+      {
+        "title": "The Return of the Imaginal Human",
+        "file": "21 - Chapter 20.mp3"
+      },
+      {
+        "title": "Epilogue",
+        "file": "22 - Epilogue.mp3"
+      }
+    ]
   }
 }
