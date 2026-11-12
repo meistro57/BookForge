@@ -1,0 +1,26 @@
+{
+  "slug": "awakening-hidden-truths",
+  "title": "Awakening Hidden Truths",
+  "author": "Mark J. Hubrich",
+  "subtitle": "The Interconnected Realities of Ancient Wisdom, Channeled Messages, and Alternative Histories",
+  "description": "Lost civilizations, past-life regression, the Seth Material, the Law of One — a synthesis of ancient wisdom, channeled messages, and quantum science pointing to one hidden truth about who we really are.",
+  "order": 10,
+  "theme": {
+    "palette": {
+      "bg": "#0a0e1a",
+      "panel": "#101728",
+      "textPrimary": "#e8e4d8",
+      "textSecondary": "#8fa0b5",
+      "accent": "#c7923e",
+      "border": "#1d2740"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "cosmic"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
