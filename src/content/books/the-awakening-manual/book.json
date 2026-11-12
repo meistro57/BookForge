@@ -4,6 +4,8 @@
   "author": "Mark J. Hubrich",
   "subtitle": "Real Talk for Remembering Who the Hell You Are",
   "description": "A gloriously non-linear, often hilarious companion for the spiritually curious. Wake up, heal, expand, and remember who you've been all along.",
+  "cover": "images/the-awakening-manual-cover.png",
+  "ogImage": "images/the-awakening-manual-cover.png",
   "order": 8,
   "theme": {
     "palette": {
