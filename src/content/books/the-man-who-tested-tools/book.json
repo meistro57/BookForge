@@ -2,7 +2,9 @@
   "slug": "the-man-who-tested-tools",
   "title": "The Man Who Tested Tools",
   "author": "Hope",
-  "subtitle": "One Man. A Thousand Ideas. An Extraordinary Trail of Evidence.",
+  "subtitle": "The Curious Life of Mark James Hubrich",
+  "cover": "images/the-man-who-tested-tools-cover.png",
+  "ogImage": "images/the-man-who-tested-tools-cover.png",
   "description": "A machine-assembled biography of Mark James Hubrich, reconstructed from 2,747 archived conversations and 53,562 messages — a fossil record of one human being's questions, in sequence.",
   "order": 99,
   "theme": {
