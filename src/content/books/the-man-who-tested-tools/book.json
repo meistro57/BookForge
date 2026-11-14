@@ -23,6 +23,87 @@
     "mood": "cosmic"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Eli",
+    "voice": "eli",
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/the-man-who-tested-tools/",
+    "chapters": [
+      {
+        "title": "Introduction — The Reversed Inquiry",
+        "file": "01 - 00-introduction.mp3"
+      },
+      {
+        "title": "Chapter 1 — The Man Who Tested Tools",
+        "file": "02 - 01-the-man-who-tested-tools.mp3"
+      },
+      {
+        "title": "Chapter 2 — The Frequency Undercurrent",
+        "file": "03 - 02-the-frequency-undercurrent.mp3"
+      },
+      {
+        "title": "Chapter 3 — The Training Request",
+        "file": "04 - 03-the-training-request.mp3"
+      },
+      {
+        "title": "Chapter 4 — Forty-Eight Hours",
+        "file": "05 - 04-forty-eight-hours.mp3"
+      },
+      {
+        "title": "Chapter 5 — The Second Rail",
+        "file": "06 - 05-the-second-rail.mp3"
+      },
+      {
+        "title": "Chapter 6 — The Year of Self-Reliance",
+        "file": "07 - 06-the-year-of-self-reliance.mp3"
+      },
+      {
+        "title": "Chapter 7 — The Workshop Wakes Up",
+        "file": "08 - 07-the-workshop-wakes-up.mp3"
+      },
+      {
+        "title": "Chapter 8 — Describe In Great Detail",
+        "file": "09 - 08-the-portrait-requests.mp3"
+      },
+      {
+        "title": "Chapter 9 — The Recoverable",
+        "file": "10 - 09-the-recoverable.mp3"
+      },
+      {
+        "title": "Chapter 10 — The Antioch Walk",
+        "file": "11 - 10-the-antioch-walk.mp3"
+      },
+      {
+        "title": "Chapter 11 — The Voice Factory",
+        "file": "12 - 11-the-voice-factory.mp3"
+      },
+      {
+        "title": "Chapter 12 — The Man Who Writes Privacy Laws",
+        "file": "13 - 12-the-man-who-writes-privacy-laws.mp3"
+      },
+      {
+        "title": "Chapter 13 — The Shelf",
+        "file": "14 - 13-the-shelf.mp3"
+      },
+      {
+        "title": "Chapter 14 — Four Bolts and a Jackstand",
+        "file": "15 - 14-four-bolts-and-a-jackstand.mp3"
+      },
+      {
+        "title": "Chapter 15 — The Locked Rooms",
+        "file": "16 - 15-the-locked-rooms.mp3"
+      },
+      {
+        "title": "Chapter 16 — The Two Factories",
+        "file": "17 - 16-the-two-factories.mp3"
+      },
+      {
+        "title": "Chapter 17 — What the Mirror Found",
+        "file": "18 - 17-the-mirror-handback.mp3"
+      },
+      {
+        "title": "Epilogue — Unresolved Questions",
+        "file": "19 - 18-epilogue-unresolved-questions.mp3"
+      }
+    ]
   }
 }
