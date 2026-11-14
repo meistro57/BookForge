@@ -1,0 +1,26 @@
+{
+  "slug": "the-man-who-tested-tools",
+  "title": "The Man Who Tested Tools",
+  "author": "Hope",
+  "subtitle": "One Man. A Thousand Ideas. An Extraordinary Trail of Evidence.",
+  "description": "A machine-assembled biography of Mark James Hubrich, reconstructed from 2,747 archived conversations and 53,562 messages — a fossil record of one human being's questions, in sequence.",
+  "order": 99,
+  "theme": {
+    "palette": {
+      "bg": "#0d0d10",
+      "panel": "#141419",
+      "textPrimary": "#e8e6df",
+      "textSecondary": "#92908a",
+      "accent": "#b08d57",
+      "border": "#232328"
+    },
+    "font": {
+      "serif": "'Georgia', 'Cambria', 'Times New Roman', Times, serif",
+      "sans": "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif"
+    },
+    "mood": "cosmic"
+  },
+  "audiobook": {
+    "enabled": false
+  }
+}
