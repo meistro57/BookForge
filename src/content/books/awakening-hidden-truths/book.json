@@ -23,6 +23,59 @@
     "mood": "cosmic"
   },
   "audiobook": {
-    "enabled": false
+    "enabled": true,
+    "narrator": "Sharon",
+    "voice": "sharon",
+    "chaptersUrl": "https://quantummindsunited.com/books/audio/awakening-hidden-truths/",
+    "chapters": [
+      {
+        "title": "Title Page",
+        "file": "00-title-page.mp3"
+      },
+      {
+        "title": "Introduction: Awakening Hidden Truths",
+        "file": "01-introduction.mp3"
+      },
+      {
+        "title": "Chapter 1: The Foundations of Alternative History",
+        "file": "02-chapter-01.mp3"
+      },
+      {
+        "title": "Chapter 2: Dolores Cannon and the Past Life Regression Revelations",
+        "file": "03-chapter-02.mp3"
+      },
+      {
+        "title": "Chapter 3: The Seth Material — Consciousness and the Nature of Reality",
+        "file": "04-chapter-03.mp3"
+      },
+      {
+        "title": "Chapter 4: Ancient Texts and Their Hidden Knowledge",
+        "file": "05-chapter-04.mp3"
+      },
+      {
+        "title": "Chapter 5: The Messages of Channeled Beings",
+        "file": "06-chapter-05.mp3"
+      },
+      {
+        "title": "Chapter 6: The Science Behind the Mysticism",
+        "file": "07-chapter-06.mp3"
+      },
+      {
+        "title": "Chapter 7: The Implications for Humanity’s Awakening",
+        "file": "08-chapter-07.mp3"
+      },
+      {
+        "title": "Chapter 8: The Journey of Remembering",
+        "file": "09-chapter-08.mp3"
+      },
+      {
+        "title": "Conclusion: The Awakening Has Begun",
+        "file": "10-conclusion.mp3"
+      },
+      {
+        "title": "References & Suggested Reading",
+        "file": "11-references.mp3"
+      }
+    ]
   }
 }
