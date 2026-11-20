@@ -66,14 +66,17 @@ html[data-theme="slate"] {
   --border-color: #333c4d;
 }
 
-html[data-theme="honey-bee"] {
-  --bg-color: #1f1a10;
-  --panel-bg: #2b2414;
-  --text-primary: #f4e8c8;
-  --text-secondary: #b8a875;
-  --accent-color: #e8a520;
-  --accent-hover: #f6bc3c;
-  --border-color: #463a1f;
+/* Honey Bee — matched to the Quantum Minds United hive (quantummindsunited.com).
+   Also the shelf's default look: "Book" theme on a page with no book palette. */
+html[data-theme="honey-bee"],
+html[data-theme="book"]:not([data-book-theme]) {
+  --bg-color: #120c07;
+  --panel-bg: #1b120a;
+  --text-primary: #f6e9d2;
+  --text-secondary: #c9b595;
+  --accent-color: #f2a93b;
+  --accent-hover: #ffd27a;
+  --border-color: #3d2c16;
 }
 
 /* System Dark Mode Fallback if data-theme is unset */

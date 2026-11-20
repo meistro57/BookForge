@@ -177,26 +177,29 @@ automatically, and the bookshelf, routes, and TOC derive everything from the col
   `--font-serif`, `--font-sans`, `--reader-font-size`, `--reader-line-height`,
   `--reader-max-width`, `--reader-font-family`). Components use these tokens instead of
   literal colors, which is what makes per-book palettes work.
-- Reader preferences are applied as attributes on `<html>`: `data-theme` (light, warm,
-  dark, slate, honey-bee), `data-font-size` (smaller, default, larger, xlarge),
+- Reader preferences are applied as attributes on `<html>`: `data-theme` (book, light,
+  warm, dark, slate, honey-bee), `data-font-size` (smaller, default, larger, xlarge),
   `data-line-spacing` (compact, comfortable, spacious), `data-reading-width` (narrow,
   standard, wide), `data-font-family` (serif, sans). Add new values in both the
   `ReaderControls.astro` buttons and the matching `html[data-*="..."]` rule in
   `global.css`.
-- A book's `data-book-theme` palette is the default layer; the reader's `data-theme`
-  overrides it.
+- A book's `data-book-theme` palette shows when `data-theme` is `book` (the default).
+  Any other `data-theme` overrides it. On pages with no book (the shelf), `book` falls
+  back to the honey-bee look, which is matched to quantummindsunited.com.
 - Styles are scoped per component (`<style>` in `.astro`). To style markdown output use
   `:global(...)` selectors inside `.prose-content`, as the chapter route does.
 - Component styles are dense one-liners; match that style rather than reformatting.
 
 ## Client-side state
 
-All state lives in `localStorage` under the namespace `bookforge:<bookSlug>:` where
-`bookSlug` is the `data-book-slug` attribute on `<html>` (set by `BookLayout`).
+Display preferences live in one site-wide key, `bookforge:prefs`, so a theme or font
+choice follows the reader across books. Everything else lives under the namespace
+`bookforge:<bookSlug>:` where `bookSlug` is the `data-book-slug` attribute on `<html>`
+(set by `BookLayout`).
 
 | Key | Written by | Meaning |
 | --- | --- | --- |
-| `prefs` | `ReaderControls` | JSON of display preferences |
+| `prefs` | (legacy) | old per-book display prefs; read only as a fallback |
 | `current_chapter` | `ReadingProgressBar` | last chapter slug opened |
 | `current_chapter_title` / `current_chapter_num` | `ReadingProgressBar` | resume-card labels |
 | `completed_chapters` | `ReadingProgressBar` | JSON array of finished slugs |

@@ -36,6 +36,7 @@ const { bookSlug = '' } = Astro.props;
       <fieldset class="control-group">
         <legend class="group-label">Theme</legend>
         <div class="options-grid theme-options">
+          <button type="button" class="opt-btn" data-control="theme" data-value="book" title="Each book's own colours (the hive look on the shelf)">Book Default</button>
           <button type="button" class="opt-btn" data-control="theme" data-value="light">Light</button>
           <button type="button" class="opt-btn" data-control="theme" data-value="warm">Warm Paper</button>
           <button type="button" class="opt-btn" data-control="theme" data-value="dark">Dark</button>
@@ -94,19 +95,23 @@ const { bookSlug = '' } = Astro.props;
   const BOOK_SLUG = document.documentElement.getAttribute('data-book-slug') || '';
 
   const DEFAULTS = {
-    theme: 'light',
+    theme: 'book',
     fontSize: 'default',
     lineSpacing: 'comfortable',
     readingWidth: 'standard',
     fontFamily: 'serif'
   };
 
-  const STORAGE_KEY = 'bookforge:' + BOOK_SLUG + ':prefs';
+  // Display prefs are site-wide so a choice follows the reader across books.
+  // Older builds saved them per book (and per shelf); read those as a fallback.
+  const STORAGE_KEY = 'bookforge:prefs';
+  const LEGACY_KEYS = ['bookforge:' + BOOK_SLUG + ':prefs', 'bookforge::prefs'];
   const PROGRESS_PREFIX = 'bookforge:' + BOOK_SLUG + ':';
 
   function getSavedPrefs() {
     try {
-      const item = localStorage.getItem(STORAGE_KEY);
+      let item = localStorage.getItem(STORAGE_KEY);
+      for (const k of LEGACY_KEYS) { if (!item) item = localStorage.getItem(k); }
       return item ? { ...DEFAULTS, ...JSON.parse(item) } : { ...DEFAULTS };
     } catch {
       return { ...DEFAULTS };

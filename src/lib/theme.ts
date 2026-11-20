@@ -2,8 +2,8 @@ import type { BookEntry } from './books';
 
 /**
  * Compute the book's authored theme as a scoped CSS block string.
- * Scoped to html[data-book-theme] so the reader's transient theme
- * (Light / Warm Paper / Dark) can override the book palette via data-theme.
+ * Scoped to html[data-book-theme]. It shows when the reader's theme is "book"
+ * (the default); picking Light / Warm Paper / Dark / Slate / Honey Bee overrides it.
  */
 export function bookThemeStyle(book: BookEntry): string {
   const palette = book.data.theme?.palette || {};

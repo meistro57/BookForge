@@ -76,9 +76,13 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
         try {
           var doc = document.documentElement;
           var ns = doc.getAttribute('data-book-slug') || '';
-          var item = localStorage.getItem('bookforge:' + ns + ':prefs');
+          // Site-wide prefs; fall back to the older per-book / shelf keys once.
+          var item = localStorage.getItem('bookforge:prefs')
+            || localStorage.getItem('bookforge:' + ns + ':prefs')
+            || localStorage.getItem('bookforge::prefs');
           var prefs = item ? JSON.parse(item) : {};
-          doc.setAttribute('data-theme', prefs.theme || 'light');
+          // "book" = the book's own palette (or the hive look on the shelf)
+          doc.setAttribute('data-theme', prefs.theme || 'book');
           doc.setAttribute('data-font-size', prefs.fontSize || 'default');
           doc.setAttribute('data-line-spacing', prefs.lineSpacing || 'comfortable');
           doc.setAttribute('data-reading-width', prefs.readingWidth || 'standard');
