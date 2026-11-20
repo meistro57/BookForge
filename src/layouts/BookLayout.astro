@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import '../styles/honey-bee.css';
+import HiveBackground from '../components/HiveBackground.astro';
 import ReaderControls from '../components/ReaderControls.astro';
 import TocSlideout from '../components/TocSlideout.astro';
 import HowToUseCard from '../components/HowToUseCard.astro';
@@ -44,11 +46,15 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
 ---
 
 <!DOCTYPE html>
-<html lang="en" data-book-slug={ns} data-book-theme={ns ? "true" : undefined}>
+<html lang="en" data-book-slug={ns} data-book-theme={ns ? "true" : undefined} data-page={currentChapterTitle ? "chapter" : "page"}>
   <head>
     {themeStyle && <style set:html={themeStyle} />}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#120c07" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <title>{pageTitle}</title>
 
     <meta name="description" content={metaDescription} />
@@ -81,8 +87,8 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
             || localStorage.getItem('bookforge:' + ns + ':prefs')
             || localStorage.getItem('bookforge::prefs');
           var prefs = item ? JSON.parse(item) : {};
-          // "book" = the book's own palette (or the hive look on the shelf)
-          doc.setAttribute('data-theme', prefs.theme || 'book');
+          // Honey Bee is the default; "book" = the book's own palette.
+          doc.setAttribute('data-theme', prefs.theme || 'honey-bee');
           doc.setAttribute('data-font-size', prefs.fontSize || 'default');
           doc.setAttribute('data-line-spacing', prefs.lineSpacing || 'comfortable');
           doc.setAttribute('data-reading-width', prefs.readingWidth || 'standard');
@@ -92,6 +98,7 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
     </script>
   </head>
   <body>
+    <HiveBackground />
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <header class="site-header">
@@ -314,6 +321,17 @@ const ns = bookSlug || (book ? bookStorageNamespace(book) : '');
     .header-center {
       display: none;
     }
+  }
+
+  /* Phones: header buttons go icon-only so the bar fits (it overflowed at 390px). */
+  @media (max-width: 560px) {
+    .header-inner { gap: 0.5rem; }
+    .header-left, .header-right { gap: 0.4rem; }
+    .brand-name { display: none; }
+    .qmu-link { font-size: 0; padding-inline: 0.7rem; }
+    .qmu-link::after { content: 'QMU ↗'; font-size: 0.8rem; }
+    .header-right :global(.toc-text), .header-left :global(.toc-text),
+    .header-right :global(.guide-text) { display: none; }
   }
 </style>
 

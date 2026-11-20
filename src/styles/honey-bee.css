@@ -1,0 +1,213 @@
+/* =====================================================================
+   Honey Bee theme — matched to quantummindsunited.com (the QMU hive).
+   Active when the reader picks Honey Bee, and on the shelf by default
+   ("book" theme on a page with no book palette).
+
+   Every rule is scoped to that state, so Light / Warm / Dark / Slate and
+   the books' own palettes are untouched. Selectors beat the components'
+   scoped styles on specificity, so no !important is needed.
+
+   Motion rule: the living comb (HiveBackground.astro) runs on the shelf
+   and book pages only. Chapter pages get a still comb, so reading stays calm.
+   ===================================================================== */
+
+:root[data-theme="honey-bee"],
+:root[data-theme="book"]:not([data-book-theme]) {
+  color-scheme: dark;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --hb-honey: #f2a93b;
+  --hb-honey-2: #ffd27a;
+  --hb-amber: #e07b1a;
+  --hb-violet: #9b7bea;
+  --hb-violet-2: #b9a0f5;
+  --hb-ink: #1a1008;
+  --hb-surface: rgba(255, 190, 90, 0.045);
+  --hb-surface-hi: rgba(255, 190, 90, 0.08);
+  --hb-line: rgba(242, 169, 59, 0.18);
+  --hb-line-hi: rgba(242, 169, 59, 0.45);
+  --hb-hex: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+  --hb-radius: 20px;
+}
+
+/* ---------- Background: still comb + vignette (living comb is added on top by HiveBackground) ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) body::before {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="38.105" height="66" viewBox="0 0 38.105 66"><g fill="none" stroke="%23f2a93b" stroke-opacity=".075" stroke-width="1"><polygon points="19.05,2.00 36.37,12.00 36.37,32.00 19.05,42.00 1.73,32.00 1.73,12.00"/><polygon points="0.00,35.00 17.32,45.00 17.32,65.00 0.00,75.00 -17.32,65.00 -17.32,45.00"/><polygon points="38.11,35.00 55.43,45.00 55.43,65.00 38.11,75.00 20.78,65.00 20.78,45.00"/><polygon points="0.00,-31.00 17.32,-21.00 17.32,-1.00 0.00,9.00 -17.32,-1.00 -17.32,-21.00"/><polygon points="38.11,-31.00 55.43,-21.00 55.43,-1.00 38.11,9.00 20.78,-1.00 20.78,-21.00"/></g></svg>');
+  background-size: 38.105px 66px;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) body::after {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 50% 0%, rgba(242, 169, 59, 0.09), transparent 70%),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) ::selection { background: rgba(242, 169, 59, 0.35); color: #fff6e2; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :focus-visible { outline-color: var(--hb-violet-2); }
+
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme]))[data-page="chapter"] body::before { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="38.105" height="66" viewBox="0 0 38.105 66"><g fill="none" stroke="%23f2a93b" stroke-opacity=".04" stroke-width="1"><polygon points="19.05,2.00 36.37,12.00 36.37,32.00 19.05,42.00 1.73,32.00 1.73,12.00"/><polygon points="0.00,35.00 17.32,45.00 17.32,65.00 0.00,75.00 -17.32,65.00 -17.32,45.00"/><polygon points="38.11,35.00 55.43,45.00 55.43,65.00 38.11,75.00 20.78,65.00 20.78,45.00"/><polygon points="0.00,-31.00 17.32,-21.00 17.32,-1.00 0.00,9.00 -17.32,-1.00 -17.32,-21.00"/><polygon points="38.11,-31.00 55.43,-21.00 55.43,-1.00 38.11,9.00 20.78,-1.00 20.78,-21.00"/></g></svg>'); }
+
+/* ---------- Header + footer ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .site-header {
+  background: rgba(18, 12, 7, 0.93); border-bottom: 1px solid var(--hb-line);
+  backdrop-filter: blur(12px) saturate(140%); -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .brand-name {
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: .01em; color: var(--hb-honey);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .brand-logo { filter: drop-shadow(0 0 8px rgba(242, 169, 59, .4)); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.toc-toggle-btn, .qr-share-btn, .how-to-use-btn, .controls-toggle-btn, .qmu-link) {
+  border-radius: 999px; background: var(--hb-surface); border: 1px solid var(--hb-line); color: var(--text-primary);
+  transition: border-color .2s, background .2s, color .2s;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.toc-toggle-btn, .qr-share-btn, .how-to-use-btn, .controls-toggle-btn, .qmu-link):hover {
+  border-color: var(--hb-line-hi); background: var(--hb-surface-hi); color: var(--hb-honey-2);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .qmu-link { color: var(--hb-violet-2); border-color: rgba(155, 123, 234, .45); background: rgba(155, 123, 234, .06); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .qmu-link:hover { color: var(--text-primary); border-color: var(--hb-violet-2); background: rgba(155, 123, 234, .16); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .header-read-pct {
+  font-family: var(--font-mono); font-weight: 500; color: var(--hb-honey); background: rgba(242, 169, 59, .1); border: 1px solid rgba(242, 169, 59, .3); border-radius: 999px;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .current-chapter-label { font-family: var(--font-serif); font-weight: 600; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .site-footer { background: transparent; border-top: 1px solid var(--hb-line); }
+
+/* ---------- Shared type ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.shelf-title, .hero-title, .about-heading, .chapter-title, .book-title, .audiobook-main-title, .audiobook-title, .empty-title, .panel-title, .toc-panel-title, .card-title, .qr-title) {
+  font-family: var(--font-serif); font-weight: 700; letter-spacing: -.005em;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.section-label, .chapter-number, .group-label, .continue-label) {
+  font-family: var(--font-mono); font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--hb-violet-2);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.blueprint-tag, .blueprint-badge, .blueprint-mini-tag, .qr-mini-tag, .part-badge) {
+  font-family: var(--font-mono); font-weight: 500; letter-spacing: .14em;
+  color: var(--hb-honey); background: rgba(242, 169, 59, .1); border: 1px solid rgba(242, 169, 59, .35); border-radius: 999px;
+}
+
+/* ---------- Buttons ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .btn { border-radius: 999px; transition: transform .2s, box-shadow .25s, background .25s, border-color .25s, color .2s; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .btn:hover { transform: translateY(-2px); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .btn-primary {
+  background: var(--hb-honey); color: var(--hb-ink); box-shadow: 0 10px 30px rgba(242, 169, 59, .25);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .btn-primary:hover { background: var(--hb-honey-2); color: var(--hb-ink); box-shadow: 0 16px 40px rgba(242, 169, 59, .4); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .btn-secondary {
+  background: rgba(155, 123, 234, .06); color: var(--text-primary); border: 1px solid rgba(155, 123, 234, .55);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .btn-secondary:hover { background: rgba(155, 123, 234, .16); border-color: var(--hb-violet-2); color: var(--text-primary); }
+
+/* ---------- Shelf ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .shelf-title { font-size: clamp(2.3rem, 4.6vw, 3.4rem); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .bookshelf-hero { border-bottom-color: var(--hb-line); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .book-card {
+  border-radius: var(--hb-radius); background: var(--hb-surface); border-color: var(--hb-line);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1), border-color .3s, background .3s, box-shadow .3s;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .book-card-link:hover .book-card {
+  border-color: var(--hb-line-hi); background: var(--hb-surface-hi);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .4), 0 0 0 1px rgba(242, 169, 59, .08);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .book-cover { border-color: rgba(255, 255, 255, .06); box-shadow: 0 14px 30px rgba(0, 0, 0, .5); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .book-author { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .06em; color: var(--hb-violet-2); }
+
+/* ---------- Book landing ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .hero-title { color: var(--text-primary); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .cover-image { border-radius: 6px; box-shadow: 0 30px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .06); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .continue-card {
+  border-radius: 16px; background: linear-gradient(135deg, rgba(242, 169, 59, .1), rgba(155, 123, 234, .06)); border: 1px solid var(--hb-line-hi); border-left: 4px solid var(--hb-honey);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .part-header { border-bottom: 1px solid var(--hb-line); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .part-name { font-family: var(--font-serif); font-size: 1.35rem; letter-spacing: .01em; color: var(--text-primary); display: flex; align-items: center; gap: .7rem; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .part-name::before {
+  content: ""; flex-shrink: 0; width: 18px; height: 20px; clip-path: var(--hb-hex); background: var(--hb-honey); box-shadow: 0 0 12px var(--hb-honey);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-card-link { border-radius: 12px; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-card-link:hover { background: var(--hb-surface-hi); border-color: var(--hb-line); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-card-title { font-family: var(--font-serif); font-weight: 600; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-num-badge {
+  font-family: var(--font-mono); font-weight: 500; color: var(--hb-honey); background: rgba(242, 169, 59, .1); border: 1px solid rgba(242, 169, 59, .28); border-radius: 999px;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.completion-badge, .overall-progress-badge) {
+  font-family: var(--font-mono); font-weight: 500; color: var(--hb-ink); background: var(--hb-honey); border: 0; border-radius: 999px;
+}
+
+/* ---------- Audiobook ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.audiobook-card, .chapter-audio) {
+  border-radius: var(--hb-radius); background: linear-gradient(180deg, rgba(242, 169, 59, .07), rgba(242, 169, 59, .02)), var(--panel-bg); border: 1px solid var(--hb-line);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.narrator-tab, .download-btn, .chapter-toggle) { border-radius: 999px; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) audio { color-scheme: dark; accent-color: var(--hb-honey); }
+
+/* ---------- Chapter reader ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .reading-progress-bar {
+  background: linear-gradient(90deg, var(--hb-amber), var(--hb-honey) 60%, var(--hb-honey-2)); box-shadow: 0 0 12px rgba(242, 169, 59, .55);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-header { border-bottom-color: var(--hb-line); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-title { font-size: clamp(2rem, 4.2vw, 2.8rem); line-height: 1.12; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .chapter-description { font-family: var(--font-serif); font-style: italic; color: #e6d6ba; }
+
+/* prose */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content :is(h1, h2, h3, h4) { font-family: var(--font-serif); font-weight: 700; letter-spacing: -.005em; color: var(--text-primary); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content h2 { color: var(--hb-honey-2); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content strong { color: #fff3dc; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content a { color: var(--hb-honey); text-decoration-color: rgba(242, 169, 59, .45); text-underline-offset: .2em; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content a:hover { color: var(--hb-honey-2); text-decoration-color: var(--hb-honey-2); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content li::marker { color: var(--hb-honey); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content blockquote {
+  margin-inline: 0; padding: 1rem 1.4rem; border-left: 3px solid var(--hb-honey); border-radius: 0 14px 14px 0;
+  background: linear-gradient(90deg, rgba(242, 169, 59, .08), rgba(242, 169, 59, .02)); color: #ecdcbc; font-style: italic;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content :is(code, pre) { font-family: var(--font-mono); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content :not(pre) > code { color: var(--hb-honey-2); background: rgba(242, 169, 59, .1); border-radius: 5px; padding: .1em .35em; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content pre { background: #0d0905; border: 1px solid var(--hb-line); border-radius: 14px; }
+/* section breaks become three small hexes */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content hr {
+  border: 0; height: 16px; margin: 2.75rem auto; width: 76px; opacity: .85;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="76" height="16" viewBox="0 0 76 16"><g fill="%23f2a93b"><path d="M8 1l6.9 3.5v7L8 15 1.1 11.5v-7z" fill-opacity=".55"/><path d="M38 1l6.9 3.5v7L38 15l-6.9-3.5v-7z"/><path d="M68 1l6.9 3.5v7L68 15l-6.9-3.5v-7z" fill-opacity=".55"/></g></svg>') center/contain no-repeat;
+}
+/* drop cap on the chapter's opening paragraph */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .prose-content > p:first-of-type:not(:has(> :is(em, i, strong, b, a, code, img):only-child))::first-letter {
+  float: left; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 3.6em; line-height: .82;
+  margin: .08em .1em 0 0; color: var(--hb-honey); text-shadow: 0 0 24px rgba(242, 169, 59, .35);
+}
+
+/* chapter navigation */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .nav-link {
+  border-radius: 16px; background: var(--hb-surface); border-color: var(--hb-line);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .nav-link:hover { background: var(--hb-surface-hi); border-color: var(--hb-line-hi); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .nav-title { font-family: var(--font-serif); font-weight: 600; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .nav-label { font-family: var(--font-mono); letter-spacing: .12em; color: var(--hb-violet-2); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.chapter-share-bar) { border-radius: var(--hb-radius); background: var(--hb-surface); border-color: var(--hb-line); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.back-to-top-btn, .chapter-share-btn) { border-radius: 999px; }
+
+/* ---------- Panels: reader controls, contents, QR, how-to ---------- */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.controls-panel, .toc-panel, .qr-dialog, .instruction-card) {
+  background: linear-gradient(180deg, rgba(242, 169, 59, .08), rgba(242, 169, 59, .02)), var(--panel-bg);
+  border-color: var(--hb-line-hi); box-shadow: 0 30px 90px rgba(0, 0, 0, .6);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.controls-backdrop, .toc-backdrop, .qr-backdrop, .card-backdrop) {
+  background: rgba(8, 5, 3, .72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .opt-btn { border-radius: 999px; border-color: var(--hb-line); background: var(--hb-surface); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .opt-btn:hover { border-color: var(--hb-line-hi); color: var(--hb-honey-2); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.opt-btn.active, .opt-btn[aria-pressed="true"]) {
+  background: var(--hb-honey); border-color: var(--hb-honey); color: var(--hb-ink);
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) :is(.reset-btn, .scope-btn, .qr-action-btn, .qr-copy-btn) { border-radius: 999px; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .scope-btn.active { background: var(--hb-honey); border-color: var(--hb-honey); color: var(--hb-ink); }
+
+/* table of contents: the current chapter gets a glowing hex */
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .toc-part-title { font-family: var(--font-mono); font-weight: 500; letter-spacing: .14em; color: var(--hb-violet-2); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .toc-chapter-item { border-radius: 10px; }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .toc-num { font-family: var(--font-mono); color: var(--hb-honey); }
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .toc-chapter-item[aria-current="page"] {
+  background: rgba(242, 169, 59, .12); border-color: var(--hb-line-hi); color: var(--text-primary); position: relative;
+}
+:is(:root[data-theme="honey-bee"], :root[data-theme="book"]:not([data-book-theme])) .toc-chapter-item[aria-current="page"]::before {
+  content: ""; position: absolute; left: -6px; top: 50%; width: 12px; height: 13px; margin-top: -6.5px; clip-path: var(--hb-hex); background: var(--hb-honey); box-shadow: 0 0 10px var(--hb-honey);
+}
+
+/* hex loader-style focus ring on the living comb's canvas is decorative only */
+#hive-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; }

@@ -53,6 +53,7 @@ src/pages/404.astro
 src/components/*.astro                           # header controls, TOC drawer, progress bar, QR,
                                                  # AudiobookSection, ChapterAudioPlayer
 src/styles/global.css                            # design tokens, theme overrides, print styles
+src/styles/honey-bee.css                         # default Honey Bee theme (QMU hive look)
 public/                                          # images, audio, .htaccess, robots.txt, favicon
 scripts/audiobook/                               # TTS pipeline, Whisper QA, Turbo server
 voices/                                          # reference WAVs (git-ignored) + README
@@ -183,9 +184,12 @@ automatically, and the bookshelf, routes, and TOC derive everything from the col
   standard, wide), `data-font-family` (serif, sans). Add new values in both the
   `ReaderControls.astro` buttons and the matching `html[data-*="..."]` rule in
   `global.css`.
-- A book's `data-book-theme` palette shows when `data-theme` is `book` (the default).
-  Any other `data-theme` overrides it. On pages with no book (the shelf), `book` falls
-  back to the honey-bee look, which is matched to quantummindsunited.com.
+- `honey-bee` is the default theme, matched to quantummindsunited.com. Its look lives in
+  `src/styles/honey-bee.css`, every rule scoped to that theme so the others are untouched.
+  A book's `data-book-theme` palette shows only when `data-theme` is `book` ("Book Default"
+  in the controls); on the shelf, which has no palette, `book` also shows honey-bee.
+- `HiveBackground.astro` draws the living comb while honey-bee is active. It never runs
+  on chapter pages (`data-page="chapter"` on `<html>`) so reading stays still.
 - Styles are scoped per component (`<style>` in `.astro`). To style markdown output use
   `:global(...)` selectors inside `.prose-content`, as the chapter route does.
 - Component styles are dense one-liners; match that style rather than reformatting.

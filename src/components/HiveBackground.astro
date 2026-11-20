@@ -1,0 +1,125 @@
+---
+// Living honeycomb background (same comb as quantummindsunited.com).
+// Runs only while the Honey Bee look is active and never on chapter pages,
+// so reading stays calm. Follows theme switches live, pauses in hidden tabs,
+// and respects prefers-reduced-motion.
+---
+
+<script>
+  const doc = document.documentElement;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isChapter = doc.getAttribute('data-page') === 'chapter';
+
+  const honeyActive = () => {
+    const t = doc.getAttribute('data-theme');
+    return t === 'honey-bee' || (t === 'book' && !doc.hasAttribute('data-book-theme'));
+  };
+
+  let cv: HTMLCanvasElement | null = null;
+  let ctx: CanvasRenderingContext2D | null = null;
+  const grid = document.createElement('canvas');
+  const gctx = grid.getContext('2d');
+  const HR = 34, HW = Math.sqrt(3) * HR, VS = 1.5 * HR;
+  let W = 0, H = 0, cols = 0, rows = 0, raf = 0, running = false, last = 0, spawnAcc = 0;
+  type Lit = { col: number; row: number; t: number; dur: number; violet: boolean; peak: number };
+  type Bee = { x: number; y: number; a: number; s: number; r: number; violet: boolean; ph: number };
+  let lit: Lit[] = [], bees: Bee[] = [];
+  const mouse = { x: -9999, y: -9999, key: '' };
+
+  const hexPath = (c: CanvasRenderingContext2D, cx: number, cy: number, r: number) => {
+    c.beginPath();
+    for (let k = 0; k < 6; k++) {
+      const a = (Math.PI / 180) * (60 * k - 90);
+      k ? c.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a)) : c.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+    }
+    c.closePath();
+  };
+  const center = (col: number, row: number): [number, number] => [col * HW + (row % 2 ? HW / 2 : 0), row * VS];
+  const nearest = (x: number, y: number) => {
+    const r0 = Math.round(y / VS); let best = { col: 0, row: 0 }, bd = Infinity;
+    for (let r = r0 - 1; r <= r0 + 1; r++) {
+      const c0 = Math.round((x - (r % 2 ? HW / 2 : 0)) / HW);
+      for (let c = c0 - 1; c <= c0 + 1; c++) {
+        const [cx, cy] = center(c, r); const d = (cx - x) ** 2 + (cy - y) ** 2;
+        if (d < bd) { bd = d; best = { col: c, row: r }; }
+      }
+    }
+    return best;
+  };
+  const light = (col: number, row: number, o: Partial<Lit> = {}) => {
+    if (lit.some((l) => l.col === col && l.row === row && l.t < 0.6)) return;
+    lit.push({ col, row, t: 0, dur: o.dur ?? 2.5 + Math.random() * 3.5, violet: o.violet ?? Math.random() < 0.18, peak: o.peak ?? 0.1 + Math.random() * 0.16 });
+  };
+
+  function resize() {
+    if (!cv || !ctx || !gctx) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = document.documentElement.clientWidth; H = window.innerHeight;
+    [cv, grid].forEach((c) => { c.width = W * dpr; c.height = H * dpr; });
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); gctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(W / HW) + 2; rows = Math.ceil(H / VS) + 2;
+    gctx.clearRect(0, 0, W, H); gctx.lineWidth = 1; gctx.strokeStyle = 'rgba(242,169,59,0.05)';
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const [x, y] = center(c, r); hexPath(gctx, x, y, HR - 2); gctx.stroke(); }
+    const n = Math.round(Math.min(20, Math.max(8, (W * H) / 80000)));
+    bees = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, a: Math.random() * 6.28, s: 0.25 + Math.random() * 0.45, r: 1.2 + Math.random() * 1.5, violet: Math.random() < 0.3, ph: Math.random() * 6.28 }));
+  }
+
+  function frame(now: number) {
+    if (!running || !ctx) return;
+    const dt = Math.min(0.05, (now - last) / 1000 || 0); last = now;
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(grid, 0, 0, W, H);
+    spawnAcc += dt;
+    if (spawnAcc > 0.24) { spawnAcc = 0; if (lit.length < 22) light(Math.floor(Math.random() * cols), Math.floor(Math.random() * rows)); }
+    lit = lit.filter((l) => l.t < 1);
+    for (const l of lit) {
+      l.t += dt / l.dur;
+      const a = Math.sin(Math.PI * Math.min(1, l.t)) * l.peak;
+      const [x, y] = center(l.col, l.row);
+      hexPath(ctx, x, y, HR - 3);
+      ctx.fillStyle = l.violet ? `rgba(155,123,234,${a})` : `rgba(242,169,59,${a})`; ctx.fill();
+      ctx.strokeStyle = l.violet ? `rgba(185,160,245,${a * 1.8})` : `rgba(255,210,122,${a * 1.8})`; ctx.lineWidth = 1.2; ctx.stroke();
+    }
+    for (const b of bees) {
+      b.a += (Math.random() - 0.5) * 0.25;
+      const dx = mouse.x - b.x, dy = mouse.y - b.y;
+      if (dx * dx + dy * dy < 220 * 220) b.a += Math.sign(Math.sin(Math.atan2(dy, dx) - b.a)) * 0.04;
+      b.x += Math.cos(b.a) * b.s * 60 * dt; b.y += Math.sin(b.a) * b.s * 60 * dt;
+      if (b.x < -20) b.x = W + 20; if (b.x > W + 20) b.x = -20; if (b.y < -20) b.y = H + 20; if (b.y > H + 20) b.y = -20;
+      b.ph += dt * 3;
+      if (Math.random() < 0.002) { const c = nearest(b.x, b.y); light(c.col, c.row, { violet: b.violet, peak: 0.28, dur: 2.2 }); }
+      const glow = 0.55 + 0.45 * Math.sin(b.ph), col = b.violet ? '185,160,245' : '255,210,122';
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 6);
+      g.addColorStop(0, `rgba(${col},${0.5 * glow})`); g.addColorStop(1, `rgba(${col},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 6, 0, 6.283); ctx.fill();
+      ctx.fillStyle = `rgba(${col},${0.85 * glow})`; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283); ctx.fill();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function start() {
+    if (running) return;
+    if (!cv) {
+      cv = document.createElement('canvas'); cv.id = 'hive-bg'; cv.setAttribute('aria-hidden', 'true');
+      document.body.prepend(cv); ctx = cv.getContext('2d'); resize();
+    }
+    cv.hidden = false; running = true; last = performance.now(); raf = requestAnimationFrame(frame);
+  }
+  function stop() { running = false; cancelAnimationFrame(raf); if (cv) cv.hidden = true; }
+  const sync = () => (honeyActive() && !document.hidden ? start() : stop());
+
+  if (!isChapter && !reduceMotion) {
+    sync();
+    new MutationObserver(sync).observe(doc, { attributes: true, attributeFilter: ['data-theme'] });
+    document.addEventListener('visibilitychange', sync);
+    let rT = 0;
+    window.addEventListener('resize', () => { clearTimeout(rT); rT = window.setTimeout(resize, 120); });
+    window.addEventListener('pointermove', (e) => {
+      mouse.x = e.clientX; mouse.y = e.clientY;
+      if (!running) return;
+      const c = nearest(e.clientX, e.clientY), key = c.col + ',' + c.row;
+      if (key !== mouse.key) { mouse.key = key; light(c.col, c.row, { peak: 0.26, dur: 1.6, violet: Math.random() < 0.25 }); }
+    }, { passive: true });
+  }
+</script>
